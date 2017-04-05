@@ -1,9 +1,10 @@
 {
   "name": "StackedUp",
+  "repository": "https://github.com/HackNirvana",
   "version": "0.0.1",
   "description": "A full-featured job search platform with integrated video chat for live interviewws",
   "author": "Gabriel Certeza, Billy Won, Dale Toley, Kai Yu",
-  "license": "Hack Reactor",
+  "license": "Hack-Reactor",
   "engines": {
     "node": ">=6.4.0"
   },
@@ -30,7 +31,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
-    "nodemon": "^1.11.0",
+    "nodemon": "^1.11.0", 
     "path": "^0.12.7",
     "rimraf": "^2.6.1",
     "style-loader": "^0.16.1",
