@@ -3,9 +3,6 @@ import React from 'react';
 class SignUpApplicant extends React.Component {
   constructor(props) {
     super(props);
-    this.state({
-      files: files,
-    });
   }
 
   render() {
