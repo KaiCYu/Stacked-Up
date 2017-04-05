@@ -1,5 +1,4 @@
-const express = require('express');
-const app = express();
+const app = require('./server-config');
 
 const port = 8000;
 
