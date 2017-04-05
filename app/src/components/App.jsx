@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
 import Navbar from './Navbar.jsx';
 import Main from './Main.jsx';
+import Search from './Search.jsx'
+import Login from './Login.jsx';
+import Profile from './Profile.jsx';
 
 
 
@@ -26,12 +29,20 @@ class App extends React.Component {
 								)}
 							/>
 							<Route 
-								path="/search"
+								path="/search" render={() => (
+									<Search/>
+								)}
 							/>
 							<Route 
-								path="/login"
+								path="/login" render={() => (
+									<Login/>
+								)}
 							/>
-
+							<Route 
+								path="/profile" render={() => (
+									<Profile/>
+								)}
+							/>
 						</div>
 					</div>
 				</Router>
