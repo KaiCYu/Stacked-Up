@@ -5,9 +5,9 @@ import thunk from 'redux-thunk';
 import rootReducer from './rootReducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { Provider } from 'react-redux';
-import './main.css';
+import App from './components/App';
 
-class App extends React.Component {
+class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,7 +17,9 @@ class App extends React.Component {
 
   render() {
     return (
-      <div> Stacked Up! </div>
+      <div>
+        <App />
+      </div>
     );
   }
 }
@@ -31,7 +33,7 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Index />
   </Provider>,
   document.getElementById('app'),
 );
