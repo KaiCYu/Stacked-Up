@@ -23,6 +23,7 @@
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.23.0",
     "babel-register": "^6.24.0",
+    "css-loader": "^0.28.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-config-hackreactor": "git://github.com/reactorcore/eslint-config-hackreactor",
@@ -30,7 +31,9 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
     "nodemon": "^1.11.0",
+    "path": "^0.12.7",
     "rimraf": "^2.6.1",
+    "style-loader": "^0.16.1",
     "webpack": "^2.3.3"
   },
   "babel": {
