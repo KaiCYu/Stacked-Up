@@ -1,13 +1,13 @@
 # Project Name
 
-> Pithy project description
+> Stacked Up
 
 ## Team
 
-  - teamMember
-  - teamMember
-  - teamMember
-  - teamMember
+  - Gabriel Certeza
+  - Billy Won
+  - Dale Toley
+  - Kai Yu
 
 ## Table of Contents
 
