@@ -7,6 +7,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { Provider } from 'react-redux';
 import App from './components/App';
 
+
 class Index extends React.Component {
   constructor(props) {
     super(props);
