@@ -1,0 +1,17 @@
+Users:
+1) Applicants
+2) Employers
+
+User Stories for applicants:
+1) As an applicant, when I log in, I want to be able to see recent job postings and
+search for employers, job postings, and other user profiles
+2) As an applicant, I want to be able to apply to jobs from a job posting
+3) As an applicant, I want to video chat with a prospective employer
+4) As an applicant, I want to customize my profile and upload a resume
+5) As an applicant, I want my profile to be searchable by employers
+
+User Stories for Employers:
+1) As an employer, I want to be able to log in, create a profile for my company, and post job listings
+2) As an employer, I want to be able to search for potential employees
+3) As an employer, I want to video chat with applicants for a job posting
+4) As an employer, I want to review resumes and applicant profiles
