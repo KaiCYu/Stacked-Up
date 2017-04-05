@@ -1,9 +1,9 @@
 {
   "name": "StackedUp",
   "version": "0.0.1",
-  "description": "A job search platform",
-  "author": "",
-  "license": "",
+  "description": "A full-featured job search platform with integrated video chat for live interviewws",
+  "author": "Gabriel Certeza, Billy Won, Dale Toley, Kai Yu",
+  "license": "Hack Reactor",
   "engines": {
     "node": ">=6.4.0"
   },
