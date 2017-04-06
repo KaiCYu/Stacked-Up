@@ -5,8 +5,8 @@ import {
   Redirect
 } from 'react-router-dom';
 
-const PrivateRouteHome = ()=> (
-	<Redirect to='/main' />
-)
+const PrivateRouteHome = () => (
+  <Redirect to="/main" />
+);
 
 export default PrivateRouteHome;

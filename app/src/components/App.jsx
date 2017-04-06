@@ -7,22 +7,20 @@ import Search from './Search.jsx'
 import Login from './Login.jsx';
 import Profile from './Profile.jsx';
 
-
-
 class App extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
+  constructor(props) {
+    super(props);
+    this.state = {
 
-		}
-	}
-	render() {
-		return (
-			<div className='site'>
-				<Router>
-					<div className='conditionals-container'>
+    }
+  }
+  render() {
+    return (
+      <div className="site">
+        <Router>
+          <div className="conditionals-container">
 						<Navbar />
-						<div className='currentPage'>
+						<div className="currentPage">
 							<Route 
 								path="/main" render={() => (
 									<Main/>
