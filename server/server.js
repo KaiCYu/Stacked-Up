@@ -1,3 +1,4 @@
+const db = require('./db/index');
 const express = require('express');
 
 const port = 8000;
