@@ -9,16 +9,14 @@ const Login = (props) => (
       <input type="password" name="password" placeholder="password" />
       <input type="submit" value="Log In" />
     </form>
-		<div>
-  		<Link
-  			to='/signupClient'>
-  		Sign up as a Client</Link>
-  	</div>
-		<div>
-  		<Link
-  			to='/signupEmployer'>
-  		Sign up as an Employer</Link>
-  	</div>
+    <div>
+      <Link to="/signupClient">
+        Sign up as a Client</Link>
+    </div>
+    <div>
+      <Link to="/signupEmployer">
+      Sign up as an Employer</Link>
+    </div>
   </div>
 );
 

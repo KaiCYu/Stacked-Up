@@ -11,6 +11,7 @@ import EmployerProfile from './EmployerProfile.jsx';
 import JobPost from './JobPost.jsx';
 import SignupClient from './SignupClient.jsx';
 import SignupEmployer from './SignupEmployer.jsx';
+import PostingJob from './PostingJob';
 import StreamVideo from './StreamVideo.jsx';
 
 class App extends React.Component {
@@ -108,21 +109,21 @@ class App extends React.Component {
 
 	render() {
 		return (
-			<div className='site'>
+			<div className="site">
 				<Router>
-					<div className='conditionals-container'>
+					<div className="conditionals-container">
 						<Navbar 
 						isLoggedIn={this.state.isLoggedIn}
 						/>
-						<div className='currentPage'>
+						<div className="currentPage">
 							<Route 
-								path="/main" 
+								path="/main"
 								render={() => (
 									<Main/>
 								)}
 							/>
 							<Route 
-								path="/search" 
+								path="/search"
 								render={() => (
 									<Search/>
 								)}
@@ -135,35 +136,35 @@ class App extends React.Component {
 								)}
 							/>
 							<Route 
-								path="/myProfile" 
+								path="/myProfile"
 								getMyProfileInfo={this.state.getMyProfileInfo}
 								render={() => (
 									<MyProfile/>
 								)}
 							/>	
 							<Route 
-								path="/employerProfile" 
+								path="/employerProfile"
 								getEmployerProfileInfo={this.state.getEmployerProfileInfo}
 								render={() => (
 									<EmployerProfile/>
 								)}
 							/>								
 							<Route 
-								path="/profile" 
+								path="/profile"
 								getProfileInfo={this.state.getProfileInfo}
 								render={() => (
 									<Profile/>
 								)}
 							/>		
 							<Route 
-								path="/jobPost" 
+								path="/jobPost"
 								getjobPostInfo={this.state.getJobPostInfo}
 								render={() => (
 									<JobPost/>
 								)}
 							/>												
-							<Route 
-								path="/signupClient" 
+							<Route
+								path="/signupClient"
 								render={() => (
 									<SignupClient/>
 								)}
@@ -178,6 +179,12 @@ class App extends React.Component {
 								path="/streamVideo" 
 								render={() => (
 									<StreamVideo/>
+								)}
+							/>														
+							<Route 
+								path="/postingjob" 
+								render={() => (
+									<PostingJob />
 								)}
 							/>														
 						</div>

@@ -15,6 +15,11 @@ app.get('/hello', (req, res) => {
   res.send('Hello World');
 });
 
+app.get('/getJobPostings', (req, res) => {
+  //find job postings from db and send it back
+  //res.json(data);
+});
+
 app.post('/login', (req, res) => {
   console.log(req.body);
   res.redirect('/');

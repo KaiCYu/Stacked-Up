@@ -10,7 +10,7 @@ const Profile = (props) => (
     <div>
   		<Link
   			to='/streamVideo'>
-  		Interview this candidate now!</Link>
+  		Interview this candidate now!</Link><br />
   	</div>
   </div>
 );
