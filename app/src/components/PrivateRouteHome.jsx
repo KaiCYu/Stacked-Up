@@ -10,3 +10,4 @@ const PrivateRouteHome = () => (
 );
 
 export default PrivateRouteHome;
+
