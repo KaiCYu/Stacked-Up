@@ -15,11 +15,12 @@
     "webpack:watch": "webpack --watch"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "cors": "^2.8.3",
     "express": "^4.15.2",
-    "mysql": "^2.13.0",
     "jquery": "^3.2.1",
+    "mysql": "^2.13.0",
     "passport": "^0.3.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
