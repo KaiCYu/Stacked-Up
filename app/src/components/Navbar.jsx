@@ -2,7 +2,6 @@ import React from 'react';
 
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 
-
 const Navbar = ({isLoggedIn})=> (
 	<header>
 		<div className='navbar-component'>
@@ -16,7 +15,7 @@ const Navbar = ({isLoggedIn})=> (
 			</nav>
 		</div>
 	</header>
-)
-<<<<<<< HEAD
+);
+
 export default Navbar;
 

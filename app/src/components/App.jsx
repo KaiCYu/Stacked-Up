@@ -1,17 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
+import $ from 'jquery';
 import Navbar from './Navbar.jsx';
 import Main from './Main.jsx';
-import Search from './Search.jsx'
+import Search from './Search.jsx';
 import Login from './Login.jsx';
 import MyProfile from './MyProfile.jsx';
 import Profile from './Profile.jsx';
 import EmployerProfile from './EmployerProfile.jsx';
 import JobPost from './JobPost.jsx';
-import SignupClient from './SignupClient.jsx'
-import SignupEmployer from './SignupEmployer.jsx'
-import StreamVideo from './StreamVideo.jsx'
+import SignupClient from './SignupClient.jsx';
+import SignupEmployer from './SignupEmployer.jsx';
+import StreamVideo from './StreamVideo.jsx';
 
 class App extends React.Component {
 	constructor(props) {
@@ -105,6 +105,7 @@ class App extends React.Component {
 			}
 		});
 	}
+
 	render() {
 		return (
 			<div className='site'>
@@ -187,7 +188,4 @@ class App extends React.Component {
 	}
 }
 
-
-
 export default App;
-

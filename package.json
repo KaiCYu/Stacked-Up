@@ -15,9 +15,15 @@
     "webpack:watch": "webpack --watch"
   },
   "dependencies": {
+    "body-parser": "^1.17.1",
     "cors": "^2.8.3",
     "express": "^4.15.2",
+<<<<<<< HEAD
     "mysql": "^2.13.0",
+=======
+    "jquery": "^3.2.1",
+    "passport": "^0.3.2",
+>>>>>>> (feat) set up log in page with installing passport
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.3",
