@@ -1,4 +1,4 @@
-const db = require('./db/index');
+const db = require('./db/index').connection;
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
