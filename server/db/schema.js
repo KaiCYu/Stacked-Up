@@ -16,7 +16,7 @@ module.exports = {
   'password VARCHAR(255),' +
   'phone_number INT,' +
   'email VARCHAR(255),' +
-  'logo_url VHRCHAR(255),' +
+  'logo_url VARCHAR(255),' +
   'job_postings_id INT' +
   ')',
   job_postings: 'CREATE TABLE IF NOT EXISTS job_postings (' +
@@ -44,7 +44,7 @@ module.exports = {
   'FOREIGN KEY (applicant_id) REFERENCES applicants(id),' +
   'FOREIGN KEY (job_posting_id) REFERENCES job_postings(id)' +
   ')',
-  alter_employer: 'ALTER TABLE employer' +
-  'ADD CONSTRAINT FK_job_postings_employer' +
+  alter_employer: 'ALTER TABLE employer ' +
+  'ADD CONSTRAINT FK_job_postings_employer ' +
   'FOREIGN KEY (job_postings_id) REFERENCES employer(id)',
 };
