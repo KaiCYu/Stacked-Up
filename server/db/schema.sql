@@ -1,6 +1,6 @@
-CREATE DATABASE StackedUp;
+CREATE DATABASE stackedup;
 
-USE StackedUp;
+USE stackedup;
 
 CREATE TABLE applicants(
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
