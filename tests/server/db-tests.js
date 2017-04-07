@@ -1,12 +1,26 @@
 // test file for database
-/* global define, it, describe */
+/* global define, it, describe, beforeEach, afterEach */
 const chai = require('chai');
-const Db = require('./../../server/db/index.js');
+const express = require('express');
+const mysql = require('mysql');
+const schema = require('./../../server/db/schema.js');
 
 const expect = chai.expect;
 
-describe('Db', () => {
-  it('should create a stackedup database', () => {
+describe('Database', () => {
+  const database = 'stackedup';
+  let db;
 
+  beforeEach((done) => {
+    db = mysql.createConnection({
+      user: 'root',
+      password: '',
+      database,
+    });
+    db.connect();
+  });
+
+  afterEach(() => {
+    db.end();
   });
 });
