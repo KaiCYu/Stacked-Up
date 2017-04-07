@@ -2,8 +2,7 @@ const db = require('./db/index').connection;
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const multer = require('multer');
-const upload = multer({ dest: 'upload/' });
+
 const port = 8000;
 
 const app = express();
