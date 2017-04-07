@@ -9,8 +9,9 @@
     "node": ">=6.4.0"
   },
   "scripts": {
-    "db:setup": "mysql -u root < server/db/schema.sql",
     "clean:modules": "rimraf node_modules",
+    "db:setup": "mysql -u root < server/db/schema.sql",
+    "elasticsearch": "elasticsearch",
     "tests": "mocha --recursive tests",
     "server:watch": "nodemon server/server.js",
     "webpack:watch": "webpack --watch"
@@ -21,6 +22,7 @@
     "body-parser": "^1.17.1",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.3",
+    "elasticsearch": "^13.0.0-rc2",
     "express": "^4.15.2",
     "express-session": "^1.15.2",
     "jquery": "^3.2.1",
