@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS stackedup;
+
 CREATE DATABASE stackedup;
 
 USE stackedup;
@@ -5,7 +7,8 @@ USE stackedup;
 CREATE TABLE applicants(
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(255),
-  password VARCHAR(255),
+  fullname VARCHAR(255),
+  password CHAR(255), -- TODO: change length to hash length later
   phone_number INT(20),
   email VARCHAR(255),
   resume_url VARCHAR(255), -- will be hosted on a cloud service

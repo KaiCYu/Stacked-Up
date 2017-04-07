@@ -5,7 +5,7 @@ const Login = (props) => (
   <div className="login-container">
     <h1>Login</h1>
     <form action="/login" method="POST">
-      <input type="text" name="id" placeholder="ID" />
+      <input type="text" name="username" placeholder="ID" />
       <input type="password" name="password" placeholder="password" />
       <input type="submit" value="Log In" />
     </form>

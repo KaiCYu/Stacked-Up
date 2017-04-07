@@ -3,7 +3,8 @@ module.exports = {
   applicants: 'CREATE TABLE IF NOT EXISTS applicants (' +
   'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +
   'username VARCHAR(255),' +
-  'password VARCHAR(255),' +
+  'fullname VARCHAR(255),' +
+  'password CHAR(255),' +
   'phone_number INT(20),' +
   'email VARCHAR(255),' +
   'resume_url VARCHAR(255),' +

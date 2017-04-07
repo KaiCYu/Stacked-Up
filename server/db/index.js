@@ -13,13 +13,13 @@ exports.connection = mysql.createConnection({
 const db = Promise.promisifyAll(exports.connection, { multiArgs: true });
 
 db.connectAsync()
-  .then(() => db.queryAsync(`DROP DATABASE IF EXISTS ${database}`))
-  .then(() => db.queryAsync(`CREATE DATABASE ${database}`))
+//   .then(() => db.queryAsync(`DROP DATABASE IF EXISTS ${database}`))
+//   .then(() => db.queryAsync(`CREATE DATABASE ${database}`))
   .then(() => db.queryAsync(`USE ${database}`))
-  .then(() => db.queryAsync(schema.applicants))
-  .then(() => db.queryAsync(schema.employer))
-  .then(() => db.queryAsync(schema.job_postings))
-  .then(() => db.queryAsync(schema.skills))
-  .then(() => db.queryAsync(schema.applicants_skills))
-  .then(() => db.queryAsync(schema.applicants_job_postings))
-  .then(() => db.queryAsync(schema.alter_employer));
+//   .then(() => db.queryAsync(schema.applicants))
+//   .then(() => db.queryAsync(schema.employer))
+//   .then(() => db.queryAsync(schema.job_postings))
+//   .then(() => db.queryAsync(schema.skills))
+//   .then(() => db.queryAsync(schema.applicants_skills))
+//   .then(() => db.queryAsync(schema.applicants_job_postings))
+//   .then(() => db.queryAsync(schema.alter_employer));
