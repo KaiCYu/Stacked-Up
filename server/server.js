@@ -4,6 +4,7 @@ const SocketServer = require('ws').Server;
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const Facebook = require('passport-facebook').Strategy;
 // const cookie = require('cookie-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
@@ -57,6 +58,33 @@ passport.use(new LocalStrategy(
     });
   }
 ));
+
+passport.use(new Facebook({
+  clientID: ApiKeys.facebookApiKey.clientID,
+  clientSecret: ApiKeys.facebookApiKey.clientSecret,
+  callbackURL: ApiKeys.facebookApiKey.callbackURL },
+(accessToken, refreshToken, profile, done) => {
+  console.log(profile);
+  //   const queryStr = `SELECT * FROM applicants WHERE username = "${username}";`;
+  //   db.query(queryStr, (err, user) => {
+  //     if (err) {
+  //       return done(err);
+  //     }
+  //     if (!user.length) {
+  //       return done(null, false);
+  //     }
+  //     return bcrypt.compare(password, user[0].password, (err, res) => {
+  //       if (res) {
+  //         done(null, user[0]);
+  //       }
+  //       done(null, false);
+  //     });
+  //   });
+  //   User.findOrCreate(..., function(err, user) {
+  //     if (err) { return done(err); }
+  //     done(null, user);
+  //   });
+}));
 
 app.get('/hello', (req, res) => {
   res.send('Hello World');
@@ -147,6 +175,18 @@ app.get('/search/:username/:size', (req, res) => {
     res.status(200).send(results);
   });
 });
+
+app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
+
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook'),
+  (req, res) => {
+    if (res.user) {
+      res.redirect('/');
+    } else {
+      res.send('fail to log in with facebook!');
+    }
+  });
 
 app.listen(process.env.PORT || port, () => {
   /* eslint-disable no-console */

@@ -43,6 +43,7 @@ class App extends React.Component {
 	      [name]: event.target.value
 	    });
   	}
+
 	sendLoginInfo(username, password) {
 		console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
 	   	var data = this.state
@@ -81,19 +82,20 @@ class App extends React.Component {
 		});
 	}
 
-	getProfileInfo() {
-	var context = this;
-		$.ajax({
-			type: 'GET',
-			url: '/profileinfo',
-			success: (results) => {
-				console.log('got profileinfo from server // profile = ', results)
-			},
-			error: (error) => {
-				console.log('error on getting profile from server // error', error)
-			}
-		});
-	}
+  getProfileInfo() {
+    var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/profileinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got profileinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
 
 	getEmployerProfileInfo() {
 	var context = this;
@@ -109,35 +111,36 @@ class App extends React.Component {
 		  }
 		});
 	}
-	getEmployerInfo() {
-	var context = this;
-		$.ajax({
-		  type: 'GET',
-		  url: '/employerinfo',
-		  contentType: 'application/json',
-		  success: (results) => {
-		    console.log('got employerinfo from server // profile = ', results)
-		  },
-		  error: (error) => {
-		    console.log('error on getting profile from server // error', error)
-		  }
-		});
-	}
 
-	getJobPostInfo() {
-	var context = this;
-		$.ajax({
-		  type: 'GET',
-		  url: '/jobpostinfo',
-		  contentType: 'application/json',
-		  success: (results) => {
-		    console.log('got jobpostinfo from server // profile = ', results)
-		  },
-		  error: (error) => {
-		    console.log('error on getting profile from server // error', error)
-		  }
-		});
-	}
+  getEmployerInfo() {
+  var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/employerinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got employerinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
+
+  getJobPostInfo() {
+    var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/jobpostinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got jobpostinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
 
   render() {
     return (
@@ -226,7 +229,7 @@ class App extends React.Component {
           </div>
         </Router>
       </div>
-    )
+    );
   }
 }
 
