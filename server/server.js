@@ -35,8 +35,7 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-passport.use(new LocalStrategy({
-  passReqToCallback: true },
+passport.use(new LocalStrategy(
   (req, username, password, done) => {
     const queryStr = `SELECT * FROM applicants WHERE username = "${username}";`;
     db.query(queryStr, (err, user) => {
