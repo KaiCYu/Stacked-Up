@@ -23,7 +23,18 @@ class Index extends React.Component {
       </div>
     );
   }
+  componentDidMount() {
+    var HOST = location.origin.replace(/^http/, 'ws')
+    console.log('mounted, HOST = ', HOST);
+    var ws = new WebSocket('ws://localhost:3000');
+    ws.onmessage = function (msg) {
+          msg = JSON.parse(msg.data);
+          console.log(msg);
+    };
+  }
+
 }
+
 
 const store = createStore(
   rootReducer,

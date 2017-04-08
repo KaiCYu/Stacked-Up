@@ -1,5 +1,6 @@
 const db = require('./db/index').connection;
 const express = require('express');
+const SocketServer = require('ws').Server;
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -115,3 +116,25 @@ app.listen(process.env.PORT || port, () => {
   console.log(`Server now listening on port ${port}`);
   /* eslint-enable no-console */
 });
+
+const wss = new SocketServer({ server: app,
+port: 3000 });
+wss.on('connection', (ws) => {
+  var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
+  console.log('\n' + clientID + ' <---- connected');
+
+  ws.on('message', (recObj)=> {
+    recObj = JSON.parse(recObj);
+  });
+
+  ws.on('close', ()=> {
+    console.log('\n' + clientID, ' <------ disconnected');
+    clearInterval(oneSetInterval); 
+  });
+
+  var oneSetInterval = setInterval( ()=> {
+    ws.send( JSON.stringify(new Date().toTimeString()) );
+  }, 10000);
+});
+
+
