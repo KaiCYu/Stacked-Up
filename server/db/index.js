@@ -8,6 +8,7 @@ const database = 'stackedup';
 exports.connection = mysql.createConnection({
   user: 'root',
   password: '',
+  database,
 });
 
 const db = Promise.promisifyAll(exports.connection, { multiArgs: true });
