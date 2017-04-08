@@ -5,14 +5,14 @@ const Search = (props) => (
   <div className="search-container">
     <h1>Search</h1>
     <div>
-    	<Link to="/employerProfile">View this Employer</Link>
-  	</div>
-  	<div>
-  		<Link to="/profile">View this Candidate</Link>
-  	</div>
-  	<div>
-  		<Link to="/jobPost">View this Job Post</Link>
-  	</div>
+      <Link to="/employerProfile">View this Employer</Link>
+    </div>
+    <div>
+      <Link to="/profile">View this Candidate</Link>
+    </div>
+    <div>
+      <Link to="/jobPost">View this Job Post</Link>
+    </div>
   </div>
 );
 

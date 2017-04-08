@@ -5,13 +5,13 @@ const Profile = (props) => (
   <div className='search-container'>
     <h1>Profile</h1>
     <div>
-    	Profile Page Displayed Here
+      Profile Page Displayed Here
     </div>
     <div>
-  		<Link
-  			to='/streamVideo'>
-  		Interview this candidate now!</Link><br />
-  	</div>
+      <Link
+        to='/streamVideo'>
+      Interview this candidate now!</Link><br />
+    </div>
   </div>
 );
 

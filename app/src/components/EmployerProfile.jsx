@@ -4,7 +4,7 @@ const EmployerProfile = (props) => (
   <div className='search-container'>
     <h1>EmployerProfile</h1>
     <div>
-    	EmployerProfile Page Displayed Here
+      EmployerProfile Page Displayed Here
     </div>
   </div>
 )
