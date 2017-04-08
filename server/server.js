@@ -3,26 +3,28 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const cookie = require('cookie-parser');
+// const cookie = require('cookie-parser');
 const session = require('express-session');
+const bcrypt = require('bcrypt');
 
 const port = 8000;
 
 const app = express();
 
 app.use(express.static(`${__dirname}/../app/dist`));
-app.use(cookie());
+// app.use(cookie());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
   secret: 'there is no secret',
-}));
+  resave: false,
+  saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  console.log('====>', user[0].id);
-  done(null, user[0].id);
+  console.log('====>', user.id);
+  done(null, user.id);
 });
 
 passport.deserializeUser((id, done) => {
@@ -33,20 +35,23 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-passport.use(new LocalStrategy(
-  (username, password, done) => {
+passport.use(new LocalStrategy({
+  passReqToCallback: true },
+  (req, username, password, done) => {
     const queryStr = `SELECT * FROM applicants WHERE username = "${username}";`;
     db.query(queryStr, (err, user) => {
       if (err) {
         return done(err);
       }
-      if (!user) {
-        return done(null, false, { message: 'Incorrect user ID' });
+      if (!user.length) {
+        return done(null, false);
       }
-      if (user[0].password !== password) {
-        return done(null, false, { message: 'Incorrect password' });
-      }
-      return done(null, user, { message: 'welcome!' });
+      return bcrypt.compare(password, user[0].password, (err, res) => {
+        if (res) {
+          done(null, user[0]);
+        }
+        done(null, false);
+      });
     });
   }
 ));
@@ -60,13 +65,17 @@ app.get('/getJobPostings', (req, res) => {
   //res.json(data);
 });
 
+app.get('/login', (req, res) => {
+  res.send('done!!');
+});
+
 app.post('/login', passport.authenticate('local'),
   (req, res) => {
     if (req.user) {
-      console.log(">>>", req.session.passport.user, "<<<");
-      console.log(req.user, 'yes!!');
+      res.redirect('/login');
+    } else {
+      res.redirect('/');
     }
-    res.redirect('/');
   });
 
 app.post('/postingJob', (req, res) => {
@@ -82,6 +91,23 @@ app.post('/postingJob', (req, res) => {
       console.log(data);
       res.redirect('/');
     }
+  });
+});
+
+app.post('/signup', (req, res) => {
+  bcrypt.hash(req.body.password, 10, (err, hash) => {
+    if (err) {
+      console.log(err);
+    }
+    const queryStr = `INSERT INTO applicants (username, password, fullname) values ("${req.body.username}", "${hash}", "${req.body.fullname}");`
+    db.query(queryStr, (error, data) => {
+      if (err) {
+        console.log('err', error);
+      } else {
+        console.log('applicant has signed up!', data);
+        res.redirect('/');
+      }
+    });
   });
 });
 
