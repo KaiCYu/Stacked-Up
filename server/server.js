@@ -12,6 +12,7 @@ const elasticsearch = require('./elasticsearch/index.js');
 const port = 8000;
 
 const app = express();
+const loggedInUsers = {};
 
 app.use(express.static(`${__dirname}/../app/dist`));
 // app.use(cookie());
@@ -73,11 +74,20 @@ app.get('/login', (req, res) => {
 app.post('/login', passport.authenticate('local'),
   (req, res) => {
     if (req.user) {
-      res.redirect('/login');
+      res.send(req.user.username);
     } else {
       res.redirect('/');
     }
-  });
+});
+
+app.get('/profileinfo', passport.authenticate('local'),
+  (req, res) => {
+    if (req.user) {
+      res.send(req.user.username);
+    } else {
+      res.redirect('/');
+    }
+});
 
 
 app.post('/postingJob', (req, res) => {
@@ -149,15 +159,20 @@ const wss = new SocketServer({
   port: 3000 });
 wss.on('connection', (ws) => {
   var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
-  console.log('\n' + clientID + ' <---- connected');
+  var username = ws.upgradeReq.url.replace('/?username=', '')
+  loggedInUsers[username] = ws;
+  console.log('\n' + username + ' <---- connected');
+  console.log('loggedInUsers = ', Object.keys(loggedInUsers));
 
   ws.on('message', (recObj)=> {
     recObj = JSON.parse(recObj);
   });
 
   ws.on('close', ()=> {
-    console.log('\n' + clientID, ' <------ disconnected');
-    clearInterval(oneSetInterval);
+    console.log('\n' + username + ' <------ disconnected');
+    delete loggedInUsers[username];
+    console.log('loggedInUsers = ', Object.keys(loggedInUsers));
+    clearInterval(oneSetInterval); 
   });
 
   var oneSetInterval = setInterval( ()=> {

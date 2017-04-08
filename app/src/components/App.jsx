@@ -37,110 +37,107 @@ class App extends React.Component {
     this.onInputChange = this.onInputChange.bind(this);
   }
 
-  onInputChange(event) {
-      const name = event.target.name;
-      this.setState({
-        [name]: event.target.value
-      });
-  }
+	onInputChange(event) {
+	    const name = event.target.name;
+	    this.setState({
+	      [name]: event.target.value
+	    });
+  	}
+	sendLoginInfo(username, password) {
+		console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
+	   	var data = this.state
+		$.ajax({
+			type: 'POST',
+			url: '/login',
+			data: data,
+			success: (results) => {
+				console.log('sent login info, results =', results)
+				var HOST = location.origin.replace(/^http/, 'ws')
+			    console.log('mounted, HOST = ', HOST);
+			    var ws = new WebSocket('ws://localhost:3000?username=' + results);
+			    ws.onmessage = function (msg) {
+			          msg = JSON.parse(msg.data);
+			          console.log(msg);
+			    };
+			},
+			error: (error) => {
+				console.log('error on sending login info, error =', error)
+			}
+		});
+	}
+	
+	getMyProfileInfo() {
+	var context = this;
+		$.ajax({
+			type: 'GET',
+			url: '/myprofileinfo',
+			contentType: 'application/json',
+			success: (results) => {
+				console.log('got myprofile from server // profile = ', results)
+			},
+			error: (error) => {
+				console.log('error on getting profile from server // error', error)
+			}
+		});
+	}
 
-  sendLoginInfo(username, password) {
-    console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
-       var data = this.state
-    $.ajax({
-      type: 'POST',
-      url: '/login',
-      data: data,
-      success: (results) => {
-        console.log('sent login info, results =', results)
-        var HOST = location.origin.replace(/^http/, 'ws')
-          console.log('mounted, HOST = ', HOST);
-          var ws = new WebSocket('ws://localhost:3000');
-          ws.onmessage = function (msg) {
-                msg = JSON.parse(msg.data);
-                console.log(msg);
-          };
-      },
-      error: (error) => {
-        console.log('error on sending login info, error =', error)
-      }
-    });
-  }
+	getProfileInfo() {
+	var context = this;
+		$.ajax({
+			type: 'GET',
+			url: '/profileinfo',
+			success: (results) => {
+				console.log('got profileinfo from server // profile = ', results)
+			},
+			error: (error) => {
+				console.log('error on getting profile from server // error', error)
+			}
+		});
+	}
 
-  getMyProfileInfo() {
-  var context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/myprofileinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got myprofile from server // profile = ', results)
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error)
-      }
-    });
-  }
+	getEmployerProfileInfo() {
+	var context = this;
+		$.ajax({
+		  type: 'GET',
+		  url: '/employerprofileinfo',
+		  contentType: 'application/json',
+		  success: (results) => {
+		    console.log('got employerprofileinfo from server // profile = ', results)
+		  },
+		  error: (error) => {
+		    console.log('error on getting profile from server // error', error)
+		  }
+		});
+	}
+	getEmployerInfo() {
+	var context = this;
+		$.ajax({
+		  type: 'GET',
+		  url: '/employerinfo',
+		  contentType: 'application/json',
+		  success: (results) => {
+		    console.log('got employerinfo from server // profile = ', results)
+		  },
+		  error: (error) => {
+		    console.log('error on getting profile from server // error', error)
+		  }
+		});
+	}
 
-  getEmployerProfileInfo() {
-  var context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/employerprofileinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got employerprofileinfo from server // profile = ', results)
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error)
-      }
-    });
-  }
-
-  getProfileInfo() {
-  var context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/profileinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got profileinfo from server // profile = ', results)
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error)
-      }
-    });
-  }
-
-  getEmployerInfo() {
-  var context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/employerinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got employerinfo from server // profile = ', results)
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error)
-      }
-    });
-  }
-
-  getJobPostInfo() {
-  var context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/jobpostinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got jobpostinfo from server // profile = ', results)
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error)
-      }
-    });
-  }
+	getJobPostInfo() {
+	var context = this;
+		$.ajax({
+		  type: 'GET',
+		  url: '/jobpostinfo',
+		  contentType: 'application/json',
+		  success: (results) => {
+		    console.log('got jobpostinfo from server // profile = ', results)
+		  },
+		  error: (error) => {
+		    console.log('error on getting profile from server // error', error)
+		  }
+		});
+	}
 
   render() {
     return (
