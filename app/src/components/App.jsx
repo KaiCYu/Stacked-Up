@@ -42,7 +42,8 @@ class App extends React.Component {
       this.setState({
         [name]: event.target.value
       });
-    }
+  }
+
   sendLoginInfo(username, password) {
     console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
        var data = this.state
