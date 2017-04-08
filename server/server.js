@@ -37,7 +37,7 @@ passport.deserializeUser((id, done) => {
 });
 
 passport.use(new LocalStrategy(
-  (req, username, password, done) => {
+  (username, password, done) => {
     const queryStr = `SELECT * FROM applicants WHERE username = "${username}";`;
     db.query(queryStr, (err, user) => {
       if (err) {
@@ -78,6 +78,7 @@ app.post('/login', passport.authenticate('local'),
     }
   });
 
+
 app.post('/postingJob', (req, res) => {
   console.log(req.body);
   console.log(typeof req.body.position);
@@ -99,9 +100,10 @@ app.post('/signup', (req, res) => {
     if (err) {
       console.log(err);
     }
+    console.log('request username and fullname = ' + req.body.username + req.body.fullname)
     const queryStr = `INSERT INTO applicants (username, password, fullname) values ("${req.body.username}", "${hash}", "${req.body.fullname}");`
     db.query(queryStr, (error, data) => {
-      if (err) {
+      if (error) {
         console.log('err', error);
       } else {
         console.log('applicant has signed up!', data);

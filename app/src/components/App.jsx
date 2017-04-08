@@ -18,6 +18,8 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			username: '',
+      		password: '',
 			isLoggedIn: false,
 			myProfileInfo: {},
 			employerProfileInfo: {},
@@ -25,11 +27,43 @@ class App extends React.Component {
 			employerInfo: {},
 			jobPostInfo: {},
 		};
-		this.getMyProfileInfo.bind(this);
-		this.getEmployerProfileInfo.bind(this);
-		this.getProfileInfo.bind(this);
-		this.getEmployerInfo.bind(this);
-		this.getJobPostInfo.bind(this);
+		this.getMyProfileInfo = this.getMyProfileInfo.bind(this);
+		this.getEmployerProfileInfo = this.getEmployerProfileInfo.bind(this);
+		this.getProfileInfo = this.getProfileInfo.bind(this);
+		this.getEmployerInfo = this.getEmployerInfo.bind(this);
+		this.getJobPostInfo = this.getJobPostInfo.bind(this);
+		this.loginUrl = 'https://localhost:8000/login';
+		this.sendLoginInfo = this.sendLoginInfo.bind(this);
+		this.onInputChange = this.onInputChange.bind(this);
+	}
+
+	onInputChange(event) {
+	    const name = event.target.name;
+	    this.setState({
+	      [name]: event.target.value
+	    });
+  	}
+	sendLoginInfo(username, password) {
+		console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
+	   	var data = this.state
+		$.ajax({
+			type: 'POST',
+			url: '/login',
+			data: data,
+			success: (results) => {
+				console.log('sent login info, results =', results)
+				var HOST = location.origin.replace(/^http/, 'ws')
+			    console.log('mounted, HOST = ', HOST);
+			    var ws = new WebSocket('ws://localhost:3000');
+			    ws.onmessage = function (msg) {
+			          msg = JSON.parse(msg.data);
+			          console.log(msg);
+			    };
+			},
+			error: (error) => {
+				console.log('error on sending login info, error =', error)
+			}
+		});
 	}
 	
 	getMyProfileInfo() {
@@ -130,9 +164,12 @@ class App extends React.Component {
 							/>
 							<Route 
 								path="/login" 
-								isLoggedin={this.state.isLoggedIn} 
 								render={() => (
-									<Login/>
+									<Login
+										isLoggedin={this.isLoggedIn} 
+										sendLoginInfo={this.sendLoginInfo}
+										onInputChange={this.onInputChange}
+									/>
 								)}
 							/>
 							<Route 
