@@ -7,6 +7,7 @@ const LocalStrategy = require('passport-local').Strategy;
 // const cookie = require('cookie-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const elasticsearch = require('./elasticsearch/index.js');
 
 const port = 8000;
 
