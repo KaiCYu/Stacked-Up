@@ -117,8 +117,9 @@ app.listen(process.env.PORT || port, () => {
   /* eslint-enable no-console */
 });
 
-const wss = new SocketServer({ server: app,
-port: 3000 });
+const wss = new SocketServer({ 
+  server: app,
+  port: 3000 });
 wss.on('connection', (ws) => {
   var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
   console.log('\n' + clientID + ' <---- connected');
