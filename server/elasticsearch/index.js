@@ -91,12 +91,15 @@ const test = () => {
 };
 
 const main = (() => {
+  // get all applicants from db
   queryDatabase()
   .then((queryResults) => {
     const data = queryResults[0];
+
+    // index applicants for elasticsearch
     bulkindex('stackedup', 'applicants', data);
   });
-  test();
+  // test();
 })();
 
 // module.exports = exports = main;

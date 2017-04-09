@@ -114,13 +114,33 @@ app.post('/signup', (req, res) => {
   });
 });
 
+app.get('/search/:username/:size', (req, res) => {
+  const username = req.params.username;
+  const size = req.params.size;
+  const body = {
+    size,
+    from: 0,
+    query: {
+      match: {
+        username: {
+          query: username,
+        },
+      },
+    },
+  };
+  elasticsearch.search('stackedup', body)
+  .then((results) => {
+    res.status(200).send(results);
+  });
+});
+
 app.listen(process.env.PORT || port, () => {
   /* eslint-disable no-console */
   console.log(`Server now listening on port ${port}`);
   /* eslint-enable no-console */
 });
 
-const wss = new SocketServer({ 
+const wss = new SocketServer({
   server: app,
   port: 3000 });
 wss.on('connection', (ws) => {
@@ -133,7 +153,7 @@ wss.on('connection', (ws) => {
 
   ws.on('close', ()=> {
     console.log('\n' + clientID, ' <------ disconnected');
-    clearInterval(oneSetInterval); 
+    clearInterval(oneSetInterval);
   });
 
   var oneSetInterval = setInterval( ()=> {
