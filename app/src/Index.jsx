@@ -23,7 +23,6 @@ class Index extends React.Component {
       </div>
     );
   }
-  
   componentDidMount() {
 
   }
