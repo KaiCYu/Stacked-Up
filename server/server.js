@@ -76,9 +76,9 @@ app.post('/login', passport.authenticate('local'),
     if (req.user) {
       res.send(req.user.username);
     } else {
-      res.redirect('/');
+      res.send('login fails!');
     }
-});
+  });
 
 app.get('/profileinfo', passport.authenticate('local'),
   (req, res) => {
@@ -87,7 +87,7 @@ app.get('/profileinfo', passport.authenticate('local'),
     } else {
       res.redirect('/');
     }
-});
+  });
 
 
 app.post('/postingJob', (req, res) => {

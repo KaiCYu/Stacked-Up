@@ -31,7 +31,8 @@ class JobPost extends React.Component {
       <div className="JobPost-container">
         <h1>JobPost</h1>
         <div>
-          {this.state.entries.map(entry => <JobPostEntry entry={entry} />)
+          {this.state.postings.map(entry =>
+            <JobPostEntry entry={entry} key={entry.id} />)
           }
         </div>
       </div>
