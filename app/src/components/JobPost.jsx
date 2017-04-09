@@ -14,7 +14,7 @@ class JobPost extends React.Component {
   componentDidMount() {
     const self = this;
     $.ajax({
-      url: '/somewhere',
+      url: '/getJobPostings',
       type: 'GET',
       contentType: 'application/json',
       success: (data) => {

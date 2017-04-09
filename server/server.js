@@ -40,7 +40,13 @@ passport.deserializeUser((id, done) => {
 
 passport.use(new LocalStrategy(
   (username, password, done) => {
-    const queryStr = `SELECT * FROM applicants WHERE username = "${username}";`;
+    const temp = username.split('/');
+    let queryStr;
+    if (temp[1] === 'applicant') {
+      queryStr = `SELECT * FROM applicants WHERE username = "${temp[0]}";`;
+    } else if (temp[1] === 'company') {
+      queryStr = `SELECT * FROM employer WHERE username = "${temp[0]}";`;
+    }
     db.query(queryStr, (err, user) => {
       if (err) {
         return done(err);
@@ -63,8 +69,14 @@ app.get('/hello', (req, res) => {
 });
 
 app.get('/getJobPostings', (req, res) => {
-  //find job postings from db and send it back
-  //res.json(data);
+  const queryStr = 'SELECT * FROM job_postings;';
+  db.query(queryStr, (error, data) => {
+    if (error) {
+      console.log('failed to get job posting data', error);
+    } else {
+      res.send(data);
+    }
+  });
 });
 
 app.get('/login', (req, res) => {

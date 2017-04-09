@@ -21,6 +21,7 @@ class App extends React.Component {
       username: '',
       password: '',
       isLoggedIn: false,
+      logInOption: '',
       myProfileInfo: {},
       employerProfileInfo: {},
       profileInfo: {},
@@ -38,77 +39,81 @@ class App extends React.Component {
     this.loginUrl = 'https://localhost:8000/login';
     this.sendLoginInfo = this.sendLoginInfo.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
     this.sendSearchInfo = this.sendSearchInfo.bind(this);
     this.updateUsersLoginStatus = this.updateUsersLoginStatus.bind(this);
     window.checkState = this.checkState.bind(this);
   }
 
-  	updateUsersLoginStatus(loggedInUsers) {
-  		var newSearchApplicantsResults = this.state.searchApplicantsResults
-  		.map(function(applicant) {
-  			if (applicant.username in loggedInUsers) {
-  				applicant.online = true;
-  			} else {
-  				applicant.online = false;
-  			}
-  			return applicant;
-  		})
-  		this.setState({searchApplicantsResults: newSearchApplicantsResults});
-  	}
+  updateUsersLoginStatus(loggedInUsers) {
+    var newSearchApplicantsResults = this.state.searchApplicantsResults
+    .map(function(applicant) {
+      if (applicant.username in loggedInUsers) {
+        applicant.online = true;
+      } else {
+        applicant.online = false;
+      }
+      return applicant;
+    })
+    this.setState({searchApplicantsResults: newSearchApplicantsResults});
+  }
 
-	onInputChange(event) {
-	    const name = event.target.name;
-	    this.setState({
-	      [name]: event.target.value
-	    });
-  	}
-	sendLoginInfo() {
-		console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
-	   	var context = this;
-	   	var data = this.state
-		$.ajax({
-			type: 'POST',
-			url: '/login',
-			data: data,
-			success: (results) => {
-				console.log('sent login info, results =', results)
-				var HOST = location.origin.replace(/^http/, 'ws')
-			    console.log('mounted, HOST = ', HOST);
-			    var ws = new WebSocket('ws://localhost:3000?username=' + results);
-			    ws.onmessage = function (msg) {
-					msg = JSON.parse(msg.data);
-					console.log(msg);
-					if (msg.type === 'loggedInUsersUpdate') {
-						// context.setState({loggedInUsers: msg.loggedInUsers});
-						context.updateUsersLoginStatus(msg.loggedInUsers);
-					}
-			    };
-			},
-			error: (error) => {
-				console.log('error on sending login info, error =', error)
-			}
-		});
-	}	
+  onInputChange(event) {
+    const name = event.target.name;
+    this.setState({ [name]: event.target.value });
+  }
 
-	checkState() {
-		console.log(this.state)
-	}
+  sendLoginInfo() {
+    console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password, this.state.logInOption);
+    const data = {};
+    data.username = this.state.username + '/' + this.state.logInOption;
+    data.password = this.state.password;
+    //var context = this;
+    $.ajax({
+      type: 'POST',
+      url: '/login',
+      data: data,
+      success: (results) => {
+        console.log('sent login info, results =', results);
+        var HOST = location.origin.replace(/^http/, 'ws');
+        console.log('mounted, HOST = ', HOST);
+        var ws = new WebSocket('ws://localhost:3000?username=' + results);
+        ws.onmessage = function (msg) {
+          msg = JSON.parse(msg.data);
+          console.log(msg);
+          if (msg.type === 'loggedInUsersUpdate') {
+            // context.setState({loggedInUsers: msg.loggedInUsers});
+            this.updateUsersLoginStatus(msg.loggedInUsers);
+          }
+        }
+        this.setState({ isLoggedIn: true });
+      },
+      error: (error) => {
+        console.log('error on sending login info, error =', error)
+      }
+    });
+  }
 
-	sendSearchInfo() {
-		console.log('searching for username = ', this.state.searchUsername)
-		var context = this;
-	   	var searchURL = '/search/' + this.state.searchUsername + '/10'
-		$.ajax({
-			type: 'GET',
-			url: searchURL,
-			success: (results) => {
-				context.setState({searchApplicantsResults: results});
-			},
-			error: (error) => {
-				console.log('error on sending search info, error =', error)
-			}
-		});
-	}
+  checkState() {
+    console.log(this.state)
+  }
+
+  sendSearchInfo() {
+    console.log('searching for username = ', this.state.searchUsername)
+    var context = this;
+      var searchURL = '/search/' + this.state.searchUsername + '/10'
+    $.ajax({
+      type: 'GET',
+      url: searchURL,
+      success: (results) => {
+        context.setState({searchApplicantsResults: results});
+      },
+      error: (error) => {
+        console.log('error on sending search info, error =', error)
+      }
+    });
+  }
 
 	getMyProfileInfo() {
 	var context = this;
@@ -153,6 +158,7 @@ class App extends React.Component {
 		  }
 		});
 	}
+
 	getEmployerInfo() {
 	var context = this;
 		$.ajax({
@@ -183,29 +189,48 @@ class App extends React.Component {
 		});
 	}
 
+  handleOptionChange(changeEvent) {
+    this.setState({ logInOption: changeEvent.target.value });
+  }
+
+  handleLogOut() {
+    $.ajax({
+      url: '/logout',
+      type: 'GET',
+      success: (result) => {
+        console.log(result);
+        this.setState({ isLoggedIn: false });
+      },
+      error: (error) => {
+        console.log('log out error occured', error);
+      }
+    });
+  }
+
   render() {
     return (
       <div className="site">
         <Router>
           <div className="conditionals-container">
             <Navbar
-            isLoggedIn={this.state.isLoggedIn}
+              isLoggedIn={this.state.isLoggedIn}
+              handleLogOut={this.handleLogOut}
             />
             <div className="currentPage">
               <Route
                 path="/main"
                 render={() => (
-                  <Main/>
+                  <Main />
                 )}
               />
               <Route
                 path="/search"
                 render={() => (
                   <Search
-                  	searchApplicantsResults={this.state.searchApplicantsResults}
-                  	loggedInUsers={this.state.loggedInUsers}
-                  	onInputChange={this.onInputChange}
-                  	sendSearchInfo={this.sendSearchInfo}
+                    searchApplicantsResults={this.state.searchApplicantsResults}
+                    loggedInUsers={this.state.loggedInUsers}
+                    onInputChange={this.onInputChange}
+                    sendSearchInfo={this.sendSearchInfo}
                   />
                 )}
               />
@@ -214,6 +239,8 @@ class App extends React.Component {
                 render={() => (
                   <Login
                     isLoggedin={this.isLoggedIn}
+                    logInOption={this.state.logInOption}
+                    handleOptionChange={this.handleOptionChange}
                     sendLoginInfo={this.sendLoginInfo}
                     onInputChange={this.onInputChange}
                   />
@@ -223,46 +250,46 @@ class App extends React.Component {
                 path="/myProfile"
                 getMyProfileInfo={this.state.getMyProfileInfo}
                 render={() => (
-                  <MyProfile/>
+                  <MyProfile />
                 )}
               />
               <Route
                 path="/employerProfile"
                 getEmployerProfileInfo={this.state.getEmployerProfileInfo}
                 render={() => (
-                  <EmployerProfile/>
+                  <EmployerProfile />
                 )}
               />
               <Route
                 path="/profile"
                 getProfileInfo={this.state.getProfileInfo}
                 render={() => (
-                  <Profile/>
+                  <Profile />
                 )}
               />
               <Route
                 path="/jobPost"
                 getjobPostInfo={this.state.getJobPostInfo}
                 render={() => (
-                  <JobPost/>
+                  <JobPost />
                 )}
               />
               <Route
                 path="/signupClient"
                 render={() => (
-                  <SignupClient/>
+                  <SignupClient />
                 )}
               />
               <Route
                 path="/signupEmployer"
                 render={() => (
-                  <SignupEmployer/>
+                  <SignupEmployer />
                 )}
               />
               <Route
                 path="/streamVideo"
                 render={() => (
-                  <StreamVideo/>
+                  <StreamVideo />
                 )}
               />
               <Route
@@ -275,7 +302,7 @@ class App extends React.Component {
           </div>
         </Router>
       </div>
-    )
+    );
   }
 }
 
