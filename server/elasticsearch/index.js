@@ -91,12 +91,13 @@ const test = () => {
 };
 
 const main = (() => {
-  // queryDatabase()
-  // .then((queryResults) => {
-  //   const data = queryResults[0];
-  //   bulkindex('stackedup', 'applicants', data);
-  // });
+  queryDatabase()
+  .then((queryResults) => {
+    const data = queryResults[0];
+    bulkindex('stackedup', 'applicants', data);
+  });
   test();
 })();
 
-module.exports = exports = main;
+// module.exports = exports = main;
+exports.search = search;
