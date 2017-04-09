@@ -26,6 +26,9 @@ class App extends React.Component {
       profileInfo: {},
       employerInfo: {},
       jobPostInfo: {},
+      loggedInUsers: {},
+      searchApplicantsResults: [],
+      searchUsername: '',
     };
     this.getMyProfileInfo = this.getMyProfileInfo.bind(this);
     this.getEmployerProfileInfo = this.getEmployerProfileInfo.bind(this);
@@ -35,7 +38,23 @@ class App extends React.Component {
     this.loginUrl = 'https://localhost:8000/login';
     this.sendLoginInfo = this.sendLoginInfo.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.sendSearchInfo = this.sendSearchInfo.bind(this);
+    this.updateUsersLoginStatus = this.updateUsersLoginStatus.bind(this);
+    window.checkState = this.checkState.bind(this);
   }
+
+  	updateUsersLoginStatus(loggedInUsers) {
+  		var newSearchApplicantsResults = this.state.searchApplicantsResults
+  		.map(function(applicant) {
+  			if (applicant.username in loggedInUsers) {
+  				applicant.online = true;
+  			} else {
+  				applicant.online = false;
+  			}
+  			return applicant;
+  		})
+  		this.setState({searchApplicantsResults: newSearchApplicantsResults});
+  	}
 
 	onInputChange(event) {
 	    const name = event.target.name;
@@ -43,8 +62,9 @@ class App extends React.Component {
 	      [name]: event.target.value
 	    });
   	}
-	sendLoginInfo(username, password) {
+	sendLoginInfo() {
 		console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
+	   	var context = this;
 	   	var data = this.state
 		$.ajax({
 			type: 'POST',
@@ -56,16 +76,40 @@ class App extends React.Component {
 			    console.log('mounted, HOST = ', HOST);
 			    var ws = new WebSocket('ws://localhost:3000?username=' + results);
 			    ws.onmessage = function (msg) {
-			          msg = JSON.parse(msg.data);
-			          console.log(msg);
+					msg = JSON.parse(msg.data);
+					console.log(msg);
+					if (msg.type === 'loggedInUsersUpdate') {
+						// context.setState({loggedInUsers: msg.loggedInUsers});
+						context.updateUsersLoginStatus(msg.loggedInUsers);
+					}
 			    };
 			},
 			error: (error) => {
 				console.log('error on sending login info, error =', error)
 			}
 		});
+	}	
+
+	checkState() {
+		console.log(this.state)
 	}
-	
+
+	sendSearchInfo() {
+		console.log('searching for username = ', this.state.searchUsername)
+		var context = this;
+	   	var searchURL = '/search/' + this.state.searchUsername + '/10'
+		$.ajax({
+			type: 'GET',
+			url: searchURL,
+			success: (results) => {
+				context.setState({searchApplicantsResults: results});
+			},
+			error: (error) => {
+				console.log('error on sending search info, error =', error)
+			}
+		});
+	}
+
 	getMyProfileInfo() {
 	var context = this;
 		$.ajax({
@@ -157,7 +201,12 @@ class App extends React.Component {
               <Route
                 path="/search"
                 render={() => (
-                  <Search/>
+                  <Search
+                  	searchApplicantsResults={this.state.searchApplicantsResults}
+                  	loggedInUsers={this.state.loggedInUsers}
+                  	onInputChange={this.onInputChange}
+                  	sendSearchInfo={this.sendSearchInfo}
+                  />
                 )}
               />
               <Route

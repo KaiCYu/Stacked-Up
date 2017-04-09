@@ -146,7 +146,10 @@ app.get('/search/:username/:size', (req, res) => {
   elasticsearch.search('stackedup', body)
   .then((results) => {
     results = results.hits.hits.map(function(hit) {
-      return hit._source;
+      var applicant = hit._source;
+      (applicant.username in loggedInUsers)?applicant.online=true
+      :applicant.online=false;
+      return applicant;
     })
     res.status(200).send(results);
   });
@@ -164,9 +167,23 @@ const wss = new SocketServer({
 wss.on('connection', (ws) => {
   var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
   var username = ws.upgradeReq.url.replace('/?username=', '')
-  loggedInUsers[username] = ws;
   console.log('\n' + username + ' <---- connected');
+
+  loggedInUsers[username] = ws;
+
   console.log('loggedInUsers = ', Object.keys(loggedInUsers));
+  let loggedInUsersInfoUpdate = {};
+  Object.keys(loggedInUsers).forEach(function(applicantName) {
+    loggedInUsersInfoUpdate[applicantName] = true;
+  })
+  let data = { 
+    type: 'loggedInUsersUpdate',
+    loggedInUsers: loggedInUsersInfoUpdate
+  };
+  Object.keys(loggedInUsers).forEach(function(key) { //update all users
+    let wsClient = loggedInUsers[key];
+    wsClient.send( JSON.stringify(data) );
+  });
 
   ws.on('message', (recObj)=> {
     recObj = JSON.parse(recObj);
@@ -175,13 +192,27 @@ wss.on('connection', (ws) => {
   ws.on('close', ()=> {
     console.log('\n' + username + ' <------ disconnected');
     delete loggedInUsers[username];
+    
     console.log('loggedInUsers = ', Object.keys(loggedInUsers));
-    clearInterval(oneSetInterval);  
+    let loggedInUsersInfoUpdate = {};
+    Object.keys(loggedInUsers).forEach(function(applicantName) {
+      loggedInUsersInfoUpdate[applicantName] = true;
+    })
+    let data = { 
+      type: 'loggedInUsersUpdate',
+      loggedInUsers: loggedInUsersInfoUpdate
+    };
+    Object.keys(loggedInUsers).forEach(function(key) { //update all users
+      let wsClient = loggedInUsers[key];
+      wsClient.send( JSON.stringify(data) );
+    });
+
+    // clearInterval(oneSetInterval);  
   });
 
-  var oneSetInterval = setInterval( ()=> {
-    ws.send( JSON.stringify(new Date().toTimeString()) );
-  }, 10000);
+  // var oneSetInterval = setInterval( ()=> {
+  //   ws.send( JSON.stringify(new Date().toTimeString()) );
+  // }, 10000);
 });
 
 
