@@ -138,12 +138,16 @@ app.get('/search/:username/:size', (req, res) => {
       match: {
         username: {
           query: username,
+          fuzziness: 15
         },
       },
     },
   };
   elasticsearch.search('stackedup', body)
   .then((results) => {
+    results = results.hits.hits.map(function(hit) {
+      return hit._source;
+    })
     res.status(200).send(results);
   });
 });
@@ -172,7 +176,7 @@ wss.on('connection', (ws) => {
     console.log('\n' + username + ' <------ disconnected');
     delete loggedInUsers[username];
     console.log('loggedInUsers = ', Object.keys(loggedInUsers));
-    clearInterval(oneSetInterval); 
+    clearInterval(oneSetInterval);  
   });
 
   var oneSetInterval = setInterval( ()=> {
