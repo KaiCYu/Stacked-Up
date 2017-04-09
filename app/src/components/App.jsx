@@ -21,6 +21,7 @@ class App extends React.Component {
       username: '',
       password: '',
       isLoggedIn: false,
+      logInOption: '',
       myProfileInfo: {},
       employerProfileInfo: {},
       profileInfo: {},
@@ -35,109 +36,138 @@ class App extends React.Component {
     this.loginUrl = 'https://localhost:8000/login';
     this.sendLoginInfo = this.sendLoginInfo.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
   }
 
-	onInputChange(event) {
-	    const name = event.target.name;
-	    this.setState({
-	      [name]: event.target.value
-	    });
-  	}
-	sendLoginInfo(username, password) {
-		console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
-	   	var data = this.state
-		$.ajax({
-			type: 'POST',
-			url: '/login',
-			data: data,
-			success: (results) => {
-				console.log('sent login info, results =', results)
-				var HOST = location.origin.replace(/^http/, 'ws')
-			    console.log('mounted, HOST = ', HOST);
-			    var ws = new WebSocket('ws://localhost:3000?username=' + results);
-			    ws.onmessage = function (msg) {
-			          msg = JSON.parse(msg.data);
-			          console.log(msg);
-			    };
-			},
-			error: (error) => {
-				console.log('error on sending login info, error =', error)
-			}
-		});
-	}
-	
-	getMyProfileInfo() {
-	var context = this;
-		$.ajax({
-			type: 'GET',
-			url: '/myprofileinfo',
-			contentType: 'application/json',
-			success: (results) => {
-				console.log('got myprofile from server // profile = ', results)
-			},
-			error: (error) => {
-				console.log('error on getting profile from server // error', error)
-			}
-		});
-	}
+  onInputChange(event) {
+    const name = event.target.name;
+    this.setState({
+      [name]: event.target.value
+    });
+  }
 
-	getProfileInfo() {
-	var context = this;
-		$.ajax({
-			type: 'GET',
-			url: '/profileinfo',
-			success: (results) => {
-				console.log('got profileinfo from server // profile = ', results)
-			},
-			error: (error) => {
-				console.log('error on getting profile from server // error', error)
-			}
-		});
-	}
+  sendLoginInfo() {
+    console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password, this.state.logInOption);
+    const data = {};
+    data.username = this.state.username + '/' + this.state.logInOption;
+    data.password = this.state.password;
+    $.ajax({
+      type: 'POST',
+      url: '/login',
+      data: data,
+      success: (results) => {
+        console.log('sent login info, results =', results);
+        var HOST = location.origin.replace(/^http/, 'ws');
+        console.log('mounted, HOST = ', HOST);
+        var ws = new WebSocket('ws://localhost:3000');
+        ws.onmessage = function (msg) {
+          msg = JSON.parse(msg.data);
+          console.log(msg);
+        };
+        this.setState({ isLoggedIn: true });
+      },
+      error: (error) => {
+        console.log('error on sending login info, error =', error)
+      }
+    });
+  }
 
-	getEmployerProfileInfo() {
-	var context = this;
-		$.ajax({
-		  type: 'GET',
-		  url: '/employerprofileinfo',
-		  contentType: 'application/json',
-		  success: (results) => {
-		    console.log('got employerprofileinfo from server // profile = ', results)
-		  },
-		  error: (error) => {
-		    console.log('error on getting profile from server // error', error)
-		  }
-		});
-	}
-	getEmployerInfo() {
-	var context = this;
-		$.ajax({
-		  type: 'GET',
-		  url: '/employerinfo',
-		  contentType: 'application/json',
-		  success: (results) => {
-		    console.log('got employerinfo from server // profile = ', results)
-		  },
-		  error: (error) => {
-		    console.log('error on getting profile from server // error', error)
-		  }
-		});
-	}
+  getMyProfileInfo() {
+    var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/myprofileinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got myprofile from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
 
-	getJobPostInfo() {
-	var context = this;
-		$.ajax({
-		  type: 'GET',
-		  url: '/jobpostinfo',
-		  contentType: 'application/json',
-		  success: (results) => {
-		    console.log('got jobpostinfo from server // profile = ', results)
-		  },
-		  error: (error) => {
-		    console.log('error on getting profile from server // error', error)
-		  }
-		});
-	}
+  getEmployerProfileInfo() {
+    var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/employerprofileinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got employerprofileinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
+
+  getProfileInfo() {
+    var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/profileinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got profileinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
+
+  getEmployerInfo() {
+  var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/employerinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got employerinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
+
+  getJobPostInfo() {
+    var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/jobpostinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got jobpostinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
+
+  handleOptionChange(changeEvent) {
+    this.setState({
+      logInOption: changeEvent.target.value
+    });
+  }
+
+  handleLogOut() {
+    $.ajax({
+      url: '/logout',
+      type: 'GET',
+      success: (result) => {
+        console.log(result);
+        this.setState({ isLoggedIn: false });
+      },
+      error: (error) => {
+        console.log('log out error occured', error);
+      }
+    });
+  }
+
 
   render() {
     return (
@@ -145,7 +175,8 @@ class App extends React.Component {
         <Router>
           <div className="conditionals-container">
             <Navbar
-            isLoggedIn={this.state.isLoggedIn}
+              isLoggedIn={this.state.isLoggedIn}
+              handleLogOut={this.handleLogOut}
             />
             <div className="currentPage">
               <Route
@@ -165,8 +196,12 @@ class App extends React.Component {
                 render={() => (
                   <Login
                     isLoggedin={this.isLoggedIn}
+                    logInOption={this.state.logInOption}
+                    handleOptionChange={this.handleOptionChange}
                     sendLoginInfo={this.sendLoginInfo}
                     onInputChange={this.onInputChange}
+                    logInOption={this.state.logInOption}
+                    handleOptionChange={this.handleOptionChange}
                   />
                 )}
               />
@@ -184,6 +219,7 @@ class App extends React.Component {
                   <EmployerProfile/>
                 )}
               />
+
               <Route
                 path="/profile"
                 getProfileInfo={this.state.getProfileInfo}
@@ -193,7 +229,6 @@ class App extends React.Component {
               />
               <Route
                 path="/jobPost"
-                getjobPostInfo={this.state.getJobPostInfo}
                 render={() => (
                   <JobPost/>
                 )}
@@ -226,7 +261,7 @@ class App extends React.Component {
           </div>
         </Router>
       </div>
-    )
+    );
   }
 }
 
