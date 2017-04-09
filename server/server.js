@@ -114,6 +114,10 @@ app.post('/signup', (req, res) => {
   });
 });
 
+/*
+ * :username represents the username being searched
+ * :size represents the amount of matched results to return
+ */
 app.get('/search/:username/:size', (req, res) => {
   const username = req.params.username;
   const size = req.params.size;
