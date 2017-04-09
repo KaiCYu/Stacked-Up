@@ -12,39 +12,26 @@ class JobPost extends React.Component {
   }
 
   componentDidMount() {
-    console.log('hello world!');
+    const self = this;
     $.ajax({
-      url: '/getJobPostings',
+      url: '/somewhere',
       type: 'GET',
+      contentType: 'application/json',
       success: (data) => {
-        console.log('data received from /getJobPostings', data);
-        this.setState({ postings: data });
+        self.setState({ postings: data });
       },
       error: (error) => {
         console.log('AJAX request to get list of job postings failed due to ', error);
-      }
+      },
     });
   }
-
-  // getJobPostings() {
-  //   $.get({
-  //     url: '/getJobPostings',
-  //     success: (data) => {
-  //       console.log('data received from /getJobPostings', data);
-  //       this.setState({ postings: data });
-  //     },
-  //     error: (error) => {
-  //       console.log('AJAX request to get list of job postings failed due to ', error);
-  //     }
-  //   });
-  // }
 
   render() {
     return (
       <div className="JobPost-container">
         <h1>JobPost</h1>
         <div>
-          {this.state.postings.map(entry => <JobPostEntry entry={entry} />)
+          {this.state.entries.map(entry => <JobPostEntry entry={entry} />)
           }
         </div>
       </div>
