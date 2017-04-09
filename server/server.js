@@ -45,7 +45,7 @@ passport.use(new LocalStrategy(
     if (temp[1] === 'applicant') {
       queryStr = `SELECT * FROM applicants WHERE username = "${temp[0]}";`;
     } else if (temp[1] === 'company') {
-      queryStr = `SELECT * FROM employer WHERE username = "${temp[0]}";`;
+      queryStr = `SELECT * FROM employer WHERE name = "${temp[0]}";`;
     }
     db.query(queryStr, (err, user) => {
       if (err) {

@@ -66,20 +66,20 @@ class App extends React.Component {
 
   sendLoginInfo() {
     console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password, this.state.logInOption);
-    const data = {};
-    data.username = this.state.username + '/' + this.state.logInOption;
-    data.password = this.state.password;
+    const userdata = {};
+    userdata.username = this.state.username + '/' + this.state.logInOption;
+    userdata.password = this.state.password;
     //var context = this;
     $.ajax({
       type: 'POST',
       url: '/login',
-      data: data,
+      data: userdata,
       success: (results) => {
         console.log('sent login info, results =', results);
-        var HOST = location.origin.replace(/^http/, 'ws');
+        const HOST = location.origin.replace(/^http/, 'ws');
         console.log('mounted, HOST = ', HOST);
-        var ws = new WebSocket('ws://localhost:3000?username=' + results);
-        ws.onmessage = function (msg) {
+        const ws = new WebSocket('ws://localhost:3000?username=' + results);
+        ws.onmessage = (msg) => {
           msg = JSON.parse(msg.data);
           console.log(msg);
           if (msg.type === 'loggedInUsersUpdate') {
@@ -90,13 +90,13 @@ class App extends React.Component {
         this.setState({ isLoggedIn: true });
       },
       error: (error) => {
-        console.log('error on sending login info, error =', error)
+        console.log('error on sending login info, error =', error);
       }
     });
   }
 
   checkState() {
-    console.log(this.state)
+    console.log(this.state);
   }
 
   sendSearchInfo() {
