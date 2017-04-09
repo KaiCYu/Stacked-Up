@@ -36,8 +36,8 @@ class App extends React.Component {
     this.loginUrl = 'https://localhost:8000/login';
     this.sendLoginInfo = this.sendLoginInfo.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
-    this.handleLogOut = this.handleLogOut.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
   }
 
   onInputChange(event) {
@@ -168,6 +168,7 @@ class App extends React.Component {
     });
   }
 
+
   render() {
     return (
       <div className="site">
@@ -195,6 +196,8 @@ class App extends React.Component {
                 render={() => (
                   <Login
                     isLoggedin={this.isLoggedIn}
+                    logInOption={this.state.logInOption}
+                    handleOptionChange={this.handleOptionChange}
                     sendLoginInfo={this.sendLoginInfo}
                     onInputChange={this.onInputChange}
                     logInOption={this.state.logInOption}
