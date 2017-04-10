@@ -145,6 +145,7 @@ app.post('/signup', (req, res) => {
  */
 app.get('/search/:table/:column/:query/:fuzziness/:size', (req, res) => {
   const column = req.params.column;
+  const fuzziness = req.params.fuzziness;
   const match = {};
   const query = req.params.query;
   const size = req.params.size;
@@ -167,7 +168,7 @@ app.get('/search/:table/:column/:query/:fuzziness/:size', (req, res) => {
       (applicant.username in loggedInUsers)?applicant.online=true
       :applicant.online=false;
       return applicant;
-    })
+    });
     res.status(200).json(results);
   });
 });

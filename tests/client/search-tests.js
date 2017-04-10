@@ -39,15 +39,39 @@ describe('Search Applicants', () => {
 
       // index for elasticsearch
       esConfig.bulkIndex('stackedup', 'applicants', user);
-      request.get('http://localhost:8000/search/applicants/username/gabece/1', (error, result) => {
-        const body = JSON.parse(result.body);
-        const user = body[0];
+      request.get('http://localhost:8000/search/applicants/username/gabece/0/1', (error, searchResult) => {
+        const body = JSON.parse(searchResult.body);
+        const userResult = body[0];
         expect(body).to.not.equal(null);
         expect(body.length).to.equal(1);
-        expect(user.username).to.equal('gabece');
-        expect(user.fullname).to.equal('gabriel certeza');
-        expect(user.password).to.equal('password');
-        expect(user.email).to.equal('gabrielscerteza@gmail.com');
+        expect(userResult.username).to.equal('gabece');
+        expect(userResult.fullname).to.equal('gabriel certeza');
+        expect(userResult.password).to.equal('password');
+        expect(userResult.email).to.equal('gabrielscerteza@gmail.com');
+        done();
+      });
+    });
+  });
+
+  it('should match the username with two misspelled letters if a fuzziness of two is provided', (done) => {
+    db.queryAsync('INSERT INTO applicants (username, fullname, password, phone_number, email, resume_url, photo_url)' +
+      'VALUES ("gabece", "gabriel certeza", "password", 1947193442, "gabrielscerteza@gmail.com", "example.com", "example2.com")'
+    )
+    .then(() => db.queryAsync('SELECT * FROM applicants WHERE username="gabece"'))
+    .then((result) => {
+      const user = result[0];
+
+      // index for elasticsearch
+      esConfig.bulkIndex('stackedup', 'applicants', user);
+      request.get('http://localhost:8000/search/applicants/username/gabe/2/1', (error, searchResult) => {
+        const body = JSON.parse(searchResult.body);
+        const userResult = body[0];
+        expect(body).to.not.equal(null);
+        expect(body.length).to.equal(1);
+        expect(userResult.username).to.equal('gabece');
+        expect(userResult.fullname).to.equal('gabriel certeza');
+        expect(userResult.password).to.equal('password');
+        expect(userResult.email).to.equal('gabrielscerteza@gmail.com');
         done();
       });
     });
