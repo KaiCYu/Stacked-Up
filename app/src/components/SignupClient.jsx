@@ -6,7 +6,7 @@ const SignupClient = (props) => (
     {/*{console.log('props inside signup client: ', props)}*/}
     <h1>Signup as a Client</h1>
 
-    <form action="/signupClient" method="POST">
+    <form action="/signupApplicant" method="POST">
       <label>Username:
         <input type="text" name="username" placeholder="AwesomeEngineer" onChange={props.onInputChange} />
       </label>

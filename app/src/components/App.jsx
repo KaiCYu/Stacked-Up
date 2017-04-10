@@ -37,29 +37,29 @@ class App extends React.Component {
         state: '',
         country: '',
       },
-      applicantProfileInfo: {
-        firstName: '',
-        lastName: '',
-        email: '',
-        phoneNumber: '',
-        currentEmployer: '',
-        currentSchool: '',
-        city: '',
-        state: '',
-        country: '',
-        workHistory: [{
-          name: '',
-          position: '',
-          description: '',
-        },],
-        schoolHistory: [{
-          name: '',
-        }],
-        appliedTo: [{
-          name: '',
-          position: '',
-        } ],
-      },
+      // applicantProfileInfo: {
+      //   firstName: '',
+      //   lastName: '',
+      //   email: '',
+      //   phoneNumber: '',
+      //   currentEmployer: '',
+      //   currentSchool: '',
+      //   city: '',
+      //   state: '',
+      //   country: '',
+      //   workHistory: [{
+      //     name: '',
+      //     position: '',
+      //     description: '',
+      //   },],
+      //   schoolHistory: [{
+      //     name: '',
+      //   }],
+      //   appliedTo: [{
+      //     name: '',
+      //     position: '',
+      //   } ],
+      // },
       loggedInUsers: {},
       searchApplicantsResults: [],
       searchUsername: '',
@@ -84,11 +84,11 @@ class App extends React.Component {
     this.receiveCall = this.receiveCall.bind(this);
     window.sendVideoCallRequest = this.sendVideoCallRequest.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
-    this.applicantInputChange = this.applicantInputChange.bind(this);
+    // this.applicantInputChange = this.applicantInputChange.bind(this);
     // this.signUpSubmit = this.signUpSubmit.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
     this.employerInputChange = this.employerInputChange.bind(this);
-    this.submitApplicant = this.submitApplicant.bind(this);
+    // this.submitApplicant = this.submitApplicant.bind(this);
     this.submitEmployer = this.submitEmployer.bind(this);
     window.checkState = this.checkState.bind(this);
   }
@@ -363,24 +363,20 @@ class App extends React.Component {
   }
 
   handleLogOut() {
+    console.log(this.context);
     $.ajax({
       url: '/logout',
       type: 'GET',
       success: (result) => {
         console.log(result);
         this.setState({ isLoggedIn: false });
+        this.context.history.push('/');
       },
       error: (error) => {
         console.log('log out error occured', error);
+        this.context.history.push('/');
       }
     });
-  }
-
-  applicantInputChange(event) {
-    const name = event.target.name;
-    const stateObj = this.state.applicantProfileInfo;
-    stateObj[name] = event.target.value;
-    this.setState({ applicantProfileInfo: stateObj });
   }
 
   employerInputChange(event) {
@@ -390,26 +386,33 @@ class App extends React.Component {
     this.setState({ employerProfileInfo: stateObj });
   }
 
-  submitApplicant(event) {
-    event.preventDefault();
-    // query db to check for pre-existing username
-    const applicantData = {
-      username: this.state.username,
-      password: this.state.password,
-      info: this.state.applicantProfileInfo,
-    };
-    $.ajax({
-      type: 'POST',
-      url: '/signupApplicant',
-      data: applicantData,
-      success: (results) => {
-        console.log('signed up as an applicant!');
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error);
-      },
-    });
-  }
+  // submitApplicant(event) {
+  //   event.preventDefault();
+  //   // query db to check for pre-existing username
+  //   const applicantData = {
+  //     username: this.state.username,
+  //     password: this.state.password,
+  //     info: this.state.applicantProfileInfo,
+  //   };
+  //   $.ajax({
+  //     type: 'POST',
+  //     url: '/signupApplicant',
+  //     data: applicantData,
+  //     success: (results) => {
+  //       console.log('signed up as an applicant!');
+  //     },
+  //     error: (error) => {
+  //       console.log('error on getting profile from server // error', error);
+  //     },
+  //   });
+  // }
+
+  // applicantInputChange(event) {
+  //   const name = event.target.name;
+  //   const stateObj = this.state.applicantProfileInfo;
+  //   stateObj[name] = event.target.value;
+  //   this.setState({ applicantProfileInfo: stateObj });
+  // }
 
   submitEmployer(event) {
     event.preventDefault();
@@ -511,11 +514,7 @@ class App extends React.Component {
               <Route
                 path="/signupClient"
                 render={() => (
-                  <SignupClient
-                    applicantInputChange={this.applicantInputChange}
-                    onInputChange={this.onInputChange}
-                    submitApplicant={this.submitApplicant}
-                  />
+                  <SignupClient />
                 )}
               />
               <Route

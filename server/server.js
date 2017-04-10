@@ -42,27 +42,38 @@ passport.use(new LocalStrategy(
   (username, password, done) => {
     const temp = username.split('/');
     let queryStr;
-    if (temp[1] === 'applicant') {
-      queryStr = `SELECT * FROM applicants WHERE username = "${temp[0]}";`;
-    } else if (temp[1] === 'company') {
-      queryStr = `SELECT * FROM employer WHERE username = "${temp[0]}";`;
+    const list = Array.from(Object.keys(loggedInUsers));
+    let userLoggedIn = false;
+    for (let i = 0; i < list.length; i += 1) {
+      if (list[i] === temp[0]) {
+        userLoggedIn = true;
+        break;
+      }
     }
-    db.query(queryStr, (err, user) => {
-      if (err) {
-        return done(err);
+    if (!userLoggedIn) {
+      if (temp[1] === 'applicant') {
+        queryStr = `SELECT * FROM applicants WHERE username = "${temp[0]}";`;
+      } else if (temp[1] === 'company') {
+        queryStr = `SELECT * FROM employer WHERE name = "${temp[0]}";`;
       }
-      if (!user.length) {
-        return done(null, false);
-      }
-      return bcrypt.compare(password, user[0].password, (err, res) => {
-        if (res) {
-          done(null, user[0]);
+      db.query(queryStr, (err1, user) => {
+        if (err1) {
+          return done(err1);
         }
-        done(null, false);
+        if (!user.length) {
+          return done(null, false);
+        }
+        return bcrypt.compare(password, user[0].password, (err2, res) => {
+          if (res) {
+            done(null, user[0]);
+          }
+          done(null, false);
+        });
       });
-    });
-  }
-));
+    } else {
+      done(null, false);
+    }
+  }));
 
 app.get('/hello', (req, res) => {
   res.send('Hello World');
@@ -79,9 +90,9 @@ app.get('/getJobPostings', (req, res) => {
   });
 });
 
-app.get('/login', (req, res) => {
-  res.send('done!!');
-});
+// app.get('/login', (req, res) => {
+//   res.send('done!!');
+// });
 
 app.post('/login', passport.authenticate('local'),
   (req, res) => {
@@ -91,6 +102,12 @@ app.post('/login', passport.authenticate('local'),
       res.send('login fails!');
     }
   });
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  console.log("I'm here");
+  res.redirect('/');
+});
 
 app.get('/profileinfo', passport.authenticate('local'),
   (req, res) => {
@@ -119,22 +136,37 @@ app.post('/postingJob', (req, res) => {
 });
 
 app.post('/signupApplicant', (req, res) => {
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
-    if (err) {
-      console.log('ERROR signup in server: ', err);
-      res.sendStatus(500);
+  console.log(" ========================= ", req._parsedOriginalUrl.path);
+  let queryStr = 'SELECT * FROM applicants WHERE username=?;';
+  db.query(queryStr, req.body.username, (err1, data, fields) => {
+    if (err1) {
+      console.log(err1);
+      res.status(500).send('Internal Server Error');
+    } else if (data.length !== 0) {
+      // case when no such your exists
+      const redirectUrl = `import React from 'react';
+        const redirect = () => (
+        <Redirect to="${req._parsedOriginalUrl.path}">);`;
+      res.send(redirectUrl);
+    } else {
+      bcrypt.hash(req.body.password, 10, (err2, hash) => {
+        if (err2) {
+          console.log(err2);
+          res.status(500).send('Internal Server Error');
+        }
+        console.log('request username and fullname = ' + req.body.username + req.body.fullname)
+        queryStr = `INSERT INTO applicants (username, password, fullname) values ("${req.body.username}", "${hash}", "${req.body.fullname}");`
+        db.query(queryStr, (err3, data) => {
+          if (err3) {
+            console.log('err', err3);
+            res.status(500).send('Internal Server Error');
+          } else {
+            console.log('applicant has signed up!', data);
+            res.redirect('/');
+          }
+        });
+      });
     }
-    // console.log('request body ', req.body);
-    const queryStr = `INSERT INTO applicants (username, password, firstName, lastName, email, phone_number, city, state, country) values ("${req.body.username}", "${hash}", "${req.body.info.firstName}", "${req.body.info.lastName}", "${req.body.info.email}", "${req.body.info.phoneNumber}", "${req.body.info.city}", "${req.body.info.state}", "${req.body.info.country}");`
-
-    db.query(queryStr, (error, data) => {
-      if (error) {
-        console.log('err', error);
-      } else {
-        console.log('applicant has signed up!', data);
-        res.redirect('/');
-      }
-    });
   });
 });
 
