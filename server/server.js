@@ -137,22 +137,25 @@ app.post('/signup', (req, res) => {
 });
 
 /*
- * :username represents the username being searched
+ * :table represents the table name of our database being searched
+ * :column represents the column name the chosen table
+ * :query represents the value being searched
  * :size represents the amount of matched results to return
  */
-app.get('/search/:username/:size', (req, res) => {
-  const username = req.params.username;
+app.get('/search/:table/:column/:query/:size', (req, res) => {
+  const column = req.params.column;
+  const match = {};
+  const query = req.params.query;
   const size = req.params.size;
+  const table = req.params.table;
+  match[column] = {
+    query,
+  };
   const body = {
     size,
     from: 0,
     query: {
-      match: {
-        username: {
-          query: username,
-          fuzziness: 15
-        },
-      },
+      match,
     },
   };
   elasticsearch.search('stackedup', body)
@@ -163,7 +166,7 @@ app.get('/search/:username/:size', (req, res) => {
       :applicant.online=false;
       return applicant;
     })
-    res.status(200).send(results);
+    res.status(200).json(results);
   });
 });
 
@@ -188,7 +191,7 @@ wss.on('connection', (ws) => {
   Object.keys(loggedInUsers).forEach(function(applicantName) {
     loggedInUsersInfoUpdate[applicantName] = true;
   })
-  let data = { 
+  let data = {
     type: 'loggedInUsersUpdate',
     loggedInUsers: loggedInUsersInfoUpdate
   };
@@ -204,13 +207,13 @@ wss.on('connection', (ws) => {
   ws.on('close', ()=> {
     console.log('\n' + username + ' <------ disconnected');
     delete loggedInUsers[username];
-    
+
     console.log('loggedInUsers = ', Object.keys(loggedInUsers));
     let loggedInUsersInfoUpdate = {};
     Object.keys(loggedInUsers).forEach(function(applicantName) {
       loggedInUsersInfoUpdate[applicantName] = true;
     })
-    let data = { 
+    let data = {
       type: 'loggedInUsersUpdate',
       loggedInUsers: loggedInUsersInfoUpdate
     };
@@ -219,7 +222,7 @@ wss.on('connection', (ws) => {
       wsClient.send( JSON.stringify(data) );
     });
 
-    // clearInterval(oneSetInterval);  
+    // clearInterval(oneSetInterval);
   });
 
   // var oneSetInterval = setInterval( ()=> {
