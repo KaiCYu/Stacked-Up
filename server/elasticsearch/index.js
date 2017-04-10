@@ -31,7 +31,6 @@ const bulkIndex = (index, type, data) => {
 
   esClient.bulk({ body: bulkbody })
   .then((response) => {
-    console.log('here');
     let errorcount = 0;
     response.items.forEach((item) => {
       if (item.index && item.index.error) {
@@ -90,17 +89,6 @@ const test = () => {
   .catch(console.error);
 };
 
-const main = (() => {
-  // get all applicants from db
-  queryDatabase()
-  .then((queryResults) => {
-    const data = queryResults[0];
-
-    // index applicants for elasticsearch
-    bulkIndex('stackedup', 'applicants', data);
-  });
-  // test();
-})();
-
 // module.exports = exports = main;
+exports.bulkIndex = bulkIndex;
 exports.search = search;
