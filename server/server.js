@@ -137,6 +137,7 @@ app.post('/signup', (req, res) => {
 });
 
 /*
+ * route for searching
  * :table represents the table name of our database being searched
  * :column represents the column name the chosen table
  * :query represents the value being searched
