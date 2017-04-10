@@ -140,9 +140,10 @@ app.post('/signup', (req, res) => {
  * :table represents the table name of our database being searched
  * :column represents the column name the chosen table
  * :query represents the value being searched
+ * :fuzziness represents the number of possible misspelled characters
  * :size represents the amount of matched results to return
  */
-app.get('/search/:table/:column/:query/:size', (req, res) => {
+app.get('/search/:table/:column/:query/:fuzziness/:size', (req, res) => {
   const column = req.params.column;
   const match = {};
   const query = req.params.query;
@@ -150,6 +151,7 @@ app.get('/search/:table/:column/:query/:size', (req, res) => {
   const table = req.params.table;
   match[column] = {
     query,
+    fuzziness,
   };
   const body = {
     size,
