@@ -15,7 +15,7 @@ const esClient = new elasticsearch.Client({
 
 
 // index json data
-const bulkindex = (index, type, data) => {
+const bulkIndex = (index, type, data) => {
   const bulkbody = [];
   data.forEach((item) => {
     bulkbody.push({
@@ -97,7 +97,7 @@ const main = (() => {
     const data = queryResults[0];
 
     // index applicants for elasticsearch
-    bulkindex('stackedup', 'applicants', data);
+    bulkIndex('stackedup', 'applicants', data);
   });
   // test();
 })();
