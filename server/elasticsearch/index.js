@@ -1,5 +1,4 @@
 // index.js - elasticsearch
-// main() is at the bottom of the file
 const elasticsearch = require('elasticsearch');
 const Promise = require('bluebird');
 let db = require('./../db/index.js').connection;
