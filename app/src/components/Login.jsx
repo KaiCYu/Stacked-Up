@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 
 class Login extends React.Component {
   constructor(props) {
@@ -22,7 +22,7 @@ class Login extends React.Component {
     return (
       <div className="login-container" >
         <h1>Login</h1>
-        <form ref='login' onSubmit={this.handleLoginSubmit}>
+        <form ref="login" onSubmit={this.handleLoginSubmit}>
           <div className="radio">
             <label>
               <input
