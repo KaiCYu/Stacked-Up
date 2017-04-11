@@ -210,59 +210,22 @@ app.post('/signupEmployer', (req, res) => {
 
 /*
  * route for searching
- * :table represents the table name of our database being searched
- * :column represents the column name the chosen table
  * :query represents the value being searched
  * :fuzziness represents the number of possible misspelled characters
  * :size represents the amount of matched results to return
  */
-
-
-// new search
-
-// app.get('/search/:table/:column/:query/:fuzziness/:size', (req, res) => {
-//   const column = req.params.column;
-//   const fuzziness = req.params.fuzziness;
-//   const match = {};
-//   const query = req.params.query;
-//   const size = req.params.size;
-//   const table = req.params.table;
-//   match[column] = {
-//     query,
-//     fuzziness,
-//   };
-//   const body = {
-//     size,
-//     from: 0,
-//     query: {
-//       match,
-//     },
-//   };
-//   elasticsearch.search('stackedup', body)
-//   .then((results) => {
-//     results = results.hits.hits.map(function(hit) {
-//       var applicant = hit._source;
-//       (applicant.username in loggedInUsers)?applicant.online=true
-//       :applicant.online=false;
-//       return applicant;
-//     });
-//     res.status(200).json(results);
-//   });
-// });
-
-// old search
-
-app.get('/search/:username/:size', (req, res) => {
-  const username = req.params.username;
+app.get('/search/:query/:fuzziness/:size', (req, res) => {
+  const fuzziness = req.params.fuzziness;
+  const query = req.params.query;
   const size = req.params.size;
   const body = {
     size,
     from: 0,
     query: {
       match: {
-        username: {
-          query: username,
-          fuzziness: 15
+        _all: {
+          query,
+          fuzziness,
         },
       },
     },
@@ -358,4 +321,5 @@ wss.on('connection', (ws) => {
 });
 
 // index database for elasticsearch every minute
+elasticsearch.indexDatabase();
 setInterval(elasticsearch.indexDatabase, 60000);
