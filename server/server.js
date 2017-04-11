@@ -172,8 +172,11 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
           console.log(err2);
           res.status(500).send('Internal Server Error');
         }
-        console.log('request username and fullname = ' + req.body.username + req.body.fullname)
-        queryStr = `INSERT INTO applicants (username, password, fullname) values ("${req.body.username}", "${hash}", "${req.body.fullname}");`
+        console.log('request username and fullname = ' + req.body.username);
+        queryStr = `INSERT INTO applicants (username, password, firstname, lastname, email, phone_number, city, state, country) values 
+          ("${req.body.username}", "${hash}", "${req.body.firstName}", "${req.body.lastName}",
+          "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}"
+          );`;
         db.query(queryStr, (err3, data) => {
           if (err3) {
             console.log('err', err3);
