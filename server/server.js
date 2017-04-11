@@ -224,8 +224,11 @@ app.get('/search/:username/:size', (req, res) => {
       (applicant.username in loggedInUsers)?applicant.online=true
       :applicant.online=false;
       return applicant;
-    })
-    res.status(200).send(results);
+    });
+    res.status(200).json(results);
+  })
+  .catch(() => {
+    res.sendStatus(404);
   });
 });
 
@@ -233,8 +236,8 @@ app.post('/requestCall', (req, res) => {
   if (req.body.called && req.body.called in loggedInUsers) {
     let wsClient = loggedInUsers[req.body.called][1];
     let requestorID = loggedInUsers[req.body.requestor][0];
-    let calledID = loggedInUsers[req.body.called][0]; 
-    var room = requestorID+calledID;  
+    let calledID = loggedInUsers[req.body.called][0];
+    var room = requestorID+calledID;
     wsClient.send(JSON.stringify({
       type: 'videoCallRequest',
       requestor: req.body.requestor,
@@ -304,4 +307,5 @@ wss.on('connection', (ws) => {
   // }, 10000);
 });
 
-
+// index database for elasticsearch
+elasticsearch.indexDatabase();
