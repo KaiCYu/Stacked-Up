@@ -45,7 +45,7 @@ passport.use(new LocalStrategy(
     if (temp[1] === 'applicant') {
       queryStr = `SELECT * FROM applicants WHERE username = "${temp[0]}";`;
     } else if (temp[1] === 'company') {
-      queryStr = `SELECT * FROM employer WHERE name = "${temp[0]}";`;
+      queryStr = `SELECT * FROM employer WHERE username = "${temp[0]}";`;
     }
     db.query(queryStr, (err, user) => {
       if (err) {
@@ -104,7 +104,7 @@ app.get('/profileinfo', passport.authenticate('local'),
 
 app.post('/postingJob', (req, res) => {
   console.log(req.body);
-  console.log(typeof req.body.position);
+  // console.log(typeof req.body.position);
   const queryStr = `INSERT INTO job_postings \
     (position, description, location, salary) VALUES \
     ("${req.body.position}", "${req.body.description}", "${req.body.location}", "${req.body.salary}")`;
@@ -118,18 +118,40 @@ app.post('/postingJob', (req, res) => {
   });
 });
 
-app.post('/signup', (req, res) => {
+app.post('/signupApplicant', (req, res) => {
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
-      console.log(err);
+      console.log('ERROR signup in server: ', err);
+      res.sendStatus(500);
     }
-    console.log('request username and fullname = ' + req.body.username + req.body.fullname)
-    const queryStr = `INSERT INTO applicants (username, password, fullname) values ("${req.body.username}", "${hash}", "${req.body.fullname}");`
+    // console.log('request body ', req.body);
+    const queryStr = `INSERT INTO applicants (username, password, firstName, lastName, email, phone_number, city, state, country) values ("${req.body.username}", "${hash}", "${req.body.info.firstName}", "${req.body.info.lastName}", "${req.body.info.email}", "${req.body.info.phoneNumber}", "${req.body.info.city}", "${req.body.info.state}", "${req.body.info.country}");`
+
     db.query(queryStr, (error, data) => {
       if (error) {
         console.log('err', error);
       } else {
         console.log('applicant has signed up!', data);
+        res.redirect('/');
+      }
+    });
+  });
+});
+
+app.post('/signupEmployer', (req, res) => {
+  bcrypt.hash(req.body.password, 10, (err, hash) => {
+    if (err) {
+      console.log('ERROR signup in server: ', err);
+      res.sendStatus(500);
+    }
+    console.log('request body ', req.body);
+    const queryStr = `INSERT INTO employer (username, password, company_name, email, phone_number, city, state, country) values ("${req.body.username}", "${hash}", "${req.body.info.companyName}", "${req.body.info.email}", "${req.body.info.phoneNumber}", "${req.body.info.city}", "${req.body.info.state}", "${req.body.info.country}");`
+
+    db.query(queryStr, (error, data) => {
+      if (error) {
+        console.log('err', error);
+      } else {
+        console.log('employer has signed up!', data);
         res.redirect('/');
       }
     });

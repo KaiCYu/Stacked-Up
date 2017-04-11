@@ -1,18 +1,19 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import $ from 'jquery';
-import Navbar from './Navbar.jsx';
-import Main from './Main.jsx';
-import Search from './Search.jsx';
-import Login from './Login.jsx';
-import MyProfile from './MyProfile.jsx';
-import Profile from './Profile.jsx';
-import EmployerProfile from './EmployerProfile.jsx';
-import JobPost from './JobPost.jsx';
-import SignupClient from './SignupClient.jsx';
-import SignupEmployer from './SignupEmployer.jsx';
+import Navbar from './Navbar';
+import Main from './Main';
+import Search from './Search';
+import Login from './Login';
+import MyProfile from './MyProfile';
+import Profile from './Profile';
+import EmployerProfile from './EmployerProfile';
+import ApplicantProfile from './ApplicantProfile';
+import JobPost from './JobPost';
+import SignupClient from './SignupClient';
+import SignupEmployer from './SignupEmployer';
 import PostingJob from './PostingJob';
-import StreamVideo from './StreamVideo.jsx';
+import StreamVideo from './StreamVideo';
 
 class App extends React.Component {
   constructor(props) {
@@ -21,28 +22,68 @@ class App extends React.Component {
       username: '',
       password: '',
       isLoggedIn: false,
+      isApplicant: true,
       logInOption: '',
-      myProfileInfo: {},
-      employerProfileInfo: {},
+      applicantInfo: {},
       profileInfo: {},
       employerInfo: {},
       jobPostInfo: {},
+      myProfileInfo: {},
+      employerProfileInfo: {
+        companyName: '',
+        phoneNumber: '',
+        email: '',
+        city: '',
+        state: '',
+        country: '',
+      },
+      applicantProfileInfo: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+        currentEmployer: '',
+        currentSchool: '',
+        city: '',
+        state: '',
+        country: '',
+        workHistory: [{
+          name: '',
+          position: '',
+          description: '',
+        },],
+        schoolHistory: [{
+          name: '',
+        }],
+        appliedTo: [{
+          name: '',
+          position: '',
+        } ],
+      },
       loggedInUsers: {},
       searchApplicantsResults: [],
       searchUsername: '',
     };
+
     this.getMyProfileInfo = this.getMyProfileInfo.bind(this);
+    this.d = this.d.bind(this);
     this.getEmployerProfileInfo = this.getEmployerProfileInfo.bind(this);
+    this.getApplicantProfileInfo = this.getApplicantProfileInfo.bind(this);
     this.getProfileInfo = this.getProfileInfo.bind(this);
     this.getEmployerInfo = this.getEmployerInfo.bind(this);
     this.getJobPostInfo = this.getJobPostInfo.bind(this);
     this.loginUrl = 'https://localhost:8000/login';
     this.sendLoginInfo = this.sendLoginInfo.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
-    this.handleOptionChange = this.handleOptionChange.bind(this);
-    this.handleLogOut = this.handleLogOut.bind(this);
     this.sendSearchInfo = this.sendSearchInfo.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
     this.updateUsersLoginStatus = this.updateUsersLoginStatus.bind(this);
+    this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.applicantInputChange = this.applicantInputChange.bind(this);
+    // this.signUpSubmit = this.signUpSubmit.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
+    this.employerInputChange = this.employerInputChange.bind(this);
+    this.submitApplicant = this.submitApplicant.bind(this);
+    this.submitEmployer = this.submitEmployer.bind(this);
     window.checkState = this.checkState.bind(this);
   }
 
@@ -86,7 +127,7 @@ class App extends React.Component {
             // context.setState({loggedInUsers: msg.loggedInUsers});
             this.updateUsersLoginStatus(msg.loggedInUsers);
           }
-        }
+        };  
         this.setState({ isLoggedIn: true });
       },
       error: (error) => {
@@ -115,79 +156,109 @@ class App extends React.Component {
     });
   }
 
-	getMyProfileInfo() {
-	var context = this;
-		$.ajax({
-			type: 'GET',
-			url: '/myprofileinfo',
-			contentType: 'application/json',
-			success: (results) => {
-				console.log('got myprofile from server // profile = ', results)
-			},
-			error: (error) => {
-				console.log('error on getting profile from server // error', error)
-			}
-		});
-	}
+  d() {
+    const context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/employerprofileinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got employerprofileinfo from server // profile = ', results);
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error);
+      },
+    });
+  }
 
-	getProfileInfo() {
-	var context = this;
-		$.ajax({
-			type: 'GET',
-			url: '/profileinfo',
-			success: (results) => {
-				console.log('got profileinfo from server // profile = ', results)
-			},
-			error: (error) => {
-				console.log('error on getting profile from server // error', error)
-			}
-		});
-	}
+  getMyProfileInfo() {
+  var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/myprofileinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got myprofile from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
 
-	getEmployerProfileInfo() {
-	var context = this;
-		$.ajax({
-		  type: 'GET',
-		  url: '/employerprofileinfo',
-		  contentType: 'application/json',
-		  success: (results) => {
-		    console.log('got employerprofileinfo from server // profile = ', results)
-		  },
-		  error: (error) => {
-		    console.log('error on getting profile from server // error', error)
-		  }
-		});
-	}
+  getProfileInfo() {
+  var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/profileinfo',
+      success: (results) => {
+        console.log('got profileinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
 
-	getEmployerInfo() {
-	var context = this;
-		$.ajax({
-		  type: 'GET',
-		  url: '/employerinfo',
-		  contentType: 'application/json',
-		  success: (results) => {
-		    console.log('got employerinfo from server // profile = ', results)
-		  },
-		  error: (error) => {
-		    console.log('error on getting profile from server // error', error)
-		  }
-		});
-	}
+  getEmployerProfileInfo() {
+  var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/employerprofileinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got employerprofileinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
 
-	getJobPostInfo() {
-	var context = this;
-		$.ajax({
-		  type: 'GET',
-		  url: '/jobpostinfo',
-		  contentType: 'application/json',
-		  success: (results) => {
-		    console.log('got jobpostinfo from server // profile = ', results)
-		  },
-		  error: (error) => {
-		    console.log('error on getting profile from server // error', error)
-		  }
-		});
-	}
+  getApplicantProfileInfo() {
+    const context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/applicantrprofileinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got applicantrprofileinfo from server // profile = ', results);
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error);
+      },
+    });
+  }
+
+  getEmployerInfo() {
+  var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/employerinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got employerinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
+
+  getJobPostInfo() {
+  var context = this;
+    $.ajax({
+      type: 'GET',
+      url: '/jobpostinfo',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('got jobpostinfo from server // profile = ', results)
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error)
+      }
+    });
+  }
 
   handleOptionChange(changeEvent) {
     this.setState({ logInOption: changeEvent.target.value });
@@ -204,6 +275,63 @@ class App extends React.Component {
       error: (error) => {
         console.log('log out error occured', error);
       }
+    });
+  }
+
+  applicantInputChange(event) {
+    const name = event.target.name;
+    const stateObj = this.state.applicantProfileInfo;
+    stateObj[name] = event.target.value;
+    this.setState({ applicantProfileInfo: stateObj });
+  }
+
+  employerInputChange(event) {
+    const name = event.target.name;
+    const stateObj = this.state.employerProfileInfo;
+    stateObj[name] = event.target.value;
+    this.setState({ employerProfileInfo: stateObj });
+  }
+
+  submitApplicant(event) {
+    event.preventDefault();
+    // query db to check for pre-existing username
+    const applicantData = {
+      username: this.state.username,
+      password: this.state.password,
+      info: this.state.applicantProfileInfo,
+    };
+    $.ajax({
+      type: 'POST',
+      url: '/signupApplicant',
+      data: applicantData,
+      success: (results) => {
+        console.log('signed up as an applicant!');
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error);
+      },
+    });
+  }
+
+  submitEmployer(event) {
+    event.preventDefault();
+    //query db to check for pre-existing username
+
+    const employerData = {
+      username: this.state.username,
+      password: this.state.password,
+      info: this.state.employerProfileInfo,
+    };
+    $.ajax({
+      type: 'POST',
+      url: '/signupEmployer',
+      data: employerData,
+      success: (results) => {
+        console.log('signed up as an employer!');
+      },
+      error: (error) => {
+        console.log('error on getting profile from server // error', error);
+      },
     });
   }
 
@@ -261,6 +389,13 @@ class App extends React.Component {
                 )}
               />
               <Route
+                path="/applicantProfile"
+                getApplicantProfileInfo={this.state.getapplicantProfileInfo}
+                render={props => (
+                  <ApplicantProfile info={this.state.applicantProfileInfo} />
+                )}
+              />
+              <Route
                 path="/profile"
                 getProfileInfo={this.state.getProfileInfo}
                 render={() => (
@@ -277,13 +412,21 @@ class App extends React.Component {
               <Route
                 path="/signupClient"
                 render={() => (
-                  <SignupClient />
+                  <SignupClient
+                    applicantInputChange={this.applicantInputChange}
+                    onInputChange={this.onInputChange}
+                    submitApplicant={this.submitApplicant}
+                  />
                 )}
               />
               <Route
                 path="/signupEmployer"
                 render={() => (
-                  <SignupEmployer />
+                  <SignupEmployer
+                    employerInputChange={this.employerInputChange}
+                    onInputChange={this.onInputChange}
+                    submitEmployer={this.submitEmployer}
+                  />
                 )}
               />
               <Route
