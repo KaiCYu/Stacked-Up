@@ -7,9 +7,28 @@ const LocalStrategy = require('passport-local').Strategy;
 // const cookie = require('cookie-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+const fs = require('fs');
 const elasticsearch = require('./elasticsearch/index.js');
 
 const port = 8000;
+
+const tempStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const type = req.body.username;
+    const path = `upload/${type}/`;
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path);
+    }
+    cb(null, path);
+  },
+  filename: (req, file, cb) => {
+    console.log(file);
+    cb(null, file.fieldname + `_${req.body.username}`);
+  },
+});
+
+const upload = multer({ storage: tempStorage });
 
 const app = express();
 const loggedInUsers = {};
@@ -21,7 +40,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
   secret: 'there is no secret',
   resave: false,
-  saveUninitialized: true }));
+  saveUninitialized: true,
+  cookie: { maxAge: 600000,
+    name: 'StackedUp' } }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -90,10 +111,6 @@ app.get('/getJobPostings', (req, res) => {
   });
 });
 
-// app.get('/login', (req, res) => {
-//   res.send('done!!');
-// });
-
 app.post('/login', passport.authenticate('local'),
   (req, res) => {
     if (req.user) {
@@ -105,8 +122,7 @@ app.post('/login', passport.authenticate('local'),
 
 app.get('/logout', (req, res) => {
   req.logout();
-  console.log("I'm here");
-  res.redirect('/');
+  res.send('user log out');
 });
 
 app.get('/profileinfo', passport.authenticate('local'),
@@ -135,7 +151,7 @@ app.post('/postingJob', (req, res) => {
   });
 });
 
-app.post('/signupApplicant', (req, res) => {
+app.post('/signupApplicant', upload.any(), (req, res) => {
   console.log(" ========================= ", req._parsedOriginalUrl.path);
   let queryStr = 'SELECT * FROM applicants WHERE username=?;';
   db.query(queryStr, req.body.username, (err1, data, fields) => {

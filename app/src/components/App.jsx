@@ -14,6 +14,7 @@ import SignupClient from './SignupClient.jsx';
 import SignupEmployer from './SignupEmployer.jsx';
 import PostingJob from './PostingJob';
 import StreamVideo from './StreamVideo';
+import ApplicantProfile from './ApplicantProfile';
 
 class App extends React.Component {
   constructor(props) {
@@ -29,14 +30,14 @@ class App extends React.Component {
       employerInfo: {},
       jobPostInfo: {},
       myProfileInfo: {},
-      employerProfileInfo: {
-        companyName: '',
-        phoneNumber: '',
-        email: '',
-        city: '',
-        state: '',
-        country: '',
-      },
+      // employerProfileInfo: {
+      //   companyName: '',
+      //   phoneNumber: '',
+      //   email: '',
+      //   city: '',
+      //   state: '',
+      //   country: '',
+      // },
       // applicantProfileInfo: {
       //   firstName: '',
       //   lastName: '',
@@ -71,7 +72,7 @@ class App extends React.Component {
     this.getMyProfileInfo = this.getMyProfileInfo.bind(this);
     this.d = this.d.bind(this);
     this.getEmployerProfileInfo = this.getEmployerProfileInfo.bind(this);
-    this.getApplicantProfileInfo = this.getApplicantProfileInfo.bind(this);
+    // this.getApplicantProfileInfo = this.getApplicantProfileInfo.bind(this);
     this.getProfileInfo = this.getProfileInfo.bind(this);
     this.getEmployerInfo = this.getEmployerInfo.bind(this);
     this.getJobPostInfo = this.getJobPostInfo.bind(this);
@@ -230,6 +231,7 @@ class App extends React.Component {
       },
       error: (error) => {
         console.log('error on sending login info, error =', error)
+        console.log('error on sending login info, error =', error);
       }
     });
   } 
@@ -246,10 +248,10 @@ class App extends React.Component {
       type: 'GET',
       url: searchURL,
       success: (results) => {
-        context.setState({searchApplicantsResults: results});
+        context.setState({ searchApplicantsResults: results });
       },
       error: (error) => {
-        console.log('error on sending search info, error =', error)
+        console.log('error on sending search info, error =', error);
       }
     });
   }
@@ -370,11 +372,9 @@ class App extends React.Component {
       success: (result) => {
         console.log(result);
         this.setState({ isLoggedIn: false });
-        this.context.history.push('/');
       },
       error: (error) => {
         console.log('log out error occured', error);
-        this.context.history.push('/');
       }
     });
   }
@@ -386,6 +386,7 @@ class App extends React.Component {
     this.setState({ employerProfileInfo: stateObj });
   }
 
+  // if ajax post call on signupApplicant is necessary
   // submitApplicant(event) {
   //   event.preventDefault();
   //   // query db to check for pre-existing username
@@ -417,7 +418,6 @@ class App extends React.Component {
   submitEmployer(event) {
     event.preventDefault();
     //query db to check for pre-existing username
-
     const employerData = {
       username: this.state.username,
       password: this.state.password,
@@ -468,7 +468,7 @@ class App extends React.Component {
                 path="/login"
                 render={() => (
                   <Login
-                    isLoggedin={this.isLoggedIn}
+                    isLoggedin={this.state.isLoggedIn}
                     logInOption={this.state.logInOption}
                     handleOptionChange={this.handleOptionChange}
                     sendLoginInfo={this.sendLoginInfo}
@@ -493,7 +493,7 @@ class App extends React.Component {
               <Route
                 path="/applicantProfile"
                 getApplicantProfileInfo={this.state.getapplicantProfileInfo}
-                render={props => (
+                render={() => (
                   <ApplicantProfile info={this.state.applicantProfileInfo} />
                 )}
               />
