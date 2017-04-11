@@ -151,14 +151,12 @@ class SignupClient extends React.Component {
           <img className="previewImage" src="" height="200" alt="Image preview..."></img>
 
           {/*<Dropzone />*/}
-          
           <br />
           <input type="submit" value="sign up" />
         </form>
 
           {/*if we need ajax post call on applicant sign up*/}
           {/*<Link to="/applicantProfile" onClick={props.submitApplicant}>Submit</Link>*/}
-          
         <button>Cancel</button>
       </div>
     )};

@@ -70,7 +70,6 @@ class SignupEmployer extends React.Component {
       success: (results) => {
         console.log('signed up as an employer!');
         this.props.history.push('/main');
-
       },
       error: (error) => {
         console.log('error on getting profile from server // error', error);
