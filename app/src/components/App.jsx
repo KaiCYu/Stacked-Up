@@ -105,7 +105,7 @@ class App extends React.Component {
       $(".currentPage").append(receiveCallWindow);
       var submitReceiveLink = `<button onclick="window.handleReceiveCallWindow('${requestor, room}')">Accept</button>`;
       $("#receiveCallWindow").append(submitReceiveLink);
-      
+
       $(function() {
         $( "#receiveCallWindow" ).dialog({
             position: {
@@ -235,7 +235,7 @@ class App extends React.Component {
 
       }
     });
-  } 
+  }
 
   checkState() {
     console.log(this.state);
@@ -244,7 +244,7 @@ class App extends React.Component {
   sendSearchInfo() {
     console.log('searching for username = ', this.state.searchUsername)
     var context = this;
-      var searchURL = '/search/' + this.state.searchUsername + '/10'
+      var searchURL = '/search/' + this.state.searchUsername + '1/10'
     $.ajax({
       type: 'GET',
       url: searchURL,
@@ -443,7 +443,7 @@ class App extends React.Component {
     return (
       <div className="site">
         <Router>
-          <div 
+          <div
             className="conditionals-container">
             <Navbar
               isLoggedIn={this.state.isLoggedIn}
