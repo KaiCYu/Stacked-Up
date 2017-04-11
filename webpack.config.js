@@ -12,6 +12,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.json', '.css', '.jsx'],
+    alias: {
+        'jquery-ui': 'jquery-ui-dist/jquery-ui.js'
+    }
   },
   devtool: 'eval-source-map',
   module: {

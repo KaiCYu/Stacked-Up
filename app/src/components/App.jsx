@@ -1,17 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import $ from 'jquery';
-import Navbar from './Navbar';
-import Main from './Main';
-import Search from './Search';
-import Login from './Login';
-import MyProfile from './MyProfile';
-import Profile from './Profile';
-import EmployerProfile from './EmployerProfile';
-import ApplicantProfile from './ApplicantProfile';
-import JobPost from './JobPost';
-import SignupClient from './SignupClient';
-import SignupEmployer from './SignupEmployer';
+import 'jquery-ui-bundle';
+import Navbar from './Navbar.jsx';
+import Main from './Main.jsx';
+import Search from './Search.jsx';
+import Login from './Login.jsx';
+import MyProfile from './MyProfile.jsx';
+import Profile from './Profile.jsx';
+import EmployerProfile from './EmployerProfile.jsx';
+import JobPost from './JobPost.jsx';
+import SignupClient from './SignupClient.jsx';
+import SignupEmployer from './SignupEmployer.jsx';
 import PostingJob from './PostingJob';
 import StreamVideo from './StreamVideo';
 
@@ -63,6 +63,9 @@ class App extends React.Component {
       loggedInUsers: {},
       searchApplicantsResults: [],
       searchUsername: '',
+      incomingVideoCall: false,
+      incomingVideoCaller: '',
+      incomingVideoRoom: '',
     };
 
     this.getMyProfileInfo = this.getMyProfileInfo.bind(this);
@@ -77,6 +80,9 @@ class App extends React.Component {
     this.sendSearchInfo = this.sendSearchInfo.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.updateUsersLoginStatus = this.updateUsersLoginStatus.bind(this);
+    window.handleReceiveCallWindow = this.handleReceiveCallWindow.bind(this);
+    this.receiveCall = this.receiveCall.bind(this);
+    window.sendVideoCallRequest = this.sendVideoCallRequest.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.applicantInputChange = this.applicantInputChange.bind(this);
     // this.signUpSubmit = this.signUpSubmit.bind(this);
@@ -86,6 +92,89 @@ class App extends React.Component {
     this.submitEmployer = this.submitEmployer.bind(this);
     window.checkState = this.checkState.bind(this);
   }
+
+  componentDidUpdate() {
+    if (this.state.incomingVideoCall) {
+      console.log('setState detected and state.incomingVideoCall = ', this.state.incomingVideoCall)
+      this.state.incomingVideoCall = false;
+      var requestor = this.state.incomingVideoCaller;
+      var room = this.state.incomingVideoRoom
+      console.log('video call request receive launched, call from = ', requestor)
+      var receiveCallWindow = `<div id="receiveCallWindow"><p>Receive call from ${requestor}?</p></div>`;
+      $(".currentPage").append(receiveCallWindow);
+      var submitReceiveLink = `<button onclick="window.handleReceiveCallWindow('${requestor, room}')">Accept</button>`;
+      $("#receiveCallWindow").append(submitReceiveLink);
+      
+      $(function() {
+        $( "#receiveCallWindow" ).dialog({
+            position: {
+                my: "left top",
+                at: "right bottom"
+            }
+        });
+      });
+    }
+  }
+
+  handleReceiveCallWindow(requestor, room) {
+    var receiveCallWindow = window.open();
+    console.log('receiveCallWindow = ', receiveCallWindow);
+    $(receiveCallWindow.document).ready(function() {
+      receiveCallWindow.document.write("<div id=\"mainDiv\"></div>");
+      var mainDiv = $(receiveCallWindow.document).find('#mainDiv');
+      mainDiv.append("<div id=\"msgBanner\"></div>")
+      mainDiv.append("<div id=\"videoElement\"></div>")
+      mainDiv.find('#msgBanner').append(`<p>Setting up Video Call request from ${requestor}</p>`);
+      mainDiv.find('#videoElement').html(`<object style="height:450px;" data="https://live-video-server.herokuapp.com/?${requestor}"/>`);
+    });
+  }
+
+  receiveCall() {
+
+  }
+
+  sendVideoCallRequest(username) {
+    var requestor = this.state.username
+    var callWindow = window.open();
+    $(callWindow.document).ready(function() {
+      callWindow.document.write("<div style='height:700px;' id=\"mainDiv\"></div>");
+      var mainDiv = $(callWindow.document).find('#mainDiv');
+      mainDiv.append("<div id=\"msgBanner\"></div>")
+      mainDiv.append("<div id=\"videoElement\"></div>")
+      mainDiv.find('#msgBanner').append(`<p>Calling ${username}, Please hold...</p>`);
+      // mainDiv.find('#msgBanner').load('https://live-video-server.herokuapp.com');
+      var data = {
+        called: username,
+        requestor: requestor,
+      }
+
+      $.ajax({
+        type: 'POST',
+        url: '/requestCall',
+        data: data,
+        success: (room) => {
+          console.log('Room for videochat will be ', room);
+
+          $.ajax({
+            type: 'GET',
+            url: 'https://live-video-server.herokuapp.com',
+            success: (results) => {
+              mainDiv.find('#videoElement').html(`<object style="height:450px;" data="https://live-video-server.herokuapp.com/?${room}"/>`);
+            },
+            error: (error) => {
+              console.log('error...error = ', error);
+            }
+          })
+
+        },
+        error: (error) => {
+          console.log('error...error = ', error);
+        }
+      })
+    });
+    console.log('lets call', username);
+  }
+
 
   updateUsersLoginStatus(loggedInUsers) {
     var newSearchApplicantsResults = this.state.searchApplicantsResults
@@ -101,40 +190,46 @@ class App extends React.Component {
   }
 
   onInputChange(event) {
-    const name = event.target.name;
-    this.setState({ [name]: event.target.value });
+      const name = event.target.name;
+      this.setState({
+        [name]: event.target.value
+      });
   }
 
   sendLoginInfo() {
-    console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password, this.state.logInOption);
-    const userdata = {};
-    userdata.username = this.state.username + '/' + this.state.logInOption;
-    userdata.password = this.state.password;
-    //var context = this;
+    console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
+      var context = this;
+      var data = this.state
     $.ajax({
       type: 'POST',
       url: '/login',
-      data: userdata,
+      data: data,
       success: (results) => {
-        console.log('sent login info, results =', results);
-        const HOST = location.origin.replace(/^http/, 'ws');
-        console.log('mounted, HOST = ', HOST);
-        const ws = new WebSocket('ws://localhost:3000?username=' + results);
-        ws.onmessage = (msg) => {
-          msg = JSON.parse(msg.data);
-          console.log(msg);
-          if (msg.type === 'loggedInUsersUpdate') {
-            // context.setState({loggedInUsers: msg.loggedInUsers});
-            this.updateUsersLoginStatus(msg.loggedInUsers);
-          }
-        };  
-        this.setState({ isLoggedIn: true });
+        console.log('sent login info, results =', results)
+        var HOST = location.origin.replace(/^http/, 'ws')
+          console.log('mounted, HOST = ', HOST);
+          var ws = new WebSocket('ws://localhost:3000?username=' + results);
+          ws.onmessage = function (msg) {
+            msg = JSON.parse(msg.data);
+            console.log(msg);
+            if (msg.type === 'loggedInUsersUpdate') {
+              context.updateUsersLoginStatus(msg.loggedInUsers);
+            } else if (msg.type === 'videoCallRequest') {
+              console.log('room = ', msg.room);
+              console.log('msg = ', msg)
+              context.setState({
+                incomingVideoCall: true,
+                incomingVideoCaller: msg.requestor,
+                incomingVideoRoom: msg.room,
+              });
+            }
+          };
       },
       error: (error) => {
-        console.log('error on sending login info, error =', error);
+        console.log('error on sending login info, error =', error)
       }
     });
-  }
+  } 
 
   checkState() {
     console.log(this.state);
@@ -339,7 +434,8 @@ class App extends React.Component {
     return (
       <div className="site">
         <Router>
-          <div className="conditionals-container">
+          <div 
+            className="conditionals-container">
             <Navbar
               isLoggedIn={this.state.isLoggedIn}
               handleLogOut={this.handleLogOut}

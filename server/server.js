@@ -196,6 +196,21 @@ app.get('/search/:table/:column/:query/:fuzziness/:size', (req, res) => {
   });
 });
 
+app.post('/requestCall', (req, res) => {
+  if (req.body.called && req.body.called in loggedInUsers) {
+    let wsClient = loggedInUsers[req.body.called][1];
+    let requestorID = loggedInUsers[req.body.requestor][0];
+    let calledID = loggedInUsers[req.body.called][0]; 
+    var room = requestorID+calledID;  
+    wsClient.send(JSON.stringify({
+      type: 'videoCallRequest',
+      requestor: req.body.requestor,
+      room: room,
+    }));
+  }
+  res.status(200).send(room);
+})
+
 app.listen(process.env.PORT || port, () => {
   /* eslint-disable no-console */
   console.log(`Server now listening on port ${port}`);
@@ -210,7 +225,7 @@ wss.on('connection', (ws) => {
   var username = ws.upgradeReq.url.replace('/?username=', '')
   console.log('\n' + username + ' <---- connected');
 
-  loggedInUsers[username] = ws;
+  loggedInUsers[username] = [clientID, ws];
 
   console.log('loggedInUsers = ', Object.keys(loggedInUsers));
   let loggedInUsersInfoUpdate = {};
@@ -222,7 +237,7 @@ wss.on('connection', (ws) => {
     loggedInUsers: loggedInUsersInfoUpdate
   };
   Object.keys(loggedInUsers).forEach(function(key) { //update all users
-    let wsClient = loggedInUsers[key];
+    let wsClient = loggedInUsers[key][1];
     wsClient.send( JSON.stringify(data) );
   });
 
@@ -244,7 +259,7 @@ wss.on('connection', (ws) => {
       loggedInUsers: loggedInUsersInfoUpdate
     };
     Object.keys(loggedInUsers).forEach(function(key) { //update all users
-      let wsClient = loggedInUsers[key];
+      let wsClient = loggedInUsers[key][1];
       wsClient.send( JSON.stringify(data) );
     });
 

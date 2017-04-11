@@ -10,24 +10,26 @@ class Search extends React.Component {
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
   }
+
   componentDidUpdate() {
-    console.log('componentDidMount props.searchApplicantsResults = ', this.props.searchApplicantsResults)
     var applicants = this.props.searchApplicantsResults;
     if (applicants && applicants.length>0) {
+      $('.table-inbox tbody').children().remove();  
       applicants.forEach(function(applicant) {
+        var camlink=applicant.online?
+        `<a href=# onclick="window.sendVideoCallRequest('${applicant.username}')">Call ${applicant.username}!</a>`:'' 
         $('.table-inbox tbody').append(
           '<tr>\
             <td>'+applicant.username+'</td>\
             <td>'+applicant.fullname+'</td>\
             <td>'+applicant.resume_url+'</td>\
-            <td>'+applicant.online+'</td>\
+            <td>'+camlink+'</td>\
           </tr>'
         ); 
-      })
+      });
     }
-
-
   }
+
 
   handleSearchSubmit(event) {
     event.preventDefault();
