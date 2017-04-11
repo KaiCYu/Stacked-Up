@@ -14,10 +14,10 @@ class Search extends React.Component {
   componentDidUpdate() {
     var applicants = this.props.searchApplicantsResults;
     if (applicants && applicants.length>0) {
-      $('.table-inbox tbody').children().remove();  
+      $('.table-inbox tbody').children().remove();
       applicants.forEach(function(applicant) {
         var camlink=applicant.online?
-        `<a href=# onclick="window.sendVideoCallRequest('${applicant.username}')">Call ${applicant.username}!</a>`:'' 
+        `<a href=# onclick="window.sendVideoCallRequest('${applicant.username}')">Call ${applicant.username}!</a>`:''
         $('.table-inbox tbody').append(
           '<tr>\
             <td>'+applicant.username+'</td>\
@@ -25,7 +25,7 @@ class Search extends React.Component {
             <td>'+applicant.resume_url+'</td>\
             <td>'+camlink+'</td>\
           </tr>'
-        ); 
+        );
       });
     }
   }
@@ -52,8 +52,15 @@ class Search extends React.Component {
           <Link to="/profile">View this Candidate</Link>
         </div>
         <form ref='search'
-            onSubmit={this.handleSearchSubmit}>
+          onSubmit={(event) => {
+            this.handleSearchSubmit(event);
+
+            // reset search input box
+            document.getElementById('search-box').value = '';
+          }}
+        >
             <input
+              id="search-box"
               type='text'
               name="searchUsername"
               placeholder='ID'
@@ -78,7 +85,7 @@ class Search extends React.Component {
           <Link to="/jobPost">View this Job Post</Link>
         </div>
       </div>
-    )
+    );
   }
 }
 

@@ -244,7 +244,7 @@ class App extends React.Component {
   sendSearchInfo() {
     console.log('searching for username = ', this.state.searchUsername)
     var context = this;
-      var searchURL = '/search/' + this.state.searchUsername + '1/10'
+      var searchURL = '/search/' + this.state.searchUsername + '/1/10'
     $.ajax({
       type: 'GET',
       url: searchURL,
