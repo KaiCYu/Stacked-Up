@@ -198,12 +198,14 @@ class App extends React.Component {
 
   sendLoginInfo() {
     console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
-      var context = this;
-      var data = this.state
+    var context = this;
+    const userdata = {};
+    userdata.username = this.state.username + '/' + this.state.logInOption;
+    userdata.password = this.state.password;
     $.ajax({
       type: 'POST',
       url: '/login',
-      data: data,
+      data: userdata,
       success: (results) => {
         console.log('sent login info, results =', results)
         var HOST = location.origin.replace(/^http/, 'ws')
@@ -224,6 +226,7 @@ class App extends React.Component {
               });
             }
           };
+          this.setState({ isLoggedIn: true });
       },
       error: (error) => {
         console.log('error on sending login info, error =', error)
