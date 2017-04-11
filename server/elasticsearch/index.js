@@ -12,8 +12,11 @@ const esClient = new elasticsearch.Client({
   log: 'error',
 });
 
-
-// index json data
+/* index json data
+ * index is database name
+ * type is table name
+ * data is the data being indexed
+ */
 const bulkIndex = (index, type, data) => {
   const bulkbody = [];
   data.forEach((item) => {
@@ -28,7 +31,7 @@ const bulkIndex = (index, type, data) => {
     bulkbody.push(item);
   });
 
-  esClient.bulk({ body: bulkbody })
+  return esClient.bulk({ body: bulkbody })
   .then((response) => {
     let errorcount = 0;
     response.items.forEach((item) => {
@@ -46,9 +49,9 @@ const bulkIndex = (index, type, data) => {
   });
 };
 
-// query database for data
-const queryDatabase = () => {
-  return db.queryAsync('select * from applicants');
+// get all from database table
+const getAllFromDatabaseTable = (table) => {
+  return db.queryAsync(`select * from ${table}`);
 };
 
 // check indices of elasticsearch
@@ -79,7 +82,7 @@ const test = () => {
     },
   };
 
-  search('stackedup', body)
+  search('stackedup', 'applicants', body)
   .then((results) => {
     console.log(`found ${results.hits.total} items in ${results.took}ms`);
     console.log('returned article titles:');
@@ -88,6 +91,29 @@ const test = () => {
   .catch(console.error);
 };
 
+// delete all indices of elasticsearch
+const deleteIndices = () => {
+  return esClient.indices.delete({ index: '_all' });
+};
+
+// index MySQL database for elasticsearch based on tables
+const indexDatabase = () => {
+  deleteIndices();
+  const tables = ['applicants', 'employer', 'skills', 'job_postings'];
+  tables.forEach((table) => {
+    getAllFromDatabaseTable(table)
+    .then((result) => {
+      const data = result[0];
+      if (data.length !== 0) {
+        bulkIndex('stackedup', table, data);
+      }
+    });
+  });
+};
+
+
 // module.exports = exports = main;
 exports.bulkIndex = bulkIndex;
+exports.deleteIndices = deleteIndices;
+exports.indexDatabase = indexDatabase;
 exports.search = search;
