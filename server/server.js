@@ -17,6 +17,9 @@ const tempStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     const type = req.body.username;
     const path = `upload/${type}/`;
+    if (!fs.existsSync('upload/')) {
+      fs.mkdirSync('upload/');
+    }
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path);
     }
