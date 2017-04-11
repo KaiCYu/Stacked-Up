@@ -7,10 +7,14 @@ USE stackedup;
 CREATE TABLE applicants(
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(255),
-  fullname VARCHAR(255),
   password CHAR(255), -- TODO: change length to hash length later
-  phone_number INT(20),
+  firstName VARCHAR(255),
+  lastName VARCHAR(255),
   email VARCHAR(255),
+  phone_number INT(20),
+  city VARCHAR(255),
+  state VARCHAR(255),
+  country VARCHAR(255),
   resume_url VARCHAR(255), -- will be hosted on a cloud service
   photo_url VARCHAR(255), -- will be hosted on a cloud service
   UNIQUE INDEX(username)
@@ -18,10 +22,14 @@ CREATE TABLE applicants(
 
 CREATE TABLE employer(
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255),
+  username VARCHAR(255),
   password VARCHAR(255),
-  phone_number INT,
+  company_name VARCHAR(255),
   email VARCHAR(255),
+  phone_number INT(20),
+  city VARCHAR(255),
+  state VARCHAR(255),
+  country VARCHAR(255),
   logo_url VARCHAR(255), -- will be hosted on a cloud service
   job_postings_id INT
   -- FOREIGN KEY (job_postings_id) REFERENCES job_postings(id)
