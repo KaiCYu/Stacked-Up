@@ -22,7 +22,8 @@ describe('Search Applicants', () => {
 
     db = Promise.promisifyAll(connection, { multiArgs: true });
     db.connectAsync()
-    .then(() => db.queryAsync('DELETE FROM applicants', done));
+    .then(() => db.queryAsync('DELETE FROM applicants'))
+    .then(() => done());
   });
 
   afterEach(() => {
@@ -36,19 +37,19 @@ describe('Search Applicants', () => {
     .then(() => db.queryAsync('SELECT * FROM applicants WHERE username="gabece"'))
     .then((result) => {
       const user = result[0];
-
       // index for elasticsearch
-      esConfig.bulkIndex('stackedup', 'applicants', user);
-      request.get('http://localhost:8000/search/applicants/username/gabece/0/1', (error, searchResult) => {
-        const body = JSON.parse(searchResult.body);
-        const userResult = body[0];
-        expect(body).to.not.equal(null);
-        expect(body.length).to.equal(1);
-        expect(userResult.username).to.equal('gabece');
-        expect(userResult.fullname).to.equal('gabriel certeza');
-        expect(userResult.password).to.equal('password');
-        expect(userResult.email).to.equal('gabrielscerteza@gmail.com');
-        done();
+      esConfig.bulkIndex('stackedup', 'applicants', user, () => {
+        request.get('http://localhost:8000/search/applicants/username/gabece/0/1', (error, searchResult) => {
+          const body = JSON.parse(searchResult.body);
+          const userResult = body[0];
+          expect(body).to.not.equal(null);
+          expect(body.length).to.equal(1);
+          expect(userResult.username).to.equal('gabece');
+          expect(userResult.fullname).to.equal('gabriel certeza');
+          expect(userResult.password).to.equal('password');
+          expect(userResult.email).to.equal('gabrielscerteza@gmail.com');
+          done();
+        });
       });
     });
   });
