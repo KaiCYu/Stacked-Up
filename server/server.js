@@ -17,6 +17,9 @@ const tempStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     const type = req.body.username;
     const path = `upload/${type}/`;
+    if (!fs.existsSync('upload/')) {
+      fs.mkdirSync('upload/');
+    }
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path);
     }
@@ -122,7 +125,8 @@ app.post('/login', passport.authenticate('local'),
 
 app.get('/logout', (req, res) => {
   req.logout();
-  res.send('user log out');
+  console.log("I'm here");
+  res.redirect('/');
 });
 
 app.get('/profileinfo', passport.authenticate('local'),
@@ -136,8 +140,6 @@ app.get('/profileinfo', passport.authenticate('local'),
 
 
 app.post('/postingJob', (req, res) => {
-  console.log(req.body);
-  // console.log(typeof req.body.position);
   const queryStr = `INSERT INTO job_postings \
     (position, description, location, salary) VALUES \
     ("${req.body.position}", "${req.body.description}", "${req.body.location}", "${req.body.salary}")`;

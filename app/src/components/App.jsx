@@ -232,6 +232,7 @@ class App extends React.Component {
       error: (error) => {
         console.log('error on sending login info, error =', error)
         console.log('error on sending login info, error =', error);
+
       }
     });
   } 
@@ -372,9 +373,11 @@ class App extends React.Component {
       success: (result) => {
         console.log(result);
         this.setState({ isLoggedIn: false });
+        this.context.history.push('/');
       },
       error: (error) => {
         console.log('log out error occured', error);
+        this.context.history.push('/');
       }
     });
   }
