@@ -20,10 +20,10 @@ class Search extends React.Component {
         `<a href=# onclick="window.sendVideoCallRequest('${applicant.username}')">Call ${applicant.username}!</a>`:''
         $('.table-inbox tbody').append(
           '<tr>\
-            <td>'+applicant.username+'</td>\
-            <td>'+applicant.fullname+'</td>\
-            <td>'+applicant.resume_url+'</td>\
-            <td>'+camlink+'</td>\
+            <td>' + applicant.username + '</td>\
+            <td>' + applicant.firstName + ' ' + applicant.lastName + '</td>\
+            <td>' + applicant.resume_url + '</td>\
+            <td>' + camlink + '</td>\
           </tr>'
         );
       });

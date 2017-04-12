@@ -173,17 +173,24 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
           res.status(500).send('Internal Server Error');
         }
         console.log('request username and fullname = ' + req.body.username);
-        queryStr = `INSERT INTO applicants (username, password, firstname, lastname, email, phone_number, city, state, country) values 
+        queryStr = `INSERT INTO applicants (username, password, firstname, lastname, email, phone_number, city, state, country) values
           ("${req.body.username}", "${hash}", "${req.body.firstName}", "${req.body.lastName}",
           "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}"
           );`;
         db.query(queryStr, (err3, data) => {
           if (err3) {
             console.log('err', err3);
-            res.status(500).send('Internal Server Error');
           } else {
             console.log('applicant has signed up!', data);
-            res.redirect('/');
+            // get the applicant that just signed up and index the user for elasticsearch
+            db.query(`SELECT * FROM applicants WHERE username="${req.body.username}"`, (err4, dataToIndex) => {
+              if (err4) {
+                res.status(500).send('Internal Server Error');
+              } else {
+                elasticsearch.bulkIndex('stackedup', 'applicants', dataToIndex);
+                res.redirect('/');
+              }
+            });
           }
         });
       });
