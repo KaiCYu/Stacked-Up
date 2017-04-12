@@ -191,10 +191,10 @@ class App extends React.Component {
   }
 
   onInputChange(event) {
-      const name = event.target.name;
-      this.setState({
-        [name]: event.target.value
-      });
+    const name = event.target.name;
+    this.setState({
+      [name]: event.target.value
+    });
   }
 
   sendLoginInfo() {
@@ -446,8 +446,10 @@ class App extends React.Component {
           <div
             className="conditionals-container">
             <Navbar
+              sendSearchInfo={this.sendSearchInfo}
               isLoggedIn={this.state.isLoggedIn}
               handleLogOut={this.handleLogOut}
+              onInputChange={this.onInputChange}
             />
             <div className="currentPage">
               <Route

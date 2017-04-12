@@ -7,8 +7,6 @@ class Search extends React.Component {
 
   constructor(props) {
     super(props);
-    this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
   componentDidUpdate() {
@@ -30,17 +28,6 @@ class Search extends React.Component {
     }
   }
 
-
-  handleSearchSubmit(event) {
-    event.preventDefault();
-    console.log('submitted')
-    this.props.sendSearchInfo();
-  }
-
-  handleInputChange(event) {
-    this.props.onInputChange(event)
-  }
-
   render() {
     return (
       <div className="search-container">
@@ -51,25 +38,6 @@ class Search extends React.Component {
         <div>
           <Link to="/profile">View this Candidate</Link>
         </div>
-        <form ref='search'
-          onSubmit={(event) => {
-            this.handleSearchSubmit(event);
-
-            // reset search input box
-            document.getElementById('search-box').value = '';
-          }}
-        >
-            <input
-              id="search-box"
-              type='text'
-              name="searchUsername"
-              placeholder='ID'
-              onChange={this.handleInputChange}
-            />
-            <button
-              type='submit'
-            >Search</button>
-        </form>
         <table className="table table-striped table-inbox hidden">
           <thead>
             <tr>

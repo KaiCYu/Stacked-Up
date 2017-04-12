@@ -45,7 +45,7 @@ const bulkIndex = (index, type, data) => {
     );
   })
   .catch((error) => {
-    console.error('error from index', error);
+    console.error('error from bulkIndex', error);
   });
 };
 
