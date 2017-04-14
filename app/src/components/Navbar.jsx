@@ -37,7 +37,7 @@ const Navbar = (props) => {
             <Link to="/login">Log In</Link>}
           <br />
           <Link to="/myProfile">My Profile</Link><br />
-          <Link to="/signupClient">Sign Up Client</Link>
+          <Link to="/jobPost">Job Posts</Link>
         </nav>
       </div>
     </header>

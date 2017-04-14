@@ -1,5 +1,8 @@
 import React from 'react';
 
+// TODO: maybe need to refactor to use ajax call with state
+
+
 const PostingJob = (props) => (
   <div className="PostingJob-container">
     <h1>Post your job here</h1>

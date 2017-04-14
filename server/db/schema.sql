@@ -11,7 +11,7 @@ CREATE TABLE applicants(
   firstName VARCHAR(255),
   lastName VARCHAR(255),
   email VARCHAR(255),
-  phone_number INT(20),
+  phone_number VARCHAR(20),
   city VARCHAR(255),
   state VARCHAR(255),
   country VARCHAR(255),
@@ -26,7 +26,7 @@ CREATE TABLE employer(
   password VARCHAR(255),
   company_name VARCHAR(255),
   email VARCHAR(255),
-  phone_number INT(20),
+  phone_number VARCHAR(20),
   city VARCHAR(255),
   state VARCHAR(255),
   country VARCHAR(255),
@@ -41,7 +41,7 @@ CREATE TABLE job_postings(
   description VARCHAR(255),
   location VARCHAR(255),
   salary INT,
-  post_date DATE,
+  post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   employer_id INT,
   FOREIGN KEY (employer_id) REFERENCES employer(id)
 );

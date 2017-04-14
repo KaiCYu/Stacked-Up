@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom
 class Login extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
+    console.log(props.history);
+    console.log(this.props.history);
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
   }
@@ -12,6 +15,7 @@ class Login extends React.Component {
     event.preventDefault();
     console.log('submitted');
     this.props.sendLoginInfo();
+    this.props.history.push('/main');
   }
 
   handleInputChange(event) {

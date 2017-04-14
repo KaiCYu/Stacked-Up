@@ -50,13 +50,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  console.log('====>', user.id);
-  done(null, user.id);
+  console.log('====>', user);
+  done(null, user);
 });
 
-passport.deserializeUser((id, done) => {
-  console.log('deserializeUser', id);
-  const queryStr = `SELECT * FROM applicants WHERE id = "${id}";`;
+passport.deserializeUser((user, done) => {
+  console.log('deserializeUser', user);
+  let queryStr;
+  if (user.type === 'applicant') {
+    queryStr = `SELECT * FROM applicants WHERE id = "${user.id}";`;
+  } else {
+    queryStr = `SELECT * FROM employer WHERE id = "${user.id}";`;
+  }
   db.query(queryStr, (err, user) => {
     done(err, user[0]);
   });
@@ -78,7 +83,7 @@ passport.use(new LocalStrategy(
       if (temp[1] === 'applicant') {
         queryStr = `SELECT * FROM applicants WHERE username = "${temp[0]}";`;
       } else if (temp[1] === 'company') {
-        queryStr = `SELECT * FROM employer WHERE name = "${temp[0]}";`;
+        queryStr = `SELECT * FROM employer WHERE username = "${temp[0]}";`;
       }
       db.query(queryStr, (err1, user) => {
         if (err1) {
@@ -89,6 +94,7 @@ passport.use(new LocalStrategy(
         }
         return bcrypt.compare(password, user[0].password, (err2, res) => {
           if (res) {
+            user[0].type = temp[1];
             done(null, user[0]);
           }
           done(null, false);
@@ -103,8 +109,16 @@ app.get('/hello', (req, res) => {
   res.send('Hello World');
 });
 
+app.get('/verifyLogin', (req, res) => {
+  if (req.user) {
+    res.json(req.user);
+  } else {
+    res.json('not logged in');
+  }
+});
+
 app.get('/getJobPostings', (req, res) => {
-  const queryStr = 'SELECT * FROM job_postings;';
+  const queryStr = 'select job_postings.*, employer.company_name from job_postings inner join employer on job_postings.employer_id = employer.id;';
   db.query(queryStr, (error, data) => {
     if (error) {
       console.log('failed to get job posting data', error);
@@ -141,8 +155,8 @@ app.get('/profileinfo', passport.authenticate('local'),
 
 app.post('/postingJob', (req, res) => {
   const queryStr = `INSERT INTO job_postings \
-    (position, description, location, salary) VALUES \
-    ("${req.body.position}", "${req.body.description}", "${req.body.location}", "${req.body.salary}")`;
+    (position, description, location, salary, employer_id) VALUES \
+    ("${req.body.position}", "${req.body.description}", "${req.body.location}", "${req.body.salary}", "${req.user.id}")`;
   db.query(queryStr, (err, data) => {
     if (err) {
       console.log('err', err);
@@ -205,8 +219,7 @@ app.post('/signupEmployer', (req, res) => {
       res.sendStatus(500);
     }
     console.log('request body ', req.body);
-    const queryStr = `INSERT INTO employer (username, password, company_name, email, phone_number, city, state, country) values ("${req.body.username}", "${hash}", "${req.body.info.companyName}", "${req.body.info.email}", "${req.body.info.phoneNumber}", "${req.body.info.city}", "${req.body.info.state}", "${req.body.info.country}");`
-
+    const queryStr = `INSERT INTO employer (username, password, company_name, email, phone_number, city, state, country) values ("${req.body.username}", "${hash}", "${req.body.companyName}", "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}");`;
     db.query(queryStr, (error, data) => {
       if (error) {
         console.log('err', error);
@@ -215,6 +228,28 @@ app.post('/signupEmployer', (req, res) => {
         res.redirect('/');
       }
     });
+  });
+});
+
+app.post('/apply', (req, res) => {
+  const queryStr = 'SELECT * FROM applicants_job_postings WHERE applicant_id=? AND job_posting_id=?;';
+  const postId = JSON.parse(req.body.jobPostingId);
+  db.query(queryStr, [req.user.id, postId], (error, data) => {
+    if (error) {
+      res.status(500).send('Internal Server Error');
+    } else if (data.length !== 0) {
+      res.redirect(400, '/');
+    } else {
+      const queryStri = 'INSERT INTO applicants_job_postings VALUES (?, ?);';
+      db.query(queryStri, [req.user.id, postId], (err, result) => {
+        if (err) {
+          res.status(500).send('Internal Server Error');
+        }
+        if (result) {
+          res.redirect(202, '/');
+        }
+      });
+    }
   });
 });
 

@@ -16,6 +16,7 @@ import PostingJob from './PostingJob';
 import StreamVideo from './StreamVideo';
 import ApplicantProfile from './ApplicantProfile';
 import utils from './../../../lib/utility';
+import PrivateRoute from './privateRoute';
 
 class App extends React.Component {
   constructor(props) {
@@ -90,11 +91,27 @@ class App extends React.Component {
     // this.applicantInputChange = this.applicantInputChange.bind(this);
     // this.signUpSubmit = this.signUpSubmit.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
-    this.employerInputChange = this.employerInputChange.bind(this);
+    // this.employerInputChange = this.employerInputChange.bind(this);
     // this.submitApplicant = this.submitApplicant.bind(this);
-    this.submitEmployer = this.submitEmployer.bind(this);
+    // this.submitEmployer = this.submitEmployer.bind(this);
     this.searchAll = this.searchAll.bind(this);
+    // this.submitEmployer = this.submitEmployer.bind(this);
     window.checkState = this.checkState.bind(this);
+  }
+
+  componentDidMount() {
+    $.ajax({
+      url: '/verifyLogin',
+      type: 'GET',
+      success: (data) => {
+        if (typeof data === 'object') {
+          this.setState({ isLoggedIn: true });
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 
   componentDidUpdate() {
@@ -230,10 +247,16 @@ class App extends React.Component {
               });
             }
           };
+          console.log('=======================');
+          console.log(this.props);
+          console.log(context.props);
+          console.log(this.props.history);
+          console.log(context.props.history);
+          console.log('=======================');
           this.setState({ isLoggedIn: true });
       },
       error: (error) => {
-        console.log('error on sending login info, error =', error)
+        console.log('error on sending login info, error =', error);
         console.log('error on sending login info, error =', error);
 
       }
@@ -376,21 +399,19 @@ class App extends React.Component {
       success: (result) => {
         console.log(result);
         this.setState({ isLoggedIn: false });
-        this.context.history.push('/');
       },
       error: (error) => {
         console.log('log out error occured', error);
-        this.context.history.push('/');
       }
     });
   }
 
-  employerInputChange(event) {
-    const name = event.target.name;
-    const stateObj = this.state.employerProfileInfo;
-    stateObj[name] = event.target.value;
-    this.setState({ employerProfileInfo: stateObj });
-  }
+  // employerInputChange(event) {
+  //   const name = event.target.name;
+  //   const stateObj = this.state.employerProfileInfo;
+  //   stateObj[name] = event.target.value;
+  //   this.setState({ employerProfileInfo: stateObj });
+  // }
 
   // if ajax post call on signupApplicant is necessary
   // submitApplicant(event) {
@@ -421,26 +442,26 @@ class App extends React.Component {
   //   this.setState({ applicantProfileInfo: stateObj });
   // }
 
-  submitEmployer(event) {
-    event.preventDefault();
-    //query db to check for pre-existing username
-    const employerData = {
-      username: this.state.username,
-      password: this.state.password,
-      info: this.state.employerProfileInfo,
-    };
-    $.ajax({
-      type: 'POST',
-      url: '/signupEmployer',
-      data: employerData,
-      success: (results) => {
-        console.log('signed up as an employer!');
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error);
-      },
-    });
-  }
+  // submitEmployer(event) {
+  //   event.preventDefault();
+  //   //query db to check for pre-existing username
+  //   const employerData = {
+  //     username: this.state.username,
+  //     password: this.state.password,
+  //     info: this.state.employerProfileInfo,
+  //   };
+  //   $.ajax({
+  //     type: 'POST',
+  //     url: '/signupEmployer',
+  //     data: employerData,
+  //     success: (results) => {
+  //       console.log('signed up as an employer!');
+  //     },
+  //     error: (error) => {
+  //       console.log('error on getting profile from server // error', error);
+  //     },
+  //   });
+  // }
 
   searchAll() {
     const searchURL = `/search/${this.state.searchUsername}/2/10`;
@@ -472,9 +493,7 @@ class App extends React.Component {
             <div className="currentPage">
               <Route
                 path="/main"
-                render={() => (
-                  <Main />
-                )}
+                component={Main}
               />
               <Route
                 path="/search"
@@ -484,17 +503,24 @@ class App extends React.Component {
                   />
                 )}
               />
-              <Route
+              {/*<Route
                 path="/login"
-                render={() => (
-                  <Login
-                    isLoggedin={this.state.isLoggedIn}
-                    logInOption={this.state.logInOption}
-                    handleOptionChange={this.handleOptionChange}
-                    sendLoginInfo={this.sendLoginInfo}
-                    onInputChange={this.onInputChange}
-                  />
-                )}
+                render={() => (<Login
+                  isLoggedIn={this.state.isLoggedIn}
+                  logInOption={this.state.logInOption}
+                  handleOptionChange={this.handleOptionChange}
+                  sendLoginInfo={this.sendLoginInfo}
+                  onInputChange={this.onInputChange}
+                />)}
+              />*/}
+              <PrivateRoute
+                path="/login"
+                component={Login}
+                isLoggedIn={this.state.isLoggedIn}
+                logInOption={this.state.logInOption}
+                handleOptionChange={this.handleOptionChange}
+                sendLoginInfo={this.sendLoginInfo}
+                onInputChange={this.onInputChange}
               />
               <Route
                 path="/myProfile"
@@ -520,16 +546,12 @@ class App extends React.Component {
               <Route
                 path="/profile"
                 getProfileInfo={this.state.getProfileInfo}
-                render={() => (
-                  <Profile />
-                )}
+                component={Profile}
               />
               <Route
                 path="/jobPost"
                 getjobPostInfo={this.state.getJobPostInfo}
-                render={() => (
-                  <JobPost />
-                )}
+                component={JobPost}
               />
               <Route
                 path="/signupClient"
@@ -540,11 +562,7 @@ class App extends React.Component {
               <Route
                 path="/signupEmployer"
                 render={() => (
-                  <SignupEmployer
-                    employerInputChange={this.employerInputChange}
-                    onInputChange={this.onInputChange}
-                    submitEmployer={this.submitEmployer}
-                  />
+                  <SignupEmployer />
                 )}
               />
               <Route
@@ -555,9 +573,7 @@ class App extends React.Component {
               />
               <Route
                 path="/postingjob"
-                render={() => (
-                  <PostingJob />
-                )}
+                component={PostingJob}
               />
             </div>
           </div>
@@ -566,5 +582,20 @@ class App extends React.Component {
     );
   }
 }
+
+/*const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={props => (
+    fakeAuth.isAuthenticated ? (
+      <Component {...props}/>
+    ) : (
+      <Redirect to={{
+        pathname: '/login',
+        state: { from: props.location }
+      }}/>
+    )
+  )}/>
+)*/
+
+
 
 export default App;
