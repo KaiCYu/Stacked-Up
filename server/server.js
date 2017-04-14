@@ -194,18 +194,6 @@ app.post('/postingJob', (req, res) => {
 //   return db.query(queryStr, req.body.username)
 // }
 
-// app.post('signupApplicant', (req, res) => {
-//   const name;
-//   db.queryAsync('select * from applicants;')
-//   .then( (data) => {
-//     console.log('REQUESTING: ', req);
-//     console.log('DATA: ', data);
-//     name = data;
-//     db.queryAsync('select * from employer;')
-//   })
-//   .then()
-// })
-
 app.post('/signupApplicant', upload.any(), (req, res) => {
   // console.log(" ========================= ", req._parsedOriginalUrl.path);
   // console.log('REQ.URL: ', req.url);
