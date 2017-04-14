@@ -367,4 +367,3 @@ wss.on('connection', (ws) => {
 
 // index database for elasticsearch every minute
 elasticsearch.indexDatabase();
-setInterval(elasticsearch.indexDatabase, 60000);
