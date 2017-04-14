@@ -15,6 +15,7 @@ import SignupEmployer from './SignupEmployer.jsx';
 import PostingJob from './PostingJob';
 import StreamVideo from './StreamVideo';
 import ApplicantProfile from './ApplicantProfile';
+import utils from './../../../lib/utility';
 
 class App extends React.Component {
   constructor(props) {
@@ -67,6 +68,7 @@ class App extends React.Component {
       incomingVideoCall: false,
       incomingVideoCaller: '',
       incomingVideoRoom: '',
+      searchResults: {},
     };
 
     this.getMyProfileInfo = this.getMyProfileInfo.bind(this);
@@ -91,6 +93,7 @@ class App extends React.Component {
     this.employerInputChange = this.employerInputChange.bind(this);
     // this.submitApplicant = this.submitApplicant.bind(this);
     this.submitEmployer = this.submitEmployer.bind(this);
+    this.searchAll = this.searchAll.bind(this);
     window.checkState = this.checkState.bind(this);
   }
 
@@ -439,6 +442,21 @@ class App extends React.Component {
     });
   }
 
+  searchAll() {
+    const searchURL = `/search/${this.state.searchUsername}/2/10`;
+    $.ajax({
+      type: 'GET',
+      url: searchURL,
+      success: (results) => {
+        const filtered = utils.filterSearchResults(results);
+        this.setState({ searchResults: filtered });
+      },
+      error: (error) => {
+        console.log('error on sending search info, error =', error);
+      },
+    });
+  }
+
   render() {
     return (
       <div className="site">
@@ -446,7 +464,7 @@ class App extends React.Component {
           <div
             className="conditionals-container">
             <Navbar
-              sendSearchInfo={this.sendSearchInfo}
+              searchAll={this.searchAll}
               isLoggedIn={this.state.isLoggedIn}
               handleLogOut={this.handleLogOut}
               onInputChange={this.onInputChange}
@@ -462,10 +480,7 @@ class App extends React.Component {
                 path="/search"
                 render={() => (
                   <Search
-                    searchApplicantsResults={this.state.searchApplicantsResults}
-                    loggedInUsers={this.state.loggedInUsers}
-                    onInputChange={this.onInputChange}
-                    sendSearchInfo={this.sendSearchInfo}
+                    searchResults={this.state.searchResults}
                   />
                 )}
               />

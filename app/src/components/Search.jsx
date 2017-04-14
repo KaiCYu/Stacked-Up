@@ -1,60 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect} from 'react-router-dom';
-import $ from 'jquery';
+import SearchResultsTable from './SearchResultsTable';
+import utils from '../../../lib/utility';
 
-
-class Search extends React.Component {
-
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidUpdate() {
-    var applicants = this.props.searchApplicantsResults;
-    if (applicants && applicants.length>0) {
-      $('.table-inbox tbody').children().remove();
-      applicants.forEach(function(applicant) {
-        var camlink=applicant.online?
-        `<a href=# onclick="window.sendVideoCallRequest('${applicant.username}')">Call ${applicant.username}!</a>`:''
-        $('.table-inbox tbody').append(
-          '<tr>\
-            <td>' + applicant.username + '</td>\
-            <td>' + applicant.firstName + ' ' + applicant.lastName + '</td>\
-            <td>' + applicant.resume_url + '</td>\
-            <td>' + camlink + '</td>\
-          </tr>'
-        );
-      });
-    }
-  }
-
-  render() {
-    return (
-      <div className="search-container">
-        <h1>Search</h1>
-        <div>
-          <Link to="/employerProfile">View this Employer</Link>
-        </div>
-        <div>
-          <Link to="/profile">View this Candidate</Link>
-        </div>
-        <table className="table table-striped table-inbox hidden">
-          <thead>
-            <tr>
-              <th>Userame</th>
-              <th>Full Name</th>
-              <th>Link to Resume</th>
-              <th>Online Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div>
-          <Link to="/jobPost">View this Job Post</Link>
-        </div>
-      </div>
-    );
-  }
-}
+const Search = ({ searchResults }) => (
+  <div className="search-container">
+    <h1>Search Results Found: {utils.sumPropsLengths(searchResults)}</h1>
+    <SearchResultsTable searchResults={searchResults} />
+  </div>
+);
 
 export default Search;

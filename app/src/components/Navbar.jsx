@@ -16,7 +16,7 @@ const Navbar = (props) => {
             onSubmit={(event) => {
               event.preventDefault();
               document.getElementById('search').value = '';
-              props.sendSearchInfo();
+              props.searchAll();
             }}
           >
             <TextField
