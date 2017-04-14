@@ -12,6 +12,13 @@ const esClient = new elasticsearch.Client({
   log: 'error',
 });
 
+// check indices of elasticsearch
+const indices = () => {
+  return esClient.cat.indices({ v: true })
+  .then(console.log)
+  .catch(err => console.error(`error connecting to the es client: ${err}`));
+};
+
 /* index json data
  * index is database name
  * type is table name
@@ -52,13 +59,6 @@ const bulkIndex = (index, type, data) => {
 // get all from database table
 const getAllFromDatabaseTable = (table) => {
   return db.queryAsync(`select * from ${table}`);
-};
-
-// check indices of elasticsearch
-const indices = () => {
-  return esClient.cat.indices({ v: true })
-  .then(console.log)
-  .catch(err => console.error(`error connecting to the es client: ${err}`));
 };
 
 // search index
