@@ -157,7 +157,6 @@ class SignupClient extends React.Component {
 
           {/*if we need ajax post call on applicant sign up*/}
           {/*<Link to="/applicantProfile" onClick={props.submitApplicant}>Submit</Link>*/}
-          
         <button>Cancel</button>
       </div>
     )};
