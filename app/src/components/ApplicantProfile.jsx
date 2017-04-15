@@ -18,11 +18,9 @@ const ApplicantProfile = (props) => {
             return <WorkHistoryEntry key={index} workEntry={workEntry} />;
           })}
         </div>
-
-
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default ApplicantProfile;

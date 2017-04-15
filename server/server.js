@@ -8,8 +8,11 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
+const Promise = require('bluebird');
 const fs = require('fs');
 const elasticsearch = require('./elasticsearch/index.js');
+const cloudinary = require('cloudinary');
+const cloudinaryAPI = require('./../config/cloudinaryconfig.js');
 
 const port = 8000;
 
@@ -27,7 +30,7 @@ const tempStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     console.log(file);
-    cb(null, file.fieldname + `_${req.body.username}`);
+    cb(null, `${file.fieldname  }_${req.body.username}`);
   },
 });
 
@@ -38,6 +41,7 @@ const loggedInUsers = {};
 
 app.use(express.static(`${__dirname}/../app/dist`));
 // app.use(cookie());
+app.use(bodyParser({ limit: '50mb' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
@@ -152,7 +156,6 @@ app.get('/profileinfo', passport.authenticate('local'),
     }
   });
 
-
 app.post('/postingJob', (req, res) => {
   const queryStr = `INSERT INTO job_postings \
     (position, description, location, salary, employer_id) VALUES \
@@ -167,8 +170,15 @@ app.post('/postingJob', (req, res) => {
   });
 });
 
+
+//break down all async fnc
+//create new promise using bluebird
+//chaining promises 
+
 app.post('/signupApplicant', upload.any(), (req, res) => {
-  console.log(" ========================= ", req._parsedOriginalUrl.path);
+  // console.log(" ========================= ", req._parsedOriginalUrl.path);
+  // console.log('REQ.URL: ', req.url);
+  console.log("'REQ.BODY: ", req.body);
   let queryStr = 'SELECT * FROM applicants WHERE username=?;';
   db.query(queryStr, req.body.username, (err1, data, fields) => {
     if (err1) {
@@ -181,32 +191,50 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
         <Redirect to="${req._parsedOriginalUrl.path}">);`;
       res.send(redirectUrl);
     } else {
-      bcrypt.hash(req.body.password, 10, (err2, hash) => {
-        if (err2) {
-          console.log(err2);
-          res.status(500).send('Internal Server Error');
+      // upload the picture
+      cloudinary.v2.uploader.upload(`${req.body.profilePhoto}`, (err2, image) => {
+        if ('ERROR 2 ', err2) {
+          console.log('error sending profile picture to cloud ', err2);
+        } else {
+          console.log('IMAGE URL: ', image);
+          // upload resume
+          cloudinary.v2.uploader.upload(`${req.body.resume}`, { resource_type: 'raw' }, (err3, resume) => {
+            if ('ERROR 3', err3) {
+              console.log('error sending resume to cloud ', err3);
+            } else {
+              console.log('RESUME URL: ', resume);
+              // upload cover letter
+              cloudinary.v2.uploader.upload(`${req.body.coverLetter}`, { resource_type: 'raw' }, (err4, coverLetter) => {
+                if ('ERROR 4: ', err4) {
+                  console.log('error sending cover letter to cloud ', err4);
+                } else {
+                  console.log('COVER LETTER URL: '.coverLetter);
+                // console.log('SECURE IMAGE URL:', image.secure_url);
+                  bcrypt.hash(req.body.password, 10, (err5, hash) => {
+                    if (err5) {
+                      res.status(500).send('Internal Server Error');
+                    }
+                      // insert into DB
+                      // console.log('request username and fullname = ' + req.body.username);
+                    queryStr = `INSERT INTO applicants (username, password, firstname, lastname, email, phone_number, city, state, country, profile_pic_url, resume_url, coverletter_url) values 
+                      ("${req.body.username}", "${hash}", "${req.body.firstName}", "${req.body.lastName}",
+                      "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}", "${image.secure_url}", "${resume.secure_url}", "${coverLetter.secure_url}"
+                      );`;
+                    db.query(queryStr, (err6, data) => {
+                      if (err6) {
+                        console.log('err', err6);
+                        res.status(500).send('Internal Server Error');
+                      } else {
+                        console.log('applicant has signed up!', data);
+                        res.redirect('/');
+                      }
+                    });
+                  });
+                }
+              });
+            }
+          });
         }
-        console.log('request username and fullname = ' + req.body.username);
-        queryStr = `INSERT INTO applicants (username, password, firstname, lastname, email, phone_number, city, state, country) values
-          ("${req.body.username}", "${hash}", "${req.body.firstName}", "${req.body.lastName}",
-          "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}"
-          );`;
-        db.query(queryStr, (err3, data) => {
-          if (err3) {
-            console.log('err', err3);
-          } else {
-            console.log('applicant has signed up!', data);
-            // get the applicant that just signed up and index the user for elasticsearch
-            db.query(`SELECT * FROM applicants WHERE username="${req.body.username}"`, (err4, dataToIndex) => {
-              if (err4) {
-                res.status(500).send('Internal Server Error');
-              } else {
-                elasticsearch.bulkIndex('stackedup', 'applicants', dataToIndex);
-                res.redirect('/');
-              }
-            });
-          }
-        });
       });
     }
   });
@@ -259,51 +287,51 @@ app.post('/apply', (req, res) => {
  * :fuzziness represents the number of possible misspelled characters
  * :size represents the amount of matched results to return
  */
-app.get('/search/:query/:fuzziness/:size', (req, res) => {
-  const fuzziness = req.params.fuzziness;
-  const query = req.params.query;
-  const size = req.params.size;
-  const body = {
-    size,
-    from: 0,
-    query: {
-      match: {
-        _all: {
-          query,
-          fuzziness,
-        },
-      },
-    },
-  };
-  elasticsearch.search('stackedup', body)
-  .then((results) => {
-    results = results.hits.hits.map(function(hit) {
-      var applicant = hit._source;
-      (applicant.username in loggedInUsers)?applicant.online=true
-      :applicant.online=false;
-      return applicant;
-    });
-    res.status(200).json(results);
-  })
-  .catch(() => {
-    res.sendStatus(404);
-  });
-});
+// app.get('/search/:query/:fuzziness/:size', (req, res) => {
+//   const fuzziness = req.params.fuzziness;
+//   const query = req.params.query;
+//   const size = req.params.size;
+//   const body = {
+//     size,
+//     from: 0,
+//     query: {
+//       match: {
+//         _all: {
+//           query,
+//           fuzziness,
+//         },
+//       },
+//     },
+//   };
+//   elasticsearch.search('stackedup', body)
+//   .then((results) => {
+//     results = results.hits.hits.map(function(hit) {
+//       var applicant = hit._source;
+//       (applicant.username in loggedInUsers)?applicant.online=true
+//       :applicant.online=false;
+//       return applicant;
+//     });
+//     res.status(200).json(results);
+//   })
+//   .catch(() => {
+//     res.sendStatus(404);
+//   });
+// });
 
-app.post('/requestCall', (req, res) => {
-  if (req.body.called && req.body.called in loggedInUsers) {
-    let wsClient = loggedInUsers[req.body.called][1];
-    let requestorID = loggedInUsers[req.body.requestor][0];
-    let calledID = loggedInUsers[req.body.called][0];
-    var room = requestorID+calledID;
-    wsClient.send(JSON.stringify({
-      type: 'videoCallRequest',
-      requestor: req.body.requestor,
-      room: room,
-    }));
-  }
-  res.status(200).send(room);
-})
+// app.post('/requestCall', (req, res) => {
+//   if (req.body.called && req.body.called in loggedInUsers) {
+//     let wsClient = loggedInUsers[req.body.called][1];
+//     let requestorID = loggedInUsers[req.body.requestor][0];
+//     let calledID = loggedInUsers[req.body.called][0];
+//     var room = requestorID+calledID;
+//     wsClient.send(JSON.stringify({
+//       type: 'videoCallRequest',
+//       requestor: req.body.requestor,
+//       room: room,
+//     }));
+//   }
+//   res.status(200).send(room);
+// })
 
 app.listen(process.env.PORT || port, () => {
   /* eslint-disable no-console */
@@ -311,59 +339,69 @@ app.listen(process.env.PORT || port, () => {
   /* eslint-enable no-console */
 });
 
-const wss = new SocketServer({
-  server: app,
-  port: 3000 });
-wss.on('connection', (ws) => {
-  var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
-  var username = ws.upgradeReq.url.replace('/?username=', '')
-  console.log('\n' + username + ' <---- connected');
+// const wss = new SocketServer({
+//   server: app,
+//   port: 3000 });
+// wss.on('connection', (ws) => {
+//   var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
+//   var username = ws.upgradeReq.url.replace('/?username=', '')
+//   console.log('\n' + username + ' <---- connected');
 
-  loggedInUsers[username] = [clientID, ws];
+//   loggedInUsers[username] = [clientID, ws];
 
-  console.log('loggedInUsers = ', Object.keys(loggedInUsers));
-  let loggedInUsersInfoUpdate = {};
-  Object.keys(loggedInUsers).forEach(function(applicantName) {
-    loggedInUsersInfoUpdate[applicantName] = true;
-  })
-  let data = {
-    type: 'loggedInUsersUpdate',
-    loggedInUsers: loggedInUsersInfoUpdate
-  };
-  Object.keys(loggedInUsers).forEach(function(key) { //update all users
-    let wsClient = loggedInUsers[key][1];
-    wsClient.send( JSON.stringify(data) );
-  });
+//   console.log('loggedInUsers = ', Object.keys(loggedInUsers));
+//   let loggedInUsersInfoUpdate = {};
+//   Object.keys(loggedInUsers).forEach(function(applicantName) {
+//     loggedInUsersInfoUpdate[applicantName] = true;
+//   })
+//   let data = {
+//     type: 'loggedInUsersUpdate',
+//     loggedInUsers: loggedInUsersInfoUpdate
+//   };
+//   Object.keys(loggedInUsers).forEach(function(key) { //update all users
+//     let wsClient = loggedInUsers[key][1];
+//     wsClient.send( JSON.stringify(data) );
+//   });
 
-  ws.on('message', (recObj)=> {
-    recObj = JSON.parse(recObj);
-  });
+//   ws.on('message', (recObj)=> {
+//     recObj = JSON.parse(recObj);
+//   });
 
-  ws.on('close', ()=> {
-    console.log('\n' + username + ' <------ disconnected');
-    delete loggedInUsers[username];
+//   ws.on('close', ()=> {
+//     console.log('\n' + username + ' <------ disconnected');
+//     delete loggedInUsers[username];
 
-    console.log('loggedInUsers = ', Object.keys(loggedInUsers));
-    let loggedInUsersInfoUpdate = {};
-    Object.keys(loggedInUsers).forEach(function(applicantName) {
-      loggedInUsersInfoUpdate[applicantName] = true;
-    })
-    let data = {
-      type: 'loggedInUsersUpdate',
-      loggedInUsers: loggedInUsersInfoUpdate
-    };
-    Object.keys(loggedInUsers).forEach(function(key) { //update all users
-      let wsClient = loggedInUsers[key][1];
-      wsClient.send( JSON.stringify(data) );
-    });
+//     console.log('loggedInUsers = ', Object.keys(loggedInUsers));
+//     let loggedInUsersInfoUpdate = {};
+//     Object.keys(loggedInUsers).forEach(function(applicantName) {
+//       loggedInUsersInfoUpdate[applicantName] = true;
+//     })
+//     let data = {
+//       type: 'loggedInUsersUpdate',
+//       loggedInUsers: loggedInUsersInfoUpdate
+//     };
+//     Object.keys(loggedInUsers).forEach(function(key) { //update all users
+//       let wsClient = loggedInUsers[key][1];
+//       wsClient.send( JSON.stringify(data) );
+//     });
 
-    // clearInterval(oneSetInterval);
-  });
+//     // clearInterval(oneSetInterval);
+//   });
 
-  // var oneSetInterval = setInterval( ()=> {
-  //   ws.send( JSON.stringify(new Date().toTimeString()) );
-  // }, 10000);
-});
+//   // var oneSetInterval = setInterval( ()=> {
+//   //   ws.send( JSON.stringify(new Date().toTimeString()) );
+//   // }, 10000);
+// });
+
+// index database for elasticsearch every minute
+// elasticsearch.indexDatabase();
+// setInterval(elasticsearch.indexDatabase, 60000);
+
+
+// //update the picture
+// cloudinary.uploader.upload("test1.jpg", function(result) { 
+//   console.log(result) 
+// });
 
 // index database for elasticsearch every minute
 elasticsearch.indexDatabase();

@@ -1,13 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import EmployerProfile from './EmployerProfile';
+import ApplicantProfile from './ApplicantProfile';
 
 const MyProfile = (props) => (
   <div className="search-container">
-    <h1>MyProfile</h1>
+    {console.log('props in myprofile: ', props)}
     <div>
-      MyProfile Page Displayed Here
+      {props.option === 'company' ? 
+      <EmployerProfile info={props.employerInfo} /> : 
+      <ApplicantProfile info={props.applicantInfo} />}
     </div>
-    <Link to="/postingjob">Post job</Link>
+
+    {props.option === 'company' ? <Link to="/postingjob">Post job</Link> : null}
   </div>
 );
 

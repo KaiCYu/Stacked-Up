@@ -15,8 +15,9 @@ CREATE TABLE applicants(
   city VARCHAR(255),
   state VARCHAR(255),
   country VARCHAR(255),
+  profile_pic_url VARCHAR(255), -- will be hosted on a cloud service
   resume_url VARCHAR(255), -- will be hosted on a cloud service
-  photo_url VARCHAR(255), -- will be hosted on a cloud service
+  coverletter_url VARCHAR(255), -- will be hosted on a cloud service
   UNIQUE INDEX(username)
 );
 

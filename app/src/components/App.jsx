@@ -40,29 +40,7 @@ class App extends React.Component {
       //   state: '',
       //   country: '',
       // },
-      // applicantProfileInfo: {
-      //   firstName: '',
-      //   lastName: '',
-      //   email: '',
-      //   phoneNumber: '',
-      //   currentEmployer: '',
-      //   currentSchool: '',
-      //   city: '',
-      //   state: '',
-      //   country: '',
-      //   workHistory: [{
-      //     name: '',
-      //     position: '',
-      //     description: '',
-      //   },],
-      //   schoolHistory: [{
-      //     name: '',
-      //   }],
-      //   appliedTo: [{
-      //     name: '',
-      //     position: '',
-      //   } ],
-      // },
+
       loggedInUsers: {},
       searchApplicantsResults: [],
       searchUsername: '',
@@ -97,6 +75,7 @@ class App extends React.Component {
     this.searchAll = this.searchAll.bind(this);
     // this.submitEmployer = this.submitEmployer.bind(this);
     window.checkState = this.checkState.bind(this);
+    // this.previewFile = this.previewFile.bind(this);
   }
 
   componentDidMount() {
@@ -198,7 +177,7 @@ class App extends React.Component {
 
 
   updateUsersLoginStatus(loggedInUsers) {
-    var newSearchApplicantsResults = this.state.searchApplicantsResults
+    const newSearchApplicantsResults = this.state.searchApplicantsResults
     .map(function(applicant) {
       if (applicant.username in loggedInUsers) {
         applicant.online = true;
@@ -269,8 +248,8 @@ class App extends React.Component {
 
   sendSearchInfo() {
     console.log('searching for username = ', this.state.searchUsername)
-    var context = this;
-      var searchURL = '/search/' + this.state.searchUsername + '/1/10'
+    const context = this;
+    const searchURL = '/search/' + this.state.searchUsername + '/10'
     $.ajax({
       type: 'GET',
       url: searchURL,
@@ -278,8 +257,8 @@ class App extends React.Component {
         context.setState({ searchApplicantsResults: results });
       },
       error: (error) => {
-        console.log('error on sending search info, error =', error);
-      }
+        console.log('error on sending search info, error =', error)
+      },
     });
   }
 
@@ -299,7 +278,7 @@ class App extends React.Component {
   }
 
   getMyProfileInfo() {
-  var context = this;
+    const context = this;
     $.ajax({
       type: 'GET',
       url: '/myprofileinfo',
@@ -314,7 +293,7 @@ class App extends React.Component {
   }
 
   getProfileInfo() {
-  var context = this;
+    const context = this;
     $.ajax({
       type: 'GET',
       url: '/profileinfo',
@@ -328,7 +307,7 @@ class App extends React.Component {
   }
 
   getEmployerProfileInfo() {
-  var context = this;
+    const context = this;
     $.ajax({
       type: 'GET',
       url: '/employerprofileinfo',
@@ -358,7 +337,7 @@ class App extends React.Component {
   }
 
   getEmployerInfo() {
-  var context = this;
+    const context = this;
     $.ajax({
       type: 'GET',
       url: '/employerinfo',
@@ -373,7 +352,7 @@ class App extends React.Component {
   }
 
   getJobPostInfo() {
-  var context = this;
+    const context = this;
     $.ajax({
       type: 'GET',
       url: '/jobpostinfo',
@@ -478,6 +457,29 @@ class App extends React.Component {
     });
   }
 
+  // resetForm(event) {
+  //   const emptyState = this.state;
+  // }
+
+  // previewFile() {
+  //   console.log('inside preview file &****')
+  //   var preview = document.querySelector('img');
+  //   var file    = document.querySelector('input[type=file]').files[0];
+  //   var reader  = new FileReader();
+
+  //   reader.addEventListener("load", function () {
+  //     console.log('inside add event listener')
+  //     console.log(reader.results);
+  //     preview.src = reader.result;
+  //   }, false);
+
+  //   if (file) {
+  //     console.log("FILE: ", file)
+  //     reader.readAsDataURL(file);
+  //   }
+  // }
+
+
   render() {
     return (
       <div className="site">
@@ -527,20 +529,20 @@ class App extends React.Component {
                 path="/myProfile"
                 getMyProfileInfo={this.state.getMyProfileInfo}
                 render={() => (
-                  <MyProfile />
+                  <MyProfile option={this.state.logInOption} employerInfo={this.state.employerProfileInfo} applicantInfo={this.state.applicantProfileInfo} />
                 )}
               />
               <Route
                 path="/employerProfile"
                 getEmployerProfileInfo={this.state.getEmployerProfileInfo}
-                render={() => (
-                  <EmployerProfile />
+                render={(props) => (
+                  <EmployerProfile info={this.state.employerProfileInfo} />
                 )}
               />
               <Route
                 path="/applicantProfile"
                 getApplicantProfileInfo={this.state.getapplicantProfileInfo}
-                render={() => (
+                render={(props) => (
                   <ApplicantProfile info={this.state.applicantProfileInfo} />
                 )}
               />
