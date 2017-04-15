@@ -14,6 +14,7 @@ const Navbar = (props) => {
           <Link to="/main">Main Page</Link><br />
           <form
             onSubmit={(event) => {
+              props.history.push('/search');
               event.preventDefault();
               document.getElementById('search').value = '';
               props.searchAll();

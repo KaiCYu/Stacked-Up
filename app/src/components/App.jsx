@@ -484,7 +484,8 @@ class App extends React.Component {
         <Router>
           <div
             className="conditionals-container">
-            <Navbar
+            <PrivateRoute
+              component={Navbar}
               searchAll={this.searchAll}
               isLoggedIn={this.state.isLoggedIn}
               handleLogOut={this.handleLogOut}
