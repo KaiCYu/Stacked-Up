@@ -2,7 +2,6 @@ import React from 'react';
 import JobPost from './JobPost';
 
 const EmployerProfile = (props) => {
-
   return (
     <div className="search-container">
     {console.log('props in employer profile: ', props.info)}
@@ -15,9 +14,7 @@ const EmployerProfile = (props) => {
         <h2>{props.info.state}</h2>
         <h2>{props.info.country}</h2>
         <br />
-
         <JobPost />
-
       </div>
     </div>
   );

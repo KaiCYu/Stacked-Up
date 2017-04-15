@@ -138,7 +138,9 @@ app.get('/getJobPostings', (req, res) => {
 app.post('/login', passport.authenticate('local'),
   (req, res) => {
     if (req.user) {
-      res.send(req.user.username);
+      const currentUser = req.user;
+      delete currentUser.password;
+      res.send(currentUser);
     } else {
       res.send('login fails!');
     }
