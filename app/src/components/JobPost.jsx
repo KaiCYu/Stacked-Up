@@ -1,7 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 import JobPostEntry from './JobPostEntry';
-
+import { Table, TableBody, TableHeader, TableRow, TableHeaderColumn } from 'material-ui';
 
 class JobPost extends React.Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class JobPost extends React.Component {
   handleApply(jobPostingId) {
     console.log(jobPostingId);
     const applyingData = {};
-    applyingData['jobPostingId'] = jobPostingId;
+    applyingData.jobPostingId = jobPostingId;
     $.ajax({
       url: '/apply',
       type: 'POST',
@@ -49,17 +49,29 @@ class JobPost extends React.Component {
   render() {
     console.log(this.state.postings);
     return (
-      <div className="JobPost-container">
+      <div>
         <h1>JobPost</h1>
-        <div>
-          {this.state.postings.map(entry =>
-            <JobPostEntry
-              entry={entry}
-              key={entry.id}
-              handleApply={this.handleApply}
-            />)
-          }
-        </div>
+        <Table>
+          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+            <TableRow>
+              <TableHeaderColumn>Company Name</TableHeaderColumn>
+              <TableHeaderColumn>Position</TableHeaderColumn>
+              <TableHeaderColumn>Description</TableHeaderColumn>
+              <TableHeaderColumn>Location</TableHeaderColumn>
+              <TableHeaderColumn>Starting Salary</TableHeaderColumn>
+              <TableHeaderColumn>Apply</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody displayRowCheckbox={false}>
+            {this.state.postings.map(entry =>
+              <JobPostEntry
+                entry={entry}
+                key={entry.id}
+                handleApply={this.handleApply}
+              />)
+            }
+          </TableBody>
+        </Table>
       </div>
     );
   }

@@ -366,8 +366,9 @@ class App extends React.Component {
     });
   }
 
-  handleOptionChange(changeEvent) {
-    this.setState({ logInOption: changeEvent.target.value });
+  handleOptionChange(value) {
+    console.log(value);
+    this.setState({ logInOption: value });
   }
 
   handleLogOut() {
@@ -484,8 +485,7 @@ class App extends React.Component {
     return (
       <div className="site">
         <Router>
-          <div
-            className="conditionals-container">
+          <div className="conditionals-container">
             <PrivateRoute
               component={Navbar}
               searchAll={this.searchAll}
@@ -506,16 +506,6 @@ class App extends React.Component {
                   />
                 )}
               />
-              {/*<Route
-                path="/login"
-                render={() => (<Login
-                  isLoggedIn={this.state.isLoggedIn}
-                  logInOption={this.state.logInOption}
-                  handleOptionChange={this.handleOptionChange}
-                  sendLoginInfo={this.sendLoginInfo}
-                  onInputChange={this.onInputChange}
-                />)}
-              />*/}
               <PrivateRoute
                 path="/login"
                 component={Login}
@@ -585,20 +575,5 @@ class App extends React.Component {
     );
   }
 }
-
-/*const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={props => (
-    fakeAuth.isAuthenticated ? (
-      <Component {...props}/>
-    ) : (
-      <Redirect to={{
-        pathname: '/login',
-        state: { from: props.location }
-      }}/>
-    )
-  )}/>
-)*/
-
-
 
 export default App;

@@ -74,6 +74,7 @@ passport.deserializeUser((user, done) => {
 passport.use(new LocalStrategy(
   (username, password, done) => {
     const temp = username.split('/');
+    console.log(temp);
     let queryStr;
     const list = Array.from(Object.keys(loggedInUsers));
     let userLoggedIn = false;
@@ -89,6 +90,7 @@ passport.use(new LocalStrategy(
       } else if (temp[1] === 'company') {
         queryStr = `SELECT * FROM employer WHERE username = "${temp[0]}";`;
       }
+      console.log(queryStr);
       db.query(queryStr, (err1, user) => {
         if (err1) {
           return done(err1);
@@ -98,6 +100,7 @@ passport.use(new LocalStrategy(
         }
         return bcrypt.compare(password, user[0].password, (err2, res) => {
           if (res) {
+            console.log(res);
             user[0].type = temp[1];
             done(null, user[0]);
           }

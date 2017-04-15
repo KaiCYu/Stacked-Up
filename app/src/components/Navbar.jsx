@@ -1,47 +1,66 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/FlatButton';
-
+import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
-
 
 const Navbar = (props) => {
   return (
-    <header>
-      <div className="navbar-component">
-        <h5>StackedUp NAVBAR</h5>
-        <nav className="links">
-          <Link to="/main">Main Page</Link><br />
-          <form
-            onSubmit={(event) => {
-              props.history.push('/search');
-              event.preventDefault();
-              document.getElementById('search').value = '';
-              props.searchAll();
+    <Toolbar>
+      <ToolbarGroup>
+        <Link to="/main">
+          <RaisedButton>StackedUp</RaisedButton>
+        </Link>
+      </ToolbarGroup>
+      <ToolbarGroup>
+        <form
+          onSubmit={(event) => {
+            props.history.push('/search');
+            event.preventDefault();
+            document.getElementById('search').value = '';
+            props.searchAll();
+          }}
+        >
+          <TextField
+            id="search"
+            name="searchUsername"
+            onChange={(event) => {
+              props.onInputChange(event);
             }}
-          >
-            <TextField
-              id="search"
-              name="searchUsername"
-              onChange={(event) => {
-                props.onInputChange(event);
-              }}
-            />
-            <RaisedButton
-              id="search-button"
-            >Search
-            </RaisedButton>
-          </form>
-          <Link to="/search">Search</Link><br />
-          {props.isLoggedIn ?
-            <button onClick={props.handleLogOut}>Logout</button> :
-            <Link to="/login">Log In</Link>}
-          <br />
-          <Link to="/myProfile">My Profile</Link><br />
-          <Link to="/jobPost">Job Posts</Link>
-        </nav>
-      </div>
-    </header>
+          />
+          <RaisedButton
+            id="search-button"
+          >Search
+          </RaisedButton>
+        </form>
+      </ToolbarGroup>
+      <ToolbarGroup>
+        <Link to="/search">
+          <RaisedButton>Search</RaisedButton>
+        </Link>
+      </ToolbarGroup>
+      <ToolbarGroup>
+        {props.isLoggedIn ?
+          <RaisedButton
+            id="logout"
+            onClick={props.handleLogOut}
+          >Logout
+          </RaisedButton> :
+          <Link to="/login">
+            <RaisedButton>Log In</RaisedButton>
+          </Link>}
+      </ToolbarGroup>
+      <ToolbarGroup>
+        <Link to="/myProfile">
+          <RaisedButton>My Profile</RaisedButton>
+        </Link>
+      </ToolbarGroup>
+      <ToolbarGroup>
+        <Link to="/jobPost">
+          <RaisedButton>Job Posts</RaisedButton>
+        </Link>
+      </ToolbarGroup>
+    </Toolbar>
   );
 };
 
