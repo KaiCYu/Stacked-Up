@@ -66,17 +66,16 @@ class SignupClient extends React.Component {
   }
 
   handleSubmit(event) {
-    const self = this;
     event.preventDefault();
     console.log('inside handle submit');
     const applicantData = this.state;
-
     $.ajax({
       type: 'POST',
       url: '/signupApplicant',
       data: applicantData,
       success: (results) => {
-        console.log('signed up as an applicant!');
+        console.log('signed up as an applicant!', results);
+        this.props.history.push('/main');
       },
       error: (error) => {
         console.log('error on getting profile from server // error', error);

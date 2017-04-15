@@ -1,33 +1,32 @@
 import React from 'react';
+import { TableRow, TableRowColumn } from 'material-ui';
 
 const JobPostEntry = props => (
-  <div className="JobPostEntry-container">
-    <div>
-      <div className="position">
-        {props.entry.company_name}
-      </div>
-      <div className="position">
-        {props.entry.position}
-      </div>
-      <div className="description">
-        {props.entry.description}
-      </div>
-      <div className="location">
-        {props.entry.location}
-      </div>
-      <div className="salary">
-        {props.entry.salary}
-      </div>
-      <div>
-        <button
-          onClick={() => {
-            props.handleApply(props.entry.id)
-          }}
-        >Apply
-        </button>
-      </div>
-    </div>
-  </div>
+  <TableRow>
+    <TableRowColumn>
+      {props.entry.company_name}
+    </TableRowColumn>
+    <TableRowColumn>
+      {props.entry.position}
+    </TableRowColumn>
+    <TableRowColumn>
+      {props.entry.description}
+    </TableRowColumn>
+    <TableRowColumn>
+      {props.entry.location}
+    </TableRowColumn>
+    <TableRowColumn>
+      {props.entry.salary}
+    </TableRowColumn>
+    <TableRowColumn>
+      <button
+        onClick={() => {
+          props.handleApply(props.entry.id)
+        }}
+      >Apply
+      </button>
+    </TableRowColumn>
+  </TableRow>
 );
 
 export default JobPostEntry;
