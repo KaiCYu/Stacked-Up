@@ -366,9 +366,8 @@ class App extends React.Component {
     });
   }
 
-  handleOptionChange(value) {
-    console.log(value);
-    this.setState({ logInOption: value });
+  handleOptionChange(changeEvent) {
+    this.setState({ logInOption: changeEvent.target.value });
   }
 
   handleLogOut() {
@@ -548,15 +547,11 @@ class App extends React.Component {
               />
               <Route
                 path="/signupClient"
-                render={() => (
-                  <SignupClient />
-                )}
+                component={SignupClient}
               />
               <Route
                 path="/signupEmployer"
-                render={() => (
-                  <SignupEmployer />
-                )}
+                component={SignupEmployer}
               />
               <Route
                 path="/streamVideo"

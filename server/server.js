@@ -229,7 +229,7 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
                         res.status(500).send('Internal Server Error');
                       } else {
                         console.log('applicant has signed up!', data);
-                        res.redirect('/');
+                        res.json(data);
                       }
                     });
                   });
