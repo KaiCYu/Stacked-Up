@@ -290,51 +290,51 @@ app.post('/apply', (req, res) => {
  * :fuzziness represents the number of possible misspelled characters
  * :size represents the amount of matched results to return
  */
-// app.get('/search/:query/:fuzziness/:size', (req, res) => {
-//   const fuzziness = req.params.fuzziness;
-//   const query = req.params.query;
-//   const size = req.params.size;
-//   const body = {
-//     size,
-//     from: 0,
-//     query: {
-//       match: {
-//         _all: {
-//           query,
-//           fuzziness,
-//         },
-//       },
-//     },
-//   };
-//   elasticsearch.search('stackedup', body)
-//   .then((results) => {
-//     results = results.hits.hits.map(function(hit) {
-//       var applicant = hit._source;
-//       (applicant.username in loggedInUsers)?applicant.online=true
-//       :applicant.online=false;
-//       return applicant;
-//     });
-//     res.status(200).json(results);
-//   })
-//   .catch(() => {
-//     res.sendStatus(404);
-//   });
-// });
+app.get('/search/:query/:fuzziness/:size', (req, res) => {
+  const fuzziness = req.params.fuzziness;
+  const query = req.params.query;
+  const size = req.params.size;
+  const body = {
+    size,
+    from: 0,
+    query: {
+      match: {
+        _all: {
+          query,
+          fuzziness,
+        },
+      },
+    },
+  };
+  elasticsearch.search('stackedup', body)
+  .then((results) => {
+    results = results.hits.hits.map(function(hit) {
+      var applicant = hit._source;
+      (applicant.username in loggedInUsers)?applicant.online=true
+      :applicant.online=false;
+      return applicant;
+    });
+    res.status(200).json(results);
+  })
+  .catch(() => {
+    res.sendStatus(404);
+  });
+});
 
-// app.post('/requestCall', (req, res) => {
-//   if (req.body.called && req.body.called in loggedInUsers) {
-//     let wsClient = loggedInUsers[req.body.called][1];
-//     let requestorID = loggedInUsers[req.body.requestor][0];
-//     let calledID = loggedInUsers[req.body.called][0];
-//     var room = requestorID+calledID;
-//     wsClient.send(JSON.stringify({
-//       type: 'videoCallRequest',
-//       requestor: req.body.requestor,
-//       room: room,
-//     }));
-//   }
-//   res.status(200).send(room);
-// })
+app.post('/requestCall', (req, res) => {
+  if (req.body.called && req.body.called in loggedInUsers) {
+    let wsClient = loggedInUsers[req.body.called][1];
+    let requestorID = loggedInUsers[req.body.requestor][0];
+    let calledID = loggedInUsers[req.body.called][0];
+    var room = requestorID+calledID;
+    wsClient.send(JSON.stringify({
+      type: 'videoCallRequest',
+      requestor: req.body.requestor,
+      room: room,
+    }));
+  }
+  res.status(200).send(room);
+})
 
 app.listen(process.env.PORT || port, () => {
   /* eslint-disable no-console */
@@ -342,64 +342,54 @@ app.listen(process.env.PORT || port, () => {
   /* eslint-enable no-console */
 });
 
-// const wss = new SocketServer({
-//   server: app,
-//   port: 3000 });
-// wss.on('connection', (ws) => {
-//   var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
-//   var username = ws.upgradeReq.url.replace('/?username=', '')
-//   console.log('\n' + username + ' <---- connected');
+const wss = new SocketServer({
+  server: app,
+  port: 3000 });
+wss.on('connection', (ws) => {
+  var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
+  var username = ws.upgradeReq.url.replace('/?username=', '')
+  console.log('\n' + username + ' <---- connected');
+  loggedInUsers[username] = [clientID, ws];
+  console.log('loggedInUsers = ', Object.keys(loggedInUsers));
+  let loggedInUsersInfoUpdate = {};
+  Object.keys(loggedInUsers).forEach(function(applicantName) {
+    loggedInUsersInfoUpdate[applicantName] = true;
+  })
+  let data = {
+    type: 'loggedInUsersUpdate',
+    loggedInUsers: loggedInUsersInfoUpdate
+  };
+  Object.keys(loggedInUsers).forEach(function(key) { //update all users
+    let wsClient = loggedInUsers[key][1];
+    wsClient.send( JSON.stringify(data) );
+  });
 
-//   loggedInUsers[username] = [clientID, ws];
+  ws.on('message', (recObj)=> {
+    recObj = JSON.parse(recObj);
+  });
 
-//   console.log('loggedInUsers = ', Object.keys(loggedInUsers));
-//   let loggedInUsersInfoUpdate = {};
-//   Object.keys(loggedInUsers).forEach(function(applicantName) {
-//     loggedInUsersInfoUpdate[applicantName] = true;
-//   })
-//   let data = {
-//     type: 'loggedInUsersUpdate',
-//     loggedInUsers: loggedInUsersInfoUpdate
-//   };
-//   Object.keys(loggedInUsers).forEach(function(key) { //update all users
-//     let wsClient = loggedInUsers[key][1];
-//     wsClient.send( JSON.stringify(data) );
-//   });
-
-//   ws.on('message', (recObj)=> {
-//     recObj = JSON.parse(recObj);
-//   });
-
-//   ws.on('close', ()=> {
-//     console.log('\n' + username + ' <------ disconnected');
-//     delete loggedInUsers[username];
-
-//     console.log('loggedInUsers = ', Object.keys(loggedInUsers));
-//     let loggedInUsersInfoUpdate = {};
-//     Object.keys(loggedInUsers).forEach(function(applicantName) {
-//       loggedInUsersInfoUpdate[applicantName] = true;
-//     })
-//     let data = {
-//       type: 'loggedInUsersUpdate',
-//       loggedInUsers: loggedInUsersInfoUpdate
-//     };
-//     Object.keys(loggedInUsers).forEach(function(key) { //update all users
-//       let wsClient = loggedInUsers[key][1];
-//       wsClient.send( JSON.stringify(data) );
-//     });
-
-//     // clearInterval(oneSetInterval);
-//   });
-
-//   // var oneSetInterval = setInterval( ()=> {
-//   //   ws.send( JSON.stringify(new Date().toTimeString()) );
-//   // }, 10000);
-// });
-
-// index database for elasticsearch every minute
-// elasticsearch.indexDatabase();
-// setInterval(elasticsearch.indexDatabase, 60000);
-
+  ws.on('close', ()=> {
+    console.log('\n' + username + ' <------ disconnected');
+    delete loggedInUsers[username];
+    console.log('loggedInUsers = ', Object.keys(loggedInUsers));
+    let loggedInUsersInfoUpdate = {};
+    Object.keys(loggedInUsers).forEach(function(applicantName) {
+      loggedInUsersInfoUpdate[applicantName] = true;
+    })
+    let data = {
+      type: 'loggedInUsersUpdate',
+      loggedInUsers: loggedInUsersInfoUpdate
+    };
+    Object.keys(loggedInUsers).forEach(function(key) { //update all users
+      let wsClient = loggedInUsers[key][1];
+      wsClient.send( JSON.stringify(data) );
+    });
+    // clearInterval(oneSetInterval);
+  });
+  // var oneSetInterval = setInterval( ()=> {
+  //   ws.send( JSON.stringify(new Date().toTimeString()) );
+  // }, 10000);
+});
 
 // //update the picture
 // cloudinary.uploader.upload("test1.jpg", function(result) { 
