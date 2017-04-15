@@ -3,6 +3,9 @@ const Dropzone = require('react-dropzone');
 
 class DropZoneDemo extends React.Component {
 
+    onDrop(files) {
+      console.log('Received files: ', files);
+    },
   render() {
     return (
         <div>

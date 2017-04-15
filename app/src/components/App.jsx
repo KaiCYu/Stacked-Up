@@ -379,64 +379,7 @@ class App extends React.Component {
       }
     });
   }
-
-  // employerInputChange(event) {
-  //   const name = event.target.name;
-  //   const stateObj = this.state.employerProfileInfo;
-  //   stateObj[name] = event.target.value;
-  //   this.setState({ employerProfileInfo: stateObj });
-  // }
-
-  // if ajax post call on signupApplicant is necessary
-  // submitApplicant(event) {
-  //   event.preventDefault();
-  //   // query db to check for pre-existing username
-  //   const applicantData = {
-  //     username: this.state.username,
-  //     password: this.state.password,
-  //     info: this.state.applicantProfileInfo,
-  //   };
-  //   $.ajax({
-  //     type: 'POST',
-  //     url: '/signupApplicant',
-  //     data: applicantData,
-  //     success: (results) => {
-  //       console.log('signed up as an applicant!');
-  //     },
-  //     error: (error) => {
-  //       console.log('error on getting profile from server // error', error);
-  //     },
-  //   });
-  // }
-
-  // applicantInputChange(event) {
-  //   const name = event.target.name;
-  //   const stateObj = this.state.applicantProfileInfo;
-  //   stateObj[name] = event.target.value;
-  //   this.setState({ applicantProfileInfo: stateObj });
-  // }
-
-  // submitEmployer(event) {
-  //   event.preventDefault();
-  //   //query db to check for pre-existing username
-  //   const employerData = {
-  //     username: this.state.username,
-  //     password: this.state.password,
-  //     info: this.state.employerProfileInfo,
-  //   };
-  //   $.ajax({
-  //     type: 'POST',
-  //     url: '/signupEmployer',
-  //     data: employerData,
-  //     success: (results) => {
-  //       console.log('signed up as an employer!');
-  //     },
-  //     error: (error) => {
-  //       console.log('error on getting profile from server // error', error);
-  //     },
-  //   });
-  // }
-
+  
   searchAll() {
     const searchURL = `/search/${this.state.searchUsername}/2/10`;
     $.ajax({
@@ -451,29 +394,6 @@ class App extends React.Component {
       },
     });
   }
-
-  // resetForm(event) {
-  //   const emptyState = this.state;
-  // }
-
-  // previewFile() {
-  //   console.log('inside preview file &****')
-  //   var preview = document.querySelector('img');
-  //   var file    = document.querySelector('input[type=file]').files[0];
-  //   var reader  = new FileReader();
-
-  //   reader.addEventListener("load", function () {
-  //     console.log('inside add event listener')
-  //     console.log(reader.results);
-  //     preview.src = reader.result;
-  //   }, false);
-
-  //   if (file) {
-  //     console.log("FILE: ", file)
-  //     reader.readAsDataURL(file);
-  //   }
-  // }
-
 
   render() {
     return (
@@ -522,6 +442,7 @@ class App extends React.Component {
               <Route
                 path="/applicantProfile"
                 component={ApplicantProfile}
+
               />
               <Route
                 path="/profile"

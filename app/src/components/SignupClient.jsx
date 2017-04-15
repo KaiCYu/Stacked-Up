@@ -13,18 +13,14 @@ class SignupClient extends React.Component {
       lastName: '',
       email: '',
       phoneNumber: '',
-      currentEmployer: '',
-      currentSchool: '',
+      // currentEmployer: '',
+      // currentSchool: '',
       city: '',
       state: '',
       country: '',
       resume: '',
       coverLetter: '',
       profilePhoto: '',
-      // appliedTo: [{
-      //   name: '',
-      //   position: '',
-      // }],
     };
 
     this.previewFile = this.previewFile.bind(this);
@@ -45,6 +41,7 @@ class SignupClient extends React.Component {
     const reader  = new FileReader();
 
     reader.onloadend = () => {
+      console.log('READER: ', reader);
       this.setState({ [name]: reader.result });
     };
 
@@ -56,6 +53,11 @@ class SignupClient extends React.Component {
     if (file) {
       reader.readAsDataURL(file);
     }
+    // if (file && file.type === 'text/plain') {
+    //   reader.readAsText(file);
+    // } else {
+    //   reader.readAsDataURL(file);
+    // }
   }
 
   onInputChange(event) {
@@ -66,6 +68,7 @@ class SignupClient extends React.Component {
   }
 
   handleSubmit(event) {
+    // const self = this;
     event.preventDefault();
     console.log('inside handle submit');
     const applicantData = this.state;
