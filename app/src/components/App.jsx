@@ -89,7 +89,7 @@ class App extends React.Component {
         }
       },
       error: (error) => {
-        console.log(error);
+        console.log('user verified log in failed!: ', error);
       }
     });
   }
@@ -231,7 +231,7 @@ class App extends React.Component {
           isLoggedIn: true,
           currentUser: results
         });
-        console.log(this.state.currentUser);
+        console.log('current user on app.jsx : ', this.state.currentUser);
       },
       error: (error) => {
         console.log('error on sending login info, error =', error);
@@ -368,7 +368,6 @@ class App extends React.Component {
   }
 
   handleLogOut() {
-    console.log(this.context);
     $.ajax({
       url: '/logout',
       type: 'GET',
