@@ -7,9 +7,16 @@ const ApplicantProfile = (props) => {
     {console.log('props in applicant profile: ', props.info)}
       <h1>Applicant Profile</h1>
       <div>
-        <h3>{props.info.firstName + ' ' + props.info.lastName}</h3><br />
-        <h4>{props.info.email}</h4><br />
-        <h4>{props.info.phone_number}</h4><br />
+        <img id="profile-picture" src="">Profile picture:</img>
+        <h3>Username: {props.info.username}</h3><br />
+        <h4>Name: {`${props.info.firstName} ${props.info.lastName}`}</h4><br />
+        <h5>Email: {props.info.email}</h5><br />
+        <h5>Phone Number: {props.info.phone_number}</h5><br />
+        <h5>Location: {`${props.info.city}, ${props.info.state} ${props.info.country}`}</h5><br />
+
+        <div>Resume</div>
+        <div>Cover Letter</div>
+        
         {/*<div>Work History:
           {props.info.workHistory.map((workEntry, index) => {
             return <WorkHistoryEntry key={index} workEntry={workEntry} />;
