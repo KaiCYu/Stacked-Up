@@ -82,8 +82,10 @@ class App extends React.Component {
       url: '/verifyLogin',
       type: 'GET',
       success: (data) => {
-        if (typeof data === 'object') {
+        if (data === true) {
           this.setState({ isLoggedIn: true });
+        } else {
+          this.setState({ isLoggedIn: false });
         }
       },
       error: (error) => {
@@ -371,7 +373,6 @@ class App extends React.Component {
       url: '/logout',
       type: 'GET',
       success: (result) => {
-        console.log(result);
         this.setState({ isLoggedIn: false });
       },
       error: (error) => {

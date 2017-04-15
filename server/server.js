@@ -118,9 +118,19 @@ app.get('/hello', (req, res) => {
 
 app.get('/verifyLogin', (req, res) => {
   if (req.user) {
-    res.json(req.user);
+    res.json(true);
   } else {
-    res.json('not logged in');
+    res.json(false);
+  }
+});
+
+app.get('/getCurrentUser', (req, res) => {
+  if (req.user) {
+    const currentUser = req.user;
+    delete currentUser.password;
+    res.json(currentUser);
+  } else {
+    res.sendStatus(500);
   }
 });
 
@@ -138,9 +148,7 @@ app.get('/getJobPostings', (req, res) => {
 app.post('/login', passport.authenticate('local'),
   (req, res) => {
     if (req.user) {
-      const currentUser = req.user;
-      delete currentUser.password;
-      res.send(currentUser);
+      res.send(req.user.username);
     } else {
       res.send('login fails!');
     }
