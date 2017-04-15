@@ -125,6 +125,7 @@ app.get('/verifyLogin', (req, res) => {
 });
 
 app.get('/getCurrentUser', (req, res) => {
+  console.log('REQ.USER', req.user)
   if (req.user) {
     const currentUser = req.user;
     delete currentUser.password;
