@@ -185,8 +185,8 @@ app.post('/postingJob', (req, res) => {
 
 //break down all async fnc
 //create new promise using bluebird
-//chaining promises 
-  
+//chaining promises
+
   // ATTEMPT TO PROMISIFY
 // app.post('/signupApplicant', upload.any(), (req, res) => {
 //   let queryStr = 'SELECT * FROM applicants WHERE username=?;';
@@ -247,7 +247,7 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
                     }
                       // insert into DB
                       // console.log('request username and fullname = ' + req.body.username);
-                    queryStr = `INSERT INTO applicants (username, password, firstname, lastname, email, phone_number, city, state, country, profile_pic_url, resume_url, coverletter_url) values 
+                    queryStr = `INSERT INTO applicants (username, password, firstname, lastname, email, phone_number, city, state, country, profile_pic_url, resume_url, coverletter_url) values
                       ("${req.body.username}", "${hash}", "${req.body.firstName}", "${req.body.lastName}",
                       "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}", "${image.secure_url}", "${resume.secure_url}", "${coverLetter.secure_url}"
                       );`;
@@ -299,7 +299,7 @@ app.post('/signupEmployer', upload.any(), (req, res) => {
             }
               // insert into DB
               // console.log('request username and fullname = ' + req.body.username);
-            queryStr = `INSERT INTO employer (username, password, company_name, email, phone_number, city, state, country, logo_url) values 
+            queryStr = `INSERT INTO employer (username, password, company_name, email, phone_number, city, state, country, logo_url) values
               ("${req.body.username}", "${hash}", "${req.body.companyName}",
               "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}", "${image.secure_url}"
               );`;
@@ -472,5 +472,9 @@ wss.on('connection', (ws) => {
   // }, 10000);
 });
 
-// index database for elasticsearch every minute
+// //update the picture
+// cloudinary.uploader.upload("test1.jpg", function(result) {
+//   console.log(result)
+// });
+
 elasticsearch.indexDatabase();

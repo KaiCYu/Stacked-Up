@@ -26,19 +26,18 @@ const indices = () => {
  */
 const bulkIndex = (index, type, data) => {
   const bulkbody = [];
-  data.forEach((item) => {
+  data.forEach((item, counter) => {
     bulkbody.push({
       index: {
         _index: index,
         _type: type,
-        _id: item.id,
+        _id: counter,
       },
     });
-
     bulkbody.push(item);
   });
 
-  return esClient.bulk({ body: bulkbody })
+  esClient.bulk({ body: bulkbody })
   .then((response) => {
     let errorcount = 0;
     response.items.forEach((item) => {
@@ -54,11 +53,6 @@ const bulkIndex = (index, type, data) => {
   .catch((error) => {
     console.error('error from bulkIndex', error);
   });
-};
-
-// get all from database table
-const getAllFromDatabaseTable = (table) => {
-  return db.queryAsync(`select * from ${table}`);
 };
 
 // search index
@@ -91,6 +85,19 @@ const test = () => {
   .catch(console.error);
 };
 
+// get all from database table
+const getAllFromDatabaseTables = () => {
+  const queries = [
+    'SELECT * FROM applicants',
+    'SELECT * FROM employer',
+    'SELECT job_postings.*, employer.company_name ' +
+      'FROM job_postings ' +
+      'INNER JOIN employer ON job_postings.employer_id = employer.id',
+  ];
+
+  return Promise.map(queries, query => db.queryAsync(query));
+};
+
 // delete all indices of elasticsearch
 const deleteIndices = () => {
   return esClient.indices.delete({ index: '_all' });
@@ -99,15 +106,12 @@ const deleteIndices = () => {
 // index MySQL database for elasticsearch based on tables
 const indexDatabase = () => {
   deleteIndices();
-  const tables = ['applicants', 'employer', 'skills', 'job_postings'];
-  tables.forEach((table) => {
-    getAllFromDatabaseTable(table)
-    .then((result) => {
-      const data = result[0];
-      if (data.length !== 0) {
-        bulkIndex('stackedup', table, data);
-      }
-    });
+  getAllFromDatabaseTables()
+  .then((result) => {
+    const data = result[0][0].concat(result[1][0]).concat(result[2][0]);
+    if (data.length !== 0) {
+      bulkIndex('stackedup', 'object', data);
+    }
   });
 };
 
