@@ -8,10 +8,6 @@ const ApplicantProfile = (props) => {
     {console.log('props in applicant profile: ', props.info)}
       <h1>Applicant Profile</h1>
       <div>
-        <div>
-          <img src={props.info.profile_pic_url}> </img>
-        </div>
-
         <ProfilePicture src={props.info.profile_pic_url}/>
         <h3>Username: {props.info.username}</h3><br />
         <h4>Name: {`${props.info.firstName} ${props.info.lastName}`}</h4><br />
