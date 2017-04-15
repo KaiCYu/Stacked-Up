@@ -7,7 +7,7 @@ import { BrowserRouter as Link } from 'react-router-dom';
 const ApplicantProfile = (props) => {
   return (
     <div className="search-container">
-    {console.log('props in applicant profile: ', props.info)}
+    {/*{console.log('props in applicant profile: ', props.info)}*/}
       <h1>Applicant Profile</h1>
       <div>
         <ProfilePicture src={props.info.profile_pic_url}/>
@@ -17,9 +17,8 @@ const ApplicantProfile = (props) => {
         <h5>Phone Number: {props.info.phone_number}</h5>
         <h5>Location: {`${props.info.city}, ${props.info.state} ${props.info.country}`}</h5>
 
-        <a href="https://www.google.com">google</a>
-        <a href={props.info.resume_url}>Resume</a> <br />
-        <a href={props.info.coverletter_url}>Cover Letter</a>
+        <a href={props.info.resume_url} target="_blank">Resume</a> <br />
+        <a href={props.info.coverletter_url} target="_blank">Cover Letter</a>
         
         {/*<div>Work History:
           {props.info.workHistory.map((workEntry, index) => {
