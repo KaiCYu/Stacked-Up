@@ -33,11 +33,12 @@ const SignupEmployer = (props) => (
         <input type="text" name="country" placeholder="Country" />
       </label>
       <p>*Required</p>
+      <input type="submit" value="Submit" /><input type="submit" value="Cancel" />
     </form>
 
-    <button>
+    {/*<button>
       <Link to="/employerProfile" onClick={props.submitEmployer}>Submit</Link>
-    </button>
+    </button>*/}
 
     <button>Cancel</button>
   </div>

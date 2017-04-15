@@ -40,7 +40,6 @@ class App extends React.Component {
       //   state: '',
       //   country: '',
       // },
-
       loggedInUsers: {},
       searchApplicantsResults: [],
       searchUsername: '',
@@ -226,18 +225,14 @@ class App extends React.Component {
               });
             }
           };
-          console.log('=======================');
-          console.log(this.props);
-          console.log(context.props);
-          console.log(this.props.history);
-          console.log(context.props.history);
-          console.log('=======================');
-          this.setState({ isLoggedIn: true });
+        this.setState({
+          isLoggedIn: true,
+          currentUser: results
+        });
+        console.log(this.state.currentUser);
       },
       error: (error) => {
         console.log('error on sending login info, error =', error);
-        console.log('error on sending login info, error =', error);
-
       }
     });
   }
@@ -516,24 +511,17 @@ class App extends React.Component {
               />
               <Route
                 path="/myProfile"
-                getMyProfileInfo={this.state.getMyProfileInfo}
-                render={() => (
-                  <MyProfile option={this.state.logInOption} employerInfo={this.state.employerProfileInfo} applicantInfo={this.state.applicantProfileInfo} />
+                component={() => (
+                  <MyProfile option={this.state.logInOption} currentUser={this.state.currentUser} />
                 )}
               />
               <Route
                 path="/employerProfile"
-                getEmployerProfileInfo={this.state.getEmployerProfileInfo}
-                render={(props) => (
-                  <EmployerProfile info={this.state.employerProfileInfo} />
-                )}
+                component={EmployerProfile}
               />
               <Route
                 path="/applicantProfile"
-                getApplicantProfileInfo={this.state.getapplicantProfileInfo}
-                render={(props) => (
-                  <ApplicantProfile info={this.state.applicantProfileInfo} />
-                )}
+                component={ApplicantProfile}
               />
               <Route
                 path="/profile"

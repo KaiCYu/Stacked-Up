@@ -37,11 +37,10 @@ class JobPost extends React.Component {
       data: applyingData,
       success: (data) => {
         console.log('application successfully submitted!');
-        console.log(data);
+        // TODO: change the button to applied after MVP
       },
       error: (error) => {
-        console.log('error!');
-        console.log(error);
+        console.log('error on apply! ', error);
       }
     });
   }
