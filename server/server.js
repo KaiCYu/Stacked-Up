@@ -126,7 +126,9 @@ app.get('/verifyLogin', (req, res) => {
 
 app.get('/getCurrentUser', (req, res) => {
   if (req.user) {
-    res.json(req.user);
+    const currentUser = req.user;
+    delete currentUser.password;
+    res.json(currentUser);
   } else {
     res.sendStatus(500);
   }

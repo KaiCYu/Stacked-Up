@@ -7,10 +7,12 @@ import ApplicantProfile from './ApplicantProfile';
 class MyProfile extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      currentUser: {},
+    };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     $.ajax({
       url: '/getCurrentUser',
       type: 'GET',
@@ -33,7 +35,7 @@ class MyProfile extends React.Component {
             <EmployerProfile info={this.state.currentUser} /> :
             <ApplicantProfile info={this.state.currentUser} /> }
         </div>
-        {this.state.option === 'company' ? <Link to="/postingjob">Post job</Link> : null}
+        {this.props.option === 'company' ? <Link to="/postingjob">Post job</Link> : null}
       </div>
     );
   }

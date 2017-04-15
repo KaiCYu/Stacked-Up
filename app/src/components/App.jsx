@@ -373,7 +373,6 @@ class App extends React.Component {
       url: '/logout',
       type: 'GET',
       success: (result) => {
-        console.log(result);
         this.setState({ isLoggedIn: false });
       },
       error: (error) => {
