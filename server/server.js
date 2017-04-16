@@ -180,7 +180,10 @@ app.post('/postingJob', (req, res) => {
       res.json(err);
     } else {
       console.log('job posting successful!: ', data);
-      res.json(data);
+      res.redirect('/');
+
+      // index elasticsearch with new applicant
+      elasticsearch.indexDatabase();
     }
   });
 });
@@ -260,6 +263,9 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
                       } else {
                         console.log('applicant has signed up!', data);
                         res.json(data);
+
+                        // index elasticsearch with new applicant
+                        elasticsearch.indexDatabase();
                       }
                     });
                   });
@@ -312,6 +318,9 @@ app.post('/signupEmployer', upload.any(), (req, res) => {
               } else {
                 console.log('employer has signed up!', data);
                 res.redirect('/');
+
+                // index elasticsearch with new applicant
+                elasticsearch.indexDatabase();
               }
             });
           });

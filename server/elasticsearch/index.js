@@ -105,13 +105,15 @@ const deleteIndices = () => {
 
 // index MySQL database for elasticsearch based on tables
 const indexDatabase = () => {
-  deleteIndices();
-  getAllFromDatabaseTables()
-  .then((result) => {
-    const data = result[0][0].concat(result[1][0]).concat(result[2][0]);
-    if (data.length !== 0) {
-      bulkIndex('stackedup', 'object', data);
-    }
+  deleteIndices()
+  .then(() => {
+    getAllFromDatabaseTables()
+    .then((result) => {
+      const data = result[0][0].concat(result[1][0]).concat(result[2][0]);
+      if (data.length !== 0) {
+        bulkIndex('stackedup', 'object', data);
+      }
+    });
   });
 };
 
