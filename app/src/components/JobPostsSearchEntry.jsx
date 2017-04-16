@@ -11,6 +11,9 @@ const JobPostsSearchEntry = ({ jobPost }) => (
       {jobPost.description.charAt(0).toUpperCase() + jobPost.description.slice(1)}
     </TableRowColumn>
     <TableRowColumn>
+      {utils.capitalizeFirstLetter(jobPost.company_name)}
+    </TableRowColumn>
+    <TableRowColumn>
       {utils.capitalizeFirstLetter(jobPost.location)}
     </TableRowColumn>
     <TableRowColumn>

@@ -4,7 +4,15 @@ import RaisedButton from 'material-ui/FlatButton';
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 
+
 const Navbar = (props) => {
+  const searchSubmit = (event) => {
+    props.history.push('/search');
+    event.preventDefault();
+    document.getElementById('search').value = '';
+    props.searchAll();
+  };
+
   return (
     <Toolbar>
       <ToolbarGroup>
@@ -15,10 +23,7 @@ const Navbar = (props) => {
       <ToolbarGroup>
         <form
           onSubmit={(event) => {
-            props.history.push('/search');
-            event.preventDefault();
-            document.getElementById('search').value = '';
-            props.searchAll();
+            searchSubmit(event);
           }}
         >
           <TextField
@@ -30,14 +35,12 @@ const Navbar = (props) => {
           />
           <RaisedButton
             id="search-button"
+            onClick={(event) => {
+              searchSubmit(event);
+            }}
           >Search
           </RaisedButton>
         </form>
-      </ToolbarGroup>
-      <ToolbarGroup>
-        <Link to="/search">
-          <RaisedButton>Search</RaisedButton>
-        </Link>
       </ToolbarGroup>
       <ToolbarGroup>
         {props.isLoggedIn ?

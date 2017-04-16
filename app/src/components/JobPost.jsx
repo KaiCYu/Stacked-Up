@@ -19,7 +19,19 @@ class JobPost extends React.Component {
       contentType: 'application/json',
       success: (data) => {
         console.log(data);
-        this.setState({ postings: data });
+        console.log(this.props.info);
+        if (this.props.info) {
+          const list = Array.from(Object.keys(data));
+          for (let i = 0; i < list.length; i += 1) {
+            if (data[list[i]].company_name !== this.props.info.company_name) {
+              delete data[list[i]];
+            }
+          }
+          this.setState({ postings: data });
+        } else {
+          this.setState({ postings: data });
+        }
+        
       },
       error: (error) => {
         console.log('AJAX request to get list of job postings failed due to ', error);

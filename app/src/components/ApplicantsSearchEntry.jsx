@@ -6,6 +6,9 @@ const ApplicantsSearchEntry = ({ applicant }) => {
   return (
     <TableRow>
       <TableRowColumn>
+        {applicant.username}
+      </TableRowColumn>
+      <TableRowColumn>
         {utils.capitalizeFirstLetter(applicant.firstName) + ' ' + utils.capitalizeFirstLetter(applicant.lastName)}
       </TableRowColumn>
       <TableRowColumn>

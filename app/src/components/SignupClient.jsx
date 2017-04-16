@@ -23,6 +23,7 @@ class SignupClient extends React.Component {
       coverLetter: '',
       profilePhoto: '',
     };
+
     this.initialState = this.state;
 
     this.previewFile = this.previewFile.bind(this);

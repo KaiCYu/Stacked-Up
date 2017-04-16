@@ -14,7 +14,7 @@ const EmployerProfile = (props) => {
         <h5>Phone Number: {props.info.phone_number}</h5>
         <h5>Location: {`${props.info.city}, ${props.info.state} ${props.info.country}`}</h5>
         <br />
-        <JobPost />
+        <JobPost info={props.info} />
       </div>
     </div>
   );

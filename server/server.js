@@ -29,7 +29,7 @@ const tempStorage = multer.diskStorage({
     cb(null, path);
   },
   filename: (req, file, cb) => {
-    console.log(file);
+    console.log('temp storage file upload, should not be used', file);
     cb(null, `${file.fieldname  }_${req.body.username}`);
   },
 });
@@ -54,12 +54,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  console.log('====>', user);
+  console.log('serialize User in passport ====>', user);
   done(null, user);
 });
 
 passport.deserializeUser((user, done) => {
-  console.log('deserializeUser', user);
+  console.log('deserializeUser in passport', user);
   let queryStr;
   if (user.type === 'applicant') {
     queryStr = `SELECT * FROM applicants WHERE id = "${user.id}";`;
@@ -74,7 +74,7 @@ passport.deserializeUser((user, done) => {
 passport.use(new LocalStrategy(
   (username, password, done) => {
     const temp = username.split('/');
-    console.log(temp);
+    console.log('passport authentication checking username and type : ', temp);
     let queryStr;
     const list = Array.from(Object.keys(loggedInUsers));
     let userLoggedIn = false;
@@ -90,7 +90,6 @@ passport.use(new LocalStrategy(
       } else if (temp[1] === 'company') {
         queryStr = `SELECT * FROM employer WHERE username = "${temp[0]}";`;
       }
-      console.log(queryStr);
       db.query(queryStr, (err1, user) => {
         if (err1) {
           return done(err1);
@@ -100,7 +99,6 @@ passport.use(new LocalStrategy(
         }
         return bcrypt.compare(password, user[0].password, (err2, res) => {
           if (res) {
-            console.log(res);
             user[0].type = temp[1];
             done(null, user[0]);
           }
@@ -156,8 +154,10 @@ app.post('/login', passport.authenticate('local'),
   });
 
 app.get('/logout', (req, res) => {
+  const username = req.user.username;
+  delete loggedInUsers[username];
   req.logout();
-  console.log("I'm here");
+  console.log('user log out');
   res.redirect('/');
 });
 
@@ -177,17 +177,21 @@ app.post('/postingJob', (req, res) => {
   db.query(queryStr, (err, data) => {
     if (err) {
       console.log('err', err);
+      res.json(err);
     } else {
-      console.log(data);
+      console.log('job posting successful!: ', data);
       res.redirect('/');
+
+      // index elasticsearch with new applicant
+      elasticsearch.indexDatabase();
     }
   });
 });
 
 //break down all async fnc
 //create new promise using bluebird
-//chaining promises 
-  
+//chaining promises
+
   // ATTEMPT TO PROMISIFY
 // app.post('/signupApplicant', upload.any(), (req, res) => {
 //   let queryStr = 'SELECT * FROM applicants WHERE username=?;';
@@ -214,7 +218,7 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
   let queryStr = 'SELECT * FROM applicants WHERE username=?;';
   db.query(queryStr, req.body.username, (err1, data, fields) => {
     if (err1) {
-      console.log(err1);
+      console.log('signup applicant query error', err1);
       res.status(500).send('Internal Server Error');
     } else if (data.length !== 0) {
       // case when no such your exists
@@ -248,7 +252,7 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
                     }
                       // insert into DB
                       // console.log('request username and fullname = ' + req.body.username);
-                    queryStr = `INSERT INTO applicants (username, password, firstname, lastname, email, phone_number, city, state, country, profile_pic_url, resume_url, coverletter_url) values 
+                    queryStr = `INSERT INTO applicants (username, password, firstname, lastname, email, phone_number, city, state, country, profile_pic_url, resume_url, coverletter_url) values
                       ("${req.body.username}", "${hash}", "${req.body.firstName}", "${req.body.lastName}",
                       "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}", "${image.secure_url}", "${resume.secure_url}", "${coverLetter.secure_url}"
                       );`;
@@ -259,6 +263,9 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
                       } else {
                         console.log('applicant has signed up!', data);
                         res.json(data);
+
+                        // index elasticsearch with new applicant
+                        elasticsearch.indexDatabase();
                       }
                     });
                   });
@@ -300,7 +307,7 @@ app.post('/signupEmployer', upload.any(), (req, res) => {
             }
               // insert into DB
               // console.log('request username and fullname = ' + req.body.username);
-            queryStr = `INSERT INTO employer (username, password, company_name, email, phone_number, city, state, country, logo_url) values 
+            queryStr = `INSERT INTO employer (username, password, company_name, email, phone_number, city, state, country, logo_url) values
               ("${req.body.username}", "${hash}", "${req.body.companyName}",
               "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}", "${image.secure_url}"
               );`;
@@ -311,6 +318,9 @@ app.post('/signupEmployer', upload.any(), (req, res) => {
               } else {
                 console.log('employer has signed up!', data);
                 res.redirect('/');
+
+                // index elasticsearch with new applicant
+                elasticsearch.indexDatabase();
               }
             });
           });
@@ -356,7 +366,7 @@ app.post('/apply', (req, res) => {
           res.status(500).send('Internal Server Error');
         }
         if (result) {
-          res.redirect(202, '/');
+          res.sendStatus(202);
         }
       });
     }
@@ -473,5 +483,9 @@ wss.on('connection', (ws) => {
   // }, 10000);
 });
 
-// index database for elasticsearch every minute
+// //update the picture
+// cloudinary.uploader.upload("test1.jpg", function(result) {
+//   console.log(result)
+// });
+
 elasticsearch.indexDatabase();
