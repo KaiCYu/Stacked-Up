@@ -22,7 +22,6 @@ class SignupClient extends React.Component {
       coverLetter: '',
       profilePhoto: '',
     };
-
     this.previewFile = this.previewFile.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onInputChange = this.onInputChange.bind(this);

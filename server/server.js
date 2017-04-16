@@ -176,9 +176,10 @@ app.post('/postingJob', (req, res) => {
   db.query(queryStr, (err, data) => {
     if (err) {
       console.log('err', err);
+      res.json(err);
     } else {
       console.log('job posting successful!: ', data);
-      res.redirect('/');
+      res.json(data);
     }
   });
 });
@@ -355,7 +356,7 @@ app.post('/apply', (req, res) => {
           res.status(500).send('Internal Server Error');
         }
         if (result) {
-          res.redirect(202, '/');
+          res.sendStatus(202);
         }
       });
     }

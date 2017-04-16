@@ -43,11 +43,6 @@ const Navbar = (props) => {
         </form>
       </ToolbarGroup>
       <ToolbarGroup>
-        <Link to="/search">
-          <RaisedButton>Search</RaisedButton>
-        </Link>
-      </ToolbarGroup>
-      <ToolbarGroup>
         {props.isLoggedIn ?
           <RaisedButton
             id="logout"
