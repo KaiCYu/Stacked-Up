@@ -67,7 +67,6 @@ class SignupClient extends React.Component {
   }
 
   handleSubmit(event) {
-    // const self = this;
     event.preventDefault();
     console.log('inside handle submit');
     const applicantData = this.state;

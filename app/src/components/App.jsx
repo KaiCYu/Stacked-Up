@@ -442,7 +442,6 @@ class App extends React.Component {
               <Route
                 path="/applicantProfile"
                 component={ApplicantProfile}
-
               />
               <Route
                 path="/profile"
