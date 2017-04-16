@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom'
 import $ from 'jquery';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 // import Dropzone from './Dropzone';
@@ -17,10 +18,12 @@ class SignupEmployer extends React.Component {
       country: '',
       logo: '',
     };
+    this.initialState = this.state;
 
     this.previewFile = this.previewFile.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.onResetForm = this.onResetForm.bind(this);
   }
 
   onInputChange(event) {
@@ -32,18 +35,18 @@ class SignupEmployer extends React.Component {
 
   previewFile(event) {
     const name = event.target.name;
-    console.log('NAME', name);
+    // console.log('NAME', name);
 
     //store the preview in state ==> faster to get.
     const preview = document.querySelector(`#${name}`);
     // console.log('PREVIEW', preview);
     const file = document.getElementById(`${name}`).files[0];
-    console.log('FILE *************: ', file);
+    // console.log('FILE *************: ', file);
 
     const reader = new FileReader();
 
     reader.addEventListener("loadend", () => {
-      console.log('read the picture******************');
+      // console.log('read the picture******************');
       preview.src = reader.result;
     }, false);
 
@@ -57,10 +60,14 @@ class SignupEmployer extends React.Component {
     }
   }
 
+  onResetForm() {
+    const form = ReactDOM.findDOMNode(signupEmployer);
+    form.reset();
+    this.setState(this.initialState);
+  }
+
   handleSubmit(event) {
-    // const self = this;
     event.preventDefault();
-    // console.log('inside handle submit');
     const applicantData = this.state;
 
     $.ajax({
@@ -81,7 +88,7 @@ class SignupEmployer extends React.Component {
     return (
       <div className="SignupEmployer-container">
         <h1>Signup as a Employer</h1>
-        <form onSubmit={this.handleSubmit}>
+        <form id="signupEmployer" onSubmit={this.handleSubmit}>
           <label>Username*:
             <input type="text" name="username" placeholder="username" onChange={this.onInputChange} />
           </label>
@@ -127,8 +134,8 @@ class SignupEmployer extends React.Component {
 
           <br />
           <input type="submit" value="sign up" />
+          <button onClick={this.onResetForm}>Clear</button>
         </form>
-        <button>Cancel</button>
       </div>
     );
   }
