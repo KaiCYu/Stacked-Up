@@ -46,7 +46,11 @@ class App extends React.Component {
       incomingVideoCall: false,
       incomingVideoCaller: '',
       incomingVideoRoom: '',
-      searchResults: {},
+      searchResults: {
+        applicants: [],
+        employers: [],
+        jobPostings: [],
+      },
     };
 
     this.getMyProfileInfo = this.getMyProfileInfo.bind(this);
@@ -178,16 +182,21 @@ class App extends React.Component {
 
 
   updateUsersLoginStatus(loggedInUsers) {
-    const newSearchApplicantsResults = this.state.searchApplicantsResults
+    // const newSearchApplicantsResults = this.state.searchApplicantsResults
+    const newSearchApplicantsResults = this.state.searchResults.applicants
     .map(function(applicant) {
+      console.log('loggedInUsers updated, loggedInUsers = ', loggedInUsers)
       if (applicant.username in loggedInUsers) {
         applicant.online = true;
+        applicant.camlink = `<a href=# onclick="window.sendVideoCallRequest('${applicant.username}')">Call ${applicant.username}!</a>`
       } else {
         applicant.online = false;
+        applicant.camlink = 'offline';
       }
       return applicant;
     })
-    this.setState({searchApplicantsResults: newSearchApplicantsResults});
+    console.log('newSearchApplicantsResults = ', newSearchApplicantsResults)
+    this.setState({searchResults: {applicants: newSearchApplicantsResults}});
   }
 
   onInputChange(event) {
@@ -211,7 +220,7 @@ class App extends React.Component {
         console.log('sent login info, results =', results)
         var HOST = location.origin.replace(/^http/, 'ws')
           console.log('mounted, HOST = ', HOST);
-          var ws = new WebSocket('ws://localhost:3000?username=' + results);
+          var ws = new WebSocket(HOST+'/?username=' + results);
           ws.onmessage = function (msg) {
             msg = JSON.parse(msg.data);
             console.log(msg);
@@ -387,6 +396,7 @@ class App extends React.Component {
       url: searchURL,
       success: (results) => {
         const filtered = utils.filterSearchResults(results);
+        console.log('SUCCESSFUL SEARCH, results = ', filtered)
         this.setState({ searchResults: filtered });
       },
       error: (error) => {

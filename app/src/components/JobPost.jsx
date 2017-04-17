@@ -18,8 +18,8 @@ class JobPost extends React.Component {
       type: 'GET',
       contentType: 'application/json',
       success: (data) => {
-        console.log(data);
-        console.log(this.props.info);
+        // console.log(data);
+        // console.log(this.props.info);
         if (this.props.info) {
           const list = Array.from(Object.keys(data));
           for (let i = 0; i < list.length; i += 1) {
@@ -40,7 +40,7 @@ class JobPost extends React.Component {
   }
 
   handleApply(jobPostingId) {
-    console.log(jobPostingId);
+    // console.log(jobPostingId);
     const applyingData = {};
     applyingData.jobPostingId = jobPostingId;
     $.ajax({

@@ -5,7 +5,6 @@ import ProfilePicture from './ProfilePicture';
 const EmployerProfile = (props) => {
   return (
     <div className="search-container">
-    {console.log('props in employer profile: ', props.info)}
       <h1>Employer Profile</h1>
       <div>
         <ProfilePicture src={props.info.logo_url}/>

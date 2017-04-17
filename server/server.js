@@ -1,6 +1,7 @@
-const db = require('./db/index').connection;
+const Promise = require('bluebird');
 const express = require('express');
-const SocketServer = require('ws').Server;
+const http = require('http');
+const WebSocket = require('ws');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -8,13 +9,16 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
-const Promise = require('bluebird');
 const fs = require('fs');
+const db = require('./db/index.js').connection;
+const dbName = require('./db/index.js').dbName;
+const initDB = require('./db/index.js').initDB;
+initDB();
 const elasticsearch = require('./elasticsearch/index.js');
 const cloudinary = require('cloudinary');
 const cloudinaryAPI = require('./../config/cloudinaryconfig.js');
 
-const port = 8000;
+const PORT = process.env.PORT || 8000;
 
 const tempStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -157,7 +161,20 @@ app.get('/logout', (req, res) => {
   const username = req.user.username;
   delete loggedInUsers[username];
   req.logout();
-  console.log('user log out');
+
+  console.log('loggedInUsers = ', Object.keys(loggedInUsers));
+  let loggedInUsersInfoUpdate = {};
+  Object.keys(loggedInUsers).forEach(function(applicantName) {
+    loggedInUsersInfoUpdate[applicantName] = true;
+  })
+  let data = {
+    type: 'loggedInUsersUpdate',
+    loggedInUsers: loggedInUsersInfoUpdate
+  };
+  Object.keys(loggedInUsers).forEach(function(key) { //update all users
+    let wsClient = loggedInUsers[key][1];
+    wsClient.send( JSON.stringify(data) );
+  });
   res.redirect('/');
 });
 
@@ -215,8 +232,8 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
   // console.log(" ========================= ", req._parsedOriginalUrl.path);
   // console.log('REQ.URL: ', req.url);
   console.log("'REQ.BODY.RESUME: ", req.body.resume);
-  let queryStr = 'SELECT * FROM applicants WHERE username=?;';
-  db.query(queryStr, req.body.username, (err1, data, fields) => {
+  let queryStr = `SELECT * FROM applicants WHERE username="${req.body.username}";`;
+  db.query(queryStr, (err1, data) => {
     if (err1) {
       console.log('signup applicant query error', err1);
       res.status(500).send('Internal Server Error');
@@ -283,8 +300,8 @@ app.post('/signupEmployer', upload.any(), (req, res) => {
   // console.log(" ========================= ", req._parsedOriginalUrl.path);
   // console.log('REQ.URL: ', req.url);
   console.log('REQ.BODY: ', req.body);
-  let queryStr = 'SELECT * FROM employer WHERE username=?;';
-  db.query(queryStr, req.body.username, (err1, data, fields) => {
+  let queryStr = `SELECT * FROM employer WHERE username="${req.body.username}";`;
+  db.query(queryStr, (err1, data) => {
     if (err1) {
       console.log(err1);
       res.status(500).send('Internal Server Error');
@@ -352,16 +369,16 @@ app.post('/signupEmployer', upload.any(), (req, res) => {
 // });
 
 app.post('/apply', (req, res) => {
-  const queryStr = 'SELECT * FROM applicants_job_postings WHERE applicant_id=? AND job_posting_id=?;';
   const postId = JSON.parse(req.body.jobPostingId);
-  db.query(queryStr, [req.user.id, postId], (error, data) => {
+  const queryStr = `SELECT * FROM applicants_job_postings WHERE applicant_id="${req.user.id}" AND job_posting_id="${postId}";`;
+  db.query(queryStr, (error, data) => {
     if (error) {
       res.status(500).send('Internal Server Error');
     } else if (data.length !== 0) {
       res.redirect(400, '/');
     } else {
-      const queryStri = 'INSERT INTO applicants_job_postings VALUES (?, ?);';
-      db.query(queryStri, [req.user.id, postId], (err, result) => {
+      const queryStri = `INSERT INTO applicants_job_postings VALUES (${req.user.id}, ${postId});`;
+      db.query(queryStri, (err, result) => {
         if (err) {
           res.status(500).send('Internal Server Error');
         }
@@ -395,15 +412,25 @@ app.get('/search/:query/:fuzziness/:size', (req, res) => {
       },
     },
   };
-  elasticsearch.search('stackedup', body)
+  elasticsearch.search(dbName, body)
   .then((results) => {
-    results = results.hits.hits.map(function(hit) {
-      var applicant = hit._source;
-      (applicant.username in loggedInUsers)?applicant.online=true
-      :applicant.online=false;
-      return applicant;
-    });
-    res.status(200).json(results);
+    console.log("SEARCH RESULTS =", results);
+    if (results[0]&& results[0].username) {
+      results = results.map(function(applicant) {
+        (applicant.username in loggedInUsers)?applicant.online=true
+        :applicant.online=false;
+        return applicant;
+      });
+      res.status(200).json(results);
+    } else if (results&&results.length>0) {
+      results = results.hits.hits.map(function(hit) {
+        var applicant = hit._source;
+        (applicant.username in loggedInUsers)?applicant.online=true
+        :applicant.online=false;
+        return applicant;
+      });
+      res.status(200).json(results);
+    }
   })
   .catch(() => {
     res.sendStatus(404);
@@ -425,15 +452,12 @@ app.post('/requestCall', (req, res) => {
   res.status(200).send(room);
 })
 
-app.listen(process.env.PORT || port, () => {
-  /* eslint-disable no-console */
-  console.log(`Server now listening on port ${port}`);
-  /* eslint-enable no-console */
+const server = http.createServer(app);
+server.listen(PORT, () => {
+  console.log(`Server now listening on port ${PORT}`);
 });
+const wss = new WebSocket.Server({ server });
 
-const wss = new SocketServer({
-  server: app,
-  port: 3000 });
 wss.on('connection', (ws) => {
   var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
   var username = ws.upgradeReq.url.replace('/?username=', '')
@@ -488,4 +512,6 @@ wss.on('connection', (ws) => {
 //   console.log(result)
 // });
 
+
 elasticsearch.indexDatabase();
+

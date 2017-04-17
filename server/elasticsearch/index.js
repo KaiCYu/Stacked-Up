@@ -1,13 +1,14 @@
-// index.js - elasticsearch
 const elasticsearch = require('elasticsearch');
+const mysql = require('mysql');
 const Promise = require('bluebird');
-let db = require('./../db/index.js').connection;
 const fs = require('fs');
+var db = require('../db/index.js').connection
+const dbName = require('../db/index.js').dbName
 
-db = Promise.promisifyAll(db, { multiArgs: true });
 
 // create elasticsearch connection
-const esClient = new elasticsearch.Client({
+const esClient = new elasticsearch.Client(process.env.BONSAI_URL ||
+{
   host: '127.0.0.1:9200',
   log: 'error',
 });
@@ -37,7 +38,7 @@ const bulkIndex = (index, type, data) => {
     bulkbody.push(item);
   });
 
-  esClient.bulk({ body: bulkbody })
+  return esClient.bulk({ body: bulkbody })
   .then((response) => {
     let errorcount = 0;
     response.items.forEach((item) => {
@@ -55,9 +56,17 @@ const bulkIndex = (index, type, data) => {
   });
 };
 
+const ESsearch = Promise.promisify(esClient.search);
 // search index
 const search = (index, body) => {
-  return esClient.search({ index, body });
+  return ESsearch({ index, body })
+  .timeout(2000, message='\n\n\nElasticSearch FAIL // falling back to MYSQL Query')
+  .catch((error)=>{
+    var query;
+    body && body.query.match._all.query ? query = body.query.match._all.query : null;
+    return error?db.queryAsyncQuestion(
+    `SELECT * FROM APPLICANTS WHERE USERNAME=?;`, query):null
+  }); 
 };
 
 // example function
@@ -76,7 +85,7 @@ const test = () => {
     },
   };
 
-  search('stackedup', 'applicants', body)
+  search(dbName, 'applicants', body)
   .then((results) => {
     console.log(`found ${results.hits.total} items in ${results.took}ms`);
     console.log('returned article titles:');
@@ -109,9 +118,10 @@ const indexDatabase = () => {
   .then(() => {
     getAllFromDatabaseTables()
     .then((result) => {
-      const data = result[0][0].concat(result[1][0]).concat(result[2][0]);
-      if (data.length !== 0) {
-        bulkIndex('stackedup', 'object', data);
+
+        const data = result[0].concat(result[1]).concat(result[2]);
+        if (data.length !== 0) {
+          bulkIndex(dbName, 'object', data);
       }
     });
   });

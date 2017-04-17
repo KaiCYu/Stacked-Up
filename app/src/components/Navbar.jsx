@@ -33,13 +33,13 @@ const Navbar = (props) => {
               props.onInputChange(event);
             }}
           />
-          <RaisedButton
-            id="search-button"
+          <Link
+            to="/search"
             onClick={(event) => {
               searchSubmit(event);
             }}
           >Search
-          </RaisedButton>
+          </Link>
         </form>
       </ToolbarGroup>
       <ToolbarGroup>

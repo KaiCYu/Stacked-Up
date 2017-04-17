@@ -9,6 +9,7 @@
     "node": ">=6.4.0"
   },
   "scripts": {
+    "start": "node server/server.js",
     "clean:modules": "rimraf node_modules",
     "db:setup": "mysql -u root < server/db/schema.sql",
     "elasticsearch": "elasticsearch",
@@ -26,6 +27,7 @@
     "elasticsearch": "^13.0.0-rc2",
     "express": "^4.15.2",
     "express-session": "^1.15.2",
+    "http": "0.0.0",
     "jquery": "^3.2.1",
     "jquery-ui-bundle": "^1.12.1",
     "material-ui": "^0.17.3",
