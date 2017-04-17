@@ -300,19 +300,17 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
         const redirect = () => (
         <Redirect to="${req._parsedOriginalUrl.path}">);`;
       res.send(redirectUrl);
-    } else if (req.body.profilePhoto.length !== 0) {
+    } else if (req.body.profilePhoto.lemgth !== 0) {
       // upload the picture
       cloudinary.v2.uploader.upload(`${req.body.profilePhoto}`, { resource_type: 'auto'}, (err2, image) => {
         if ('ERROR 2 ', err2) {
           console.log('error sending profile picture to cloud ', err2);
         } else if (req.body.resume.length !== 0) {
-          // console.log('IMAGE URL: ', image);
           // upload resume
           cloudinary.v2.uploader.upload(`${req.body.resume}`, { resource_type: 'raw' }, (err3, resume) => {
             if ('ERROR 3', err3) {
               console.log('error sending resume to cloud ', err3);
             } else if (req.body.coverLetter.length !== 0) {
-              // console.log('RESUME URL: ', resume);
               // upload cover letter
               cloudinary.v2.uploader.upload(`${req.body.coverLetter}`, { resource_type: 'raw' }, (err4, coverLetter) => {
                 if ('ERROR 4: ', err4) {
