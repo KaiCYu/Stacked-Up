@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom'
 import $ from 'jquery';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 // import Dropzone from './Dropzone';
@@ -22,9 +23,13 @@ class SignupClient extends React.Component {
       coverLetter: '',
       profilePhoto: '',
     };
+
+    this.initialState = this.state;
+
     this.previewFile = this.previewFile.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
+    this.onResetForm = this.onResetForm.bind(this);
   }
 
   previewFile(event) {
@@ -66,9 +71,15 @@ class SignupClient extends React.Component {
     });
   }
 
+  onResetForm() {
+    const form = ReactDOM.findDOMNode(signupApplicant);
+    form.reset();
+    this.setState(this.initialState);
+  }
+
   handleSubmit(event) {
     event.preventDefault();
-    console.log('inside handle submit');
+    // console.log('inside handle submit');
     const applicantData = this.state;
     $.ajax({
       type: 'POST',
@@ -88,7 +99,7 @@ class SignupClient extends React.Component {
     return (
       <div className="SignupClient-container">
         <h1>Signup as a Client</h1>
-        <form onSubmit={this.handleSubmit}>
+        <form id="signupApplicant" onSubmit={this.handleSubmit}>
           <label>Username*:
             <input type="text" name="username" placeholder="AwesomeEngineer" onChange={this.onInputChange} />
           </label>
@@ -152,12 +163,12 @@ class SignupClient extends React.Component {
           
           <br />
           <input type="submit" value="sign up" />
+          <button onClick={this.onResetForm}>Clear</button>
         </form>
 
           {/*if we need ajax post call on applicant sign up*/}
           {/*<Link to="/applicantProfile" onClick={props.submitApplicant}>Submit</Link>*/}
           
-        <button>Cancel</button>
       </div>
     )};
 }
