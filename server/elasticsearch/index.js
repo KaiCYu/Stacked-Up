@@ -66,7 +66,7 @@ const search = (index, body) => {
     body && body.query.match._all.query ? query = body.query.match._all.query : null;
     return error?db.queryAsyncQuestion(
     `SELECT * FROM APPLICANTS WHERE USERNAME=?;`, query):null
-  }); 
+  });
 };
 
 // example function
@@ -118,11 +118,13 @@ const indexDatabase = () => {
   .then(() => {
     getAllFromDatabaseTables()
     .then((result) => {
-
-        const data = result[0].concat(result[1]).concat(result[2]);
-        if (data.length !== 0) {
-          bulkIndex(dbName, 'object', data);
+      const data = result[0].concat(result[1]).concat(result[2]);
+      if (data.length !== 0) {
+        bulkIndex(dbName, 'object', data);
       }
+    })
+    .catch(() => {
+      console.log('Elasticsearch outputs this error when database is empty');
     });
   });
 };
