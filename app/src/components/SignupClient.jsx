@@ -37,7 +37,7 @@ class SignupClient extends React.Component {
   }
 
   onInputChange(event) {
-    const name = event.target.name;
+    const name = event.target.name
     this.setState({
       [name]: event.target.value,
     });
