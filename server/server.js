@@ -300,7 +300,7 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
         const redirect = () => (
         <Redirect to="${req._parsedOriginalUrl.path}">);`;
       res.send(redirectUrl);
-    } else if (req.body.profilePhoto.lemgth !== 0) {
+    } else if (req.body.profilePhoto.length !== 0) {
       // upload the picture
       cloudinary.v2.uploader.upload(`${req.body.profilePhoto}`, { resource_type: 'auto'}, (err2, image) => {
         if ('ERROR 2 ', err2) {
