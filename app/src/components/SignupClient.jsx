@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import $ from 'jquery';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
+import FormInput from './FormInput';
 // import Dropzone from './Dropzone';
 
 class SignupClient extends React.Component {
@@ -14,8 +15,6 @@ class SignupClient extends React.Component {
       lastName: '',
       email: '',
       phoneNumber: '',
-      // currentEmployer: '',
-      // currentSchool: '',
       city: '',
       state: '',
       country: '',
@@ -34,46 +33,48 @@ class SignupClient extends React.Component {
 
   previewFile(event) {
     const name = event.target.name;
-    console.log('NAME', name);
+    // console.log('NAME', name);
 
     //store the preview in state ==> faster to get.
-    const preview = document.querySelector(`#${name}`);
-    // console.log('PREVIEW', preview);
+    const preview = document.querySelector('#preview');
+    console.log('PREVIEW', preview);
     const file = document.getElementById(`${name}`).files[0];
-    console.log('FILE *************: ', file);
+    // console.log('FILE *************: ', file);
 
     const reader  = new FileReader();
 
-    reader.onloadend = () => {
-      console.log('READER: ', reader);
+    reader.onloadend = (event) => {
+      // console.log('READER: ', reader);
       this.setState({ [name]: reader.result });
     };
 
     reader.addEventListener("loadend", () => {
       console.log('read the picture******************');
-      preview.src = reader.result;
+        const image = new Image();
+        image.height = 100;
+        image.title = file.name;
+        image.src = reader.result;
+        preview.appendChild( image );
     }, false);
 
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-    // if (file && file.type === 'text/plain') {
-    //   reader.readAsText(file);
-    // } else {
+    // if (file) {
     //   reader.readAsDataURL(file);
     // }
+    if (file && file.type === 'text/plain') {
+      reader.readAsText(file);
+    } else {
+      reader.readAsDataURL(file);
+    }
   }
 
   onInputChange(event) {
-    const name = event.target.name;
+    const name = event.target.name
     this.setState({
       [name]: event.target.value
     });
   }
 
   onResetForm() {
-    const form = ReactDOM.findDOMNode(signupApplicant);
-    form.reset();
     this.setState(this.initialState);
   }
 
@@ -100,36 +101,15 @@ class SignupClient extends React.Component {
       <div className="SignupClient-container">
         <h1>Signup as a Client</h1>
         <form id="signupApplicant" onSubmit={this.handleSubmit}>
-          <label>Username*:
-            <input type="text" name="username" placeholder="AwesomeEngineer" onChange={this.onInputChange} />
-          </label>
-          <label>Password*:
-            <input type="password" name="password" onChange={this.onInputChange} />
-          </label>
-          <br  />
-          <label>First Name*:
-            <input type="text" name="firstName" placeholder="First Name" onChange={this.onInputChange} />
-          </label>
-          <label>Last Name*:
-            <input type="text" name="lastName" placeholder="Last Name" onChange={this.onInputChange} />
-          </label>
-          <br  />
-          <label>Email:
-            <input type="text" name="email" placeholder="janedoe@stackedup.com" onChange={this.onInputChange} />
-          </label>
-          <label>Phone Number*:
-            <input type="text" name="phoneNumber" placeholder="(000)000-0000" onChange={this.onInputChange} />
-          </label>
-          <br  />
-          <label>City:
-            <input type="text" name="city" placeholder="City" onChange={this.onInputChange} />
-          </label>
-          <label>State:
-            <input type="text" name="state" placeholder="State" onChange={this.onInputChange} />
-          </label>
-          <label>Country:
-            <input type="text" name="country" placeholder="Country" onChange={this.onInputChange} />
-          </label><br />
+          <FormInput title={'Username*'} type={'text'} value={this.state.username} name={'username'} placeholder={'AwesomeEngineer'} onChange={this.onInputChange} />
+          <FormInput title={'Password*'} type={'password'} value={this.state.password} name={'password'} onChange={this.onInputChange}/> <br />
+          <FormInput title={'First Name*'} type={'text'} value={this.state.firstName} name={'firstName'} placeholder={'Erik'} onChange={this.onInputChange}/>
+          <FormInput title={'Last Name*'} type={'text'} value={this.state.lastName} name={'lastName'} placeholder={'Brown'} onChange={this.onInputChange}/> <br />
+          <FormInput title={'E-mail*'} type={'text'} value={this.state.email} name={'email'} placeholder={'awesomebot@gmail.com'} onChange={this.onInputChange}/>
+          <FormInput title={'Phone Number'} type={'text'} value={this.state.phoneNumber} name={'phoneNumber'} placeholder={'(123)456-7890'} onChange={this.onInputChange}/> <br />
+          <FormInput title={'City'} type={'text'} value={this.state.city} name={'city'} placeholder={'San Francisco'} onChange={this.onInputChange}/>
+          <FormInput title={'State'} type={'text'} value={this.state.state} name={'state'} placeholder={'California'} onChange={this.onInputChange}/>
+          <FormInput title={'Country'} type={'text'} value={this.state.country} name={'country'} placeholder={'USA'} onChange={this.onInputChange}/> <br/>
           <label> Upload your resume
             <input
               id="resume"
@@ -145,7 +125,6 @@ class SignupClient extends React.Component {
               onChange={this.previewFile} /><br />
           </label>
           <label> Upload your photo
-            {/*name={this.state.profilePicture}*/}
             <input
               id="profilePhoto"
               type="file"
@@ -157,7 +136,10 @@ class SignupClient extends React.Component {
           <p>*Required</p>
 
           <br />
-          <img className="previewImage" src="" height="200" alt="Image preview..."></img>
+          {/*<img className="previewImage" src="" height="200" alt="Image preview..."></img>
+          <img className="previewResume" src="" height="200" alt="Resume preview..."></img>
+          <img className="previewCoverLetter" src="" height="200" alt="Cover Letter preview..."></img>*/}
+          <div id="preview"></div>
 
           {/*<Dropzone />*/}
           

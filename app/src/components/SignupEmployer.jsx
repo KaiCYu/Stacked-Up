@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import $ from 'jquery';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
+import FormInput from './FormInput';
 // import Dropzone from './Dropzone';
 
 class SignupEmployer extends React.Component {
@@ -38,7 +39,7 @@ class SignupEmployer extends React.Component {
     // console.log('NAME', name);
 
     //store the preview in state ==> faster to get.
-    const preview = document.querySelector(`#${name}`);
+    const preview = document.querySelector('#preview');
     // console.log('PREVIEW', preview);
     const file = document.getElementById(`${name}`).files[0];
     // console.log('FILE *************: ', file);
@@ -51,7 +52,7 @@ class SignupEmployer extends React.Component {
     }, false);
 
     reader.onloadend = () => {
-      console.log('READER: ', reader);
+      // console.log('READER: ', reader);
       this.setState({ [name]: reader.result });
     };
 
@@ -61,8 +62,6 @@ class SignupEmployer extends React.Component {
   }
 
   onResetForm() {
-    const form = ReactDOM.findDOMNode(signupEmployer);
-    form.reset();
     this.setState(this.initialState);
   }
 
@@ -89,33 +88,16 @@ class SignupEmployer extends React.Component {
       <div className="SignupEmployer-container">
         <h1>Signup as a Employer</h1>
         <form id="signupEmployer" onSubmit={this.handleSubmit}>
-          <label>Username*:
-            <input type="text" name="username" placeholder="username" onChange={this.onInputChange} />
-          </label>
-          <label>Password*:
-            <input type="password" name="password" onChange={this.onInputChange} />
-          </label>
-          <br  />
-          <label>Company Name*:
-            <input type="text" name="companyName" placeholder="compnay name" onChange={this.onInputChange} />
-          </label>
-          <br  />
-          <label>Email:
-            <input type="text" name="email" placeholder="company@stackedup.com" onChange={this.onInputChange} />
-          </label>
-          <label>Phone Number*:
-            <input type="text" name="phoneNumber" placeholder="(000)000-0000" onChange={this.onInputChange} />
-          </label>
+          <FormInput title={'Username*'} type={'text'} value={this.state.username} name={'username'} placeholder={'Awesome Company'} onChange={this.onInputChange} />
+          <FormInput title={'Password*'} type={'password'} value={this.state.password} name={'password'} placeholder={'password'} onChange={this.onInputChange} /> <br />
+          <FormInput title={'Company Name*'} type={'text'} value={this.state.companyName} name={'companyName'} placeholder={'Awesome Company'} onChange={this.onInputChange} />
+          <FormInput title={'Email*'} type={'text'} value={this.state.email} name={'email'} placeholder={'awesomecompany@awesome.com'} onChange={this.onInputChange} />
+          <FormInput title={'Phone Number*'} type={'text'} value={this.state.phoneNumber} name={'phoneNumber'} placeholder={'(123)456-7890'} onChange={this.onInputChange} /> <br />
+          <FormInput title={'City'} type={'text'} value={this.state.city} name={'city'} placeholder={'San Francisco'} onChange={this.onInputChange} />
+          <FormInput title={'State'} type={'text'} value={this.state.state} name={'state'} placeholder={'California'} onChange={this.onInputChange} />
+          <FormInput title={'Country'} type={'text'} value={this.state.country} name={'country'} placeholder={'USA'} onChange={this.onInputChange} />
           <br />
-          <label>City:
-            <input type="text" name="city" placeholder="City" onChange={this.onInputChange} />
-          </label>
-          <label>State:
-            <input type="text" name="state" placeholder="State" onChange={this.onInputChange} />
-          </label>
-          <label>Country:
-            <input type="text" name="country" placeholder="Country" onChange={this.onInputChange} />
-          </label><br />
+
           <label> Upload Logo Photo
             <input
               id="logo"
@@ -128,9 +110,8 @@ class SignupEmployer extends React.Component {
           <p>*Required</p>
 
           <br />
-          {/*<img className="previewImage" src="" height="200" alt="Image preview..."></img>*/}
-
           {/*<Dropzone />*/}
+          <img id="preview" src="" height="200" alt="Image preview..."></img>
 
           <br />
           <input type="submit" value="sign up" />
@@ -142,4 +123,3 @@ class SignupEmployer extends React.Component {
 }
 
 export default SignupEmployer;
-

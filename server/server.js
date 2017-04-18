@@ -224,21 +224,21 @@ app.post('/signupApplicant', (req, res) => {
         const redirect = () => (
         <Redirect to="${req._parsedOriginalUrl.path}">);`;
       res.send(redirectUrl);
-    } else {
+    } else if (req.body.profilePhoto.length !== 0) {
       // upload the picture
       cloudinary.v2.uploader.upload(`${req.body.profilePhoto}`, { resource_type: 'auto'}, (err2, image) => {
         if ('ERROR 2 ', err2) {
           console.log('error sending profile picture to cloud ', err2);
-        } else {
+        } else if (req.body.resume.length !== 0) {
           console.log('IMAGE URL: ', image);
           // upload resume
-          cloudinary.v2.uploader.upload(`${req.body.resume}`, { resource_type: 'auto' }, (err3, resume) => {
+          cloudinary.v2.uploader.upload(`${req.body.resume}`, { resource_type: 'raw' }, (err3, resume) => {
             if ('ERROR 3', err3) {
               console.log('error sending resume to cloud ', err3);
-            } else {
+            } else if (req.body.coverLetter.length !== 0) {
               console.log('RESUME URL: ', resume);
               // upload cover letter
-              cloudinary.v2.uploader.upload(`${req.body.coverLetter}`, { resource_type: 'auto' }, (err4, coverLetter) => {
+              cloudinary.v2.uploader.upload(`${req.body.coverLetter}`, { resource_type: 'raw' }, (err4, coverLetter) => {
                 if ('ERROR 4: ', err4) {
                   console.log('error sending cover letter to cloud ', err4);
                 } else {
@@ -377,6 +377,7 @@ app.post('/apply', (req, res) => {
  * :fuzziness represents the number of possible misspelled characters
  * :size represents the amount of matched results to return
  */
+
 app.get('/search/:query/:fuzziness/:size', (req, res) => {
   const fuzziness = req.params.fuzziness;
   const query = req.params.query;
@@ -393,6 +394,7 @@ app.get('/search/:query/:fuzziness/:size', (req, res) => {
       },
     },
   };
+  
   elasticsearch.search(dbName, body)
   .then((results) => {
     console.log("SEARCH RESULTS =", results);
