@@ -5,17 +5,16 @@ Promise.promisifyAll(mysql);
 Promise.promisifyAll(require("mysql/lib/Connection").prototype);
 Promise.promisifyAll(require("mysql/lib/Pool").prototype);
 
-const databaseName = process.env.CLEARDB_DATABASE_URL?'heroku_2324d576fae6bbb':'stackedup'
+// const databaseName = process.env.CLEARDB_DATABASE_URL?'heroku_2324d576fae6bbb':'stackedup'
+const databaseName = 'stackedup';
 const pool = mysql.createPool(
-    process.env.CLEARDB_DATABASE_URL
-  ||
-  { 
+  {
     host: 'localhost',
     user: 'root',
     password: '',
     database: databaseName,
   }
-  )
+);
 
 
 const getConn = function() {

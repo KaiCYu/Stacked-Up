@@ -13,6 +13,12 @@ const Navbar = (props) => {
     props.searchAll();
   };
 
+  const logout = () => {
+    props.handleLogOut();
+    console.log(props);
+    props.history.push('/main');
+  };
+
   return (
     <Toolbar>
       <ToolbarGroup>
@@ -43,25 +49,28 @@ const Navbar = (props) => {
         </form>
       </ToolbarGroup>
       <ToolbarGroup>
+        <Link to="/jobPost">
+          <RaisedButton>Job Posts</RaisedButton>
+        </Link>
+      </ToolbarGroup>
+      {props.isLoggedIn ?
+        <ToolbarGroup>
+          <Link to="/myProfile">
+            <RaisedButton>My Profile</RaisedButton>
+          </Link>
+        </ToolbarGroup> :
+          null
+      }
+      <ToolbarGroup>
         {props.isLoggedIn ?
           <RaisedButton
             id="logout"
-            onClick={props.handleLogOut}
+            onClick={logout}
           >Logout
           </RaisedButton> :
           <Link to="/login">
             <RaisedButton>Log In</RaisedButton>
           </Link>}
-      </ToolbarGroup>
-      <ToolbarGroup>
-        <Link to="/myProfile">
-          <RaisedButton>My Profile</RaisedButton>
-        </Link>
-      </ToolbarGroup>
-      <ToolbarGroup>
-        <Link to="/jobPost">
-          <RaisedButton>Job Posts</RaisedButton>
-        </Link>
       </ToolbarGroup>
     </Toolbar>
   );

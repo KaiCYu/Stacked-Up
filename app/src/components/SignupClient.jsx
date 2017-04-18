@@ -87,7 +87,7 @@ class SignupClient extends React.Component {
       data: applicantData,
       success: (results) => {
         console.log('signed up as an applicant!', results);
-        this.props.history.push('/main');
+        this.props.history.push('/login');
       },
       error: (error) => {
         console.log('error on getting profile from server // error', error);

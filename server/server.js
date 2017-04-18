@@ -8,7 +8,6 @@ const LocalStrategy = require('passport-local').Strategy;
 // const cookie = require('cookie-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
-const multer = require('multer');
 const fs = require('fs');
 const db = require('./db/index.js').connection;
 const dbName = require('./db/index.js').dbName;
@@ -19,26 +18,6 @@ const cloudinary = require('cloudinary');
 const cloudinaryAPI = require('./../config/cloudinaryconfig.js');
 
 const PORT = process.env.PORT || 8000;
-
-const tempStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const type = req.body.username;
-    const path = `upload/${type}/`;
-    if (!fs.existsSync('upload/')) {
-      fs.mkdirSync('upload/');
-    }
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path);
-    }
-    cb(null, path);
-  },
-  filename: (req, file, cb) => {
-    console.log('temp storage file upload, should not be used', file);
-    cb(null, `${file.fieldname  }_${req.body.username}`);
-  },
-});
-
-const upload = multer({ storage: tempStorage });
 
 const app = express();
 const loggedInUsers = {};
@@ -52,8 +31,7 @@ app.use(session({
   secret: 'there is no secret',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 600000,
-    name: 'StackedUp' } }));
+  cookie: { name: 'StackedUp' } }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -96,9 +74,11 @@ passport.use(new LocalStrategy(
       }
       db.query(queryStr, (err1, user) => {
         if (err1) {
+          console.log('passport err1', err1);
           return done(err1);
         }
         if (!user.length) {
+          console.log('passport no such user', err1);
           return done(null, false);
         }
         return bcrypt.compare(password, user[0].password, (err2, res) => {
@@ -106,6 +86,7 @@ passport.use(new LocalStrategy(
             user[0].type = temp[1];
             done(null, user[0]);
           }
+          console.log('passport password error', err1);
           done(null, false);
         });
       });
@@ -127,7 +108,7 @@ app.get('/verifyLogin', (req, res) => {
 });
 
 app.get('/getCurrentUser', (req, res) => {
-  console.log('REQ.USER', req.user)
+  console.log('REQ.USER', req.user);
   if (req.user) {
     const currentUser = req.user;
     delete currentUser.password;
@@ -228,7 +209,7 @@ app.post('/postingJob', (req, res) => {
 //   .then()
 // })
 
-app.post('/signupApplicant', upload.any(), (req, res) => {
+app.post('/signupApplicant', (req, res) => {
   // console.log(" ========================= ", req._parsedOriginalUrl.path);
   // console.log('REQ.URL: ', req.url);
   console.log("'REQ.BODY.RESUME: ", req.body.resume);
@@ -296,7 +277,7 @@ app.post('/signupApplicant', upload.any(), (req, res) => {
   });
 });
 
-app.post('/signupEmployer', upload.any(), (req, res) => {
+app.post('/signupEmployer', (req, res) => {
   // console.log(" ========================= ", req._parsedOriginalUrl.path);
   // console.log('REQ.URL: ', req.url);
   console.log('REQ.BODY: ', req.body);

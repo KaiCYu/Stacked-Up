@@ -208,7 +208,7 @@ class App extends React.Component {
 
   sendLoginInfo() {
     console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
-    var context = this;
+    const context = this;
     const userdata = {};
     userdata.username = this.state.username + '/' + this.state.logInOption;
     userdata.password = this.state.password;
@@ -439,11 +439,11 @@ class App extends React.Component {
                 sendLoginInfo={this.sendLoginInfo}
                 onInputChange={this.onInputChange}
               />
-              <Route
+              <PrivateRoute
                 path="/myProfile"
-                component={() => (
-                  <MyProfile option={this.state.logInOption} currentUser={this.state.currentUser} />
-                )}
+                component={MyProfile}
+                option={this.state.logInOption}
+                currentUser={this.state.currentUser}
               />
               <Route
                 path="/employerProfile"
