@@ -17,6 +17,7 @@ import StreamVideo from './StreamVideo';
 import ApplicantProfile from './ApplicantProfile';
 import utils from './../../../lib/utility';
 import PrivateRoute from './privateRoute';
+import ApplicantsList from './ApplicantsList';
 
 class App extends React.Component {
   constructor(props) {
@@ -474,10 +475,10 @@ class App extends React.Component {
                 component={Profile}
                 sendMessage={this.sendMessage}
               />
-              <Route
+              <PrivateRoute
                 path="/jobPost"
-                getjobPostInfo={this.state.getJobPostInfo}
                 component={JobPost}
+                logInOption={this.state.logInOption}
               />
               <Route
                 path="/signupClient"
@@ -496,6 +497,11 @@ class App extends React.Component {
               <Route
                 path="/postingjob"
                 component={PostingJob}
+              />
+              <PrivateRoute
+                path="/ApplicantsList"
+                component={ApplicantsList}
+                loggedInUsers={this.state.searchResults.applicants}
               />
             </div>
           </div>

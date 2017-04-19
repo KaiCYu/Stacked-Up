@@ -118,6 +118,24 @@ app.get('/getCurrentUser', (req, res) => {
   }
 });
 
+app.get('/getApplicants', (req, res) => {
+  const id = req.query.jobPosting_id;
+  const queryStr = `SELECT * FROM applicants as a WHERE a.id in (SELECT j.applicant_id FROM applicants_job_postings AS j WHERE j.job_posting_id = "${id}");`;
+  db.query(queryStr, (error, data) => {
+    if (error) {
+      console.log('failed to get applicants for this job', error);
+    } else {
+      for (let i = 0; i < data.length; i += 1) {
+        delete data[i].password;
+      }
+      const users = Array.from(Object.keys(loggedInUsers));
+      data[0].users = users;
+      console.log('data after adding users ->', data);
+      res.json(data);
+    }
+  });
+});
+
 app.get('/getJobPostings', (req, res) => {
   const queryStr = 'select job_postings.*, employer.company_name from job_postings inner join employer on job_postings.employer_id = employer.id;';
   db.query(queryStr, (error, data) => {

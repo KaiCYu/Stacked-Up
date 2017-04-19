@@ -1,5 +1,6 @@
 import React from 'react';
-import { TableRow, TableRowColumn } from 'material-ui';
+import { TableRow, TableRowColumn, RaisedButton } from 'material-ui';
+import { Link } from 'react-router-dom';
 
 const JobPostEntry = props => (
   <TableRow>
@@ -18,14 +19,27 @@ const JobPostEntry = props => (
     <TableRowColumn>
       {props.entry.salary}
     </TableRowColumn>
-    <TableRowColumn>
-      <button
-        onClick={() => {
-          props.handleApply(props.entry.id)
-        }}
-      >Apply
-      </button>
-    </TableRowColumn>
+    { props.logInOption === 'company' ?
+      <TableRowColumn>
+        <Link
+          to={{
+            pathname: '/ApplicantsList',
+            state: { jobInfo: props.entry },
+          }}
+        >
+          <RaisedButton>See Applicants</RaisedButton>
+        </Link>
+      </TableRowColumn>
+    :
+      <TableRowColumn>
+        <button
+          onClick={() => {
+            props.handleApply(props.entry.id)
+          }}
+        >Apply
+        </button>
+      </TableRowColumn>
+    }
   </TableRow>
 );
 

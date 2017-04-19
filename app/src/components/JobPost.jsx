@@ -27,11 +27,12 @@ class JobPost extends React.Component {
               delete data[list[i]];
             }
           }
+          console.log('here is the data', data);
+          console.log('here is the data', typeof data);
           this.setState({ postings: data });
         } else {
           this.setState({ postings: data });
         }
-        
       },
       error: (error) => {
         console.log('AJAX request to get list of job postings failed due to ', error);
@@ -59,6 +60,7 @@ class JobPost extends React.Component {
 
   render() {
     console.log(this.state.postings);
+    console.log(this.props);
     return (
       <div>
         <h1>JobPost</h1>
@@ -70,7 +72,11 @@ class JobPost extends React.Component {
               <TableHeaderColumn>Description</TableHeaderColumn>
               <TableHeaderColumn>Location</TableHeaderColumn>
               <TableHeaderColumn>Starting Salary</TableHeaderColumn>
-              <TableHeaderColumn>Apply</TableHeaderColumn>
+              { this.props.logInOption === 'company' ?
+                <TableHeaderColumn>Applicants</TableHeaderColumn>
+                :
+                <TableHeaderColumn>Apply</TableHeaderColumn>
+              }
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
@@ -79,6 +85,7 @@ class JobPost extends React.Component {
                 entry={entry}
                 key={entry.id}
                 handleApply={this.handleApply}
+                logInOption={this.props.logInOption}
               />)
             }
           </TableBody>
