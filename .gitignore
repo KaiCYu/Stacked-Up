@@ -24,6 +24,7 @@ app/dist/*
 !app/dist/index.html
 !app/dist/styles.css
 
+
 # Dependency directorys
 # Deployed apps should consider commenting these lines out:
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
@@ -31,7 +32,7 @@ node_modules/
 bower_components/
 
 # API keys
-config/
+/config
 
 # Visual Studio Code
 .vscode/

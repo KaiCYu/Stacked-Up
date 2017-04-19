@@ -36,12 +36,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  console.log('serialize User in passport ====>', user);
+  console.log('serialize User in passport ====>', user?user.username:'');
   done(null, user);
 });
 
 passport.deserializeUser((user, done) => {
-  console.log('deserializeUser in passport', user);
+  console.log('deserializeUser in passport', user?user.username:'');
   let queryStr;
   if (user.type === 'applicant') {
     queryStr = `SELECT * FROM applicants WHERE id = "${user.id}";`;
@@ -108,7 +108,7 @@ app.get('/verifyLogin', (req, res) => {
 });
 
 app.get('/getCurrentUser', (req, res) => {
-  console.log('REQ.USER', req.user);
+  console.log('REQ.USER', req.user?req.user.username:'');
   if (req.user) {
     const currentUser = req.user;
     delete currentUser.password;
@@ -158,6 +158,8 @@ app.get('/logout', (req, res) => {
   });
   res.redirect('/');
 });
+
+
 
 app.get('/profileinfo', passport.authenticate('local'),
   (req, res) => {
@@ -212,7 +214,7 @@ app.post('/postingJob', (req, res) => {
 app.post('/signupApplicant', (req, res) => {
   // console.log(" ========================= ", req._parsedOriginalUrl.path);
   // console.log('REQ.URL: ', req.url);
-  console.log("'REQ.BODY.RESUME: ", req.body.resume);
+  // console.log("'REQ.BODY.RESUME: ", req.body.resume);
   let queryStr = `SELECT * FROM applicants WHERE username="${req.body.username}";`;
   db.query(queryStr, (err1, data) => {
     if (err1) {
@@ -230,13 +232,13 @@ app.post('/signupApplicant', (req, res) => {
         if ('ERROR 2 ', err2) {
           console.log('error sending profile picture to cloud ', err2);
         } else if (req.body.resume.length !== 0) {
-          console.log('IMAGE URL: ', image);
+          // console.log('IMAGE URL: ', image);
           // upload resume
           cloudinary.v2.uploader.upload(`${req.body.resume}`, { resource_type: 'raw' }, (err3, resume) => {
             if ('ERROR 3', err3) {
               console.log('error sending resume to cloud ', err3);
             } else if (req.body.coverLetter.length !== 0) {
-              console.log('RESUME URL: ', resume);
+              // console.log('RESUME URL: ', resume);
               // upload cover letter
               cloudinary.v2.uploader.upload(`${req.body.coverLetter}`, { resource_type: 'raw' }, (err4, coverLetter) => {
                 if ('ERROR 4: ', err4) {
@@ -259,7 +261,7 @@ app.post('/signupApplicant', (req, res) => {
                         console.log('err', err6);
                         res.status(500).send('Internal Server Error');
                       } else {
-                        console.log('applicant has signed up!', data);
+                        // console.log('applicant has signed up!', data);
                         res.json(data);
 
                         // index elasticsearch with new applicant
@@ -280,7 +282,7 @@ app.post('/signupApplicant', (req, res) => {
 app.post('/signupEmployer', (req, res) => {
   // console.log(" ========================= ", req._parsedOriginalUrl.path);
   // console.log('REQ.URL: ', req.url);
-  console.log('REQ.BODY: ', req.body);
+  // console.log('REQ.BODY: ', req.body);
   let queryStr = `SELECT * FROM employer WHERE username="${req.body.username}";`;
   db.query(queryStr, (err1, data) => {
     if (err1) {
@@ -298,7 +300,7 @@ app.post('/signupEmployer', (req, res) => {
         if ('ERROR 2 ', err2) {
           console.log('error sending logo to cloud ', err2);
         } else {
-          console.log('IMAGE URL: ', image);
+          // console.log('IMAGE URL: ', image);
           bcrypt.hash(req.body.password, 10, (err5, hash) => {
             if (err5) {
               res.status(500).send('Internal Server Error');
@@ -314,7 +316,7 @@ app.post('/signupEmployer', (req, res) => {
                 console.log('ERROR 6', err6);
                 res.status(500).send('Internal Server Error');
               } else {
-                console.log('employer has signed up!', data);
+                // console.log('employer has signed up!', data);
                 res.redirect('/');
 
                 // index elasticsearch with new applicant
@@ -397,7 +399,7 @@ app.get('/search/:query/:fuzziness/:size', (req, res) => {
   
   elasticsearch.search(dbName, body)
   .then((results) => {
-    console.log("SEARCH RESULTS =", results);
+    // console.log("SEARCH RESULTS =", results);
     if (results[0]&& results[0].username) {
       results = results.map(function(applicant) {
         (applicant.username in loggedInUsers)?applicant.online=true
@@ -433,9 +435,15 @@ app.post('/requestCall', (req, res) => {
     }));
   }
   res.status(200).send(room);
-})
+});
+
+// app.post('/postMessage', (req, res) => {
+//   var query = `INSERT INTO meesages_content VALUES (null, 'this is a test');`
+//   db.query(query, function(error, results) {console.log(results)})
+// });
 
 const server = http.createServer(app);
+
 server.listen(PORT, () => {
   console.log(`Server now listening on port ${PORT}`);
 });

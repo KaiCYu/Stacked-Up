@@ -77,6 +77,7 @@ class App extends React.Component {
     // this.submitEmployer = this.submitEmployer.bind(this);
     this.searchAll = this.searchAll.bind(this);
     // this.submitEmployer = this.submitEmployer.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
     window.checkState = this.checkState.bind(this);
     // this.previewFile = this.previewFile.bind(this);
   }
@@ -372,6 +373,20 @@ class App extends React.Component {
     });
   }
 
+  sendMessage() {
+    $.ajax({
+      type: 'POST',
+      url: '/sendMessage',
+      contentType: 'application/json',
+      success: (results) => {
+        console.log('sent message to the server // message = ', results)
+      },
+      error: (error) => {
+        console.log('error on sending message to server // error', error)
+      }
+    });
+  }
+
   handleOptionChange(changeEvent) {
     this.setState({ logInOption: changeEvent.target.value });
   }
@@ -457,6 +472,7 @@ class App extends React.Component {
                 path="/profile"
                 getProfileInfo={this.state.getProfileInfo}
                 component={Profile}
+                sendMessage={this.sendMessage}
               />
               <Route
                 path="/jobPost"

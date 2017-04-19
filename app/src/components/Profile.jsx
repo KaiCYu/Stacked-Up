@@ -12,6 +12,11 @@ const Profile = (props) => (
         to='/streamVideo'>
       Interview this candidate now!</Link><br />
     </div>
+    <form>
+      <input>
+      </input>
+      <button>Submit></button>
+    </form>
   </div>
 );
 
