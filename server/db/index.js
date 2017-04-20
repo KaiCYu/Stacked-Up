@@ -9,13 +9,12 @@ const databaseName = process.env.CLEARDB_DATABASE_URL?'heroku_2324d576fae6bbb':'
 const pool = mysql.createPool(
     process.env.CLEARDB_DATABASE_URL
 ||
-{ 
+{
     host: 'localhost',
     user: 'root',
     password: '',
     database: databaseName,
-}
-)
+});
 
 
 const getConn = function() {

@@ -17,8 +17,11 @@ const ApplicantProfile = (props) => {
         <h5>Phone Number: {props.info.phone_number}</h5>
         <h5>Location: {`${props.info.city}, ${props.info.state} ${props.info.country}`}</h5>
 
+        
         <a href={props.info.resume_url} target="_blank">Resume</a> <br />
         <a href={props.info.coverletter_url} target="_blank">Cover Letter</a>
+        
+        <FormInput title={'Upload another Resume'} id={"resume"} type={"file"} name={"resume"} onChange={this.previewFile} />
         
         {/*<div>Work History:
           {props.info.workHistory.map((workEntry, index) => {

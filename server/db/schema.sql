@@ -21,6 +21,14 @@ CREATE TABLE applicants(
   UNIQUE INDEX(username)
 );
 
+CREATE TABLE applicant_files(
+  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  url VARCHAR(255),
+  type VARCHAR(20),
+  applicant_id INT,
+  FOREIGN KEY (applicant_id) REFERENCES applicants(id)
+);
+
 CREATE TABLE employer(
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(255),
@@ -65,6 +73,7 @@ CREATE TABLE applicants_job_postings(
   FOREIGN KEY (applicant_id) REFERENCES applicants(id),
   FOREIGN KEY (job_posting_id) REFERENCES job_postings(id)
 );
+
 
 -- Alter employer table to have a foreign key that references job_postings table.
 -- Required because employer won't be able to reference a table that hasn't been created yet.

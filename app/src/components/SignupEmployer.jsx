@@ -97,7 +97,6 @@ class SignupEmployer extends React.Component {
           <FormInput title={'State'} type={'text'} value={this.state.state} name={'state'} placeholder={'California'} onChange={this.onInputChange} />
           <FormInput title={'Country'} type={'text'} value={this.state.country} name={'country'} placeholder={'USA'} onChange={this.onInputChange} />
           <br />
-
           <label> Upload Logo Photo
             <input
               id="logo"
@@ -117,6 +116,8 @@ class SignupEmployer extends React.Component {
           <input type="submit" value="sign up" />
           <button onClick={this.onResetForm}>Clear</button>
         </form>
+
+
       </div>
     );
   }

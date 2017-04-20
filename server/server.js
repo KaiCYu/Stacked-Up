@@ -14,8 +14,9 @@ const dbName = require('./db/index.js').dbName;
 const initDB = require('./db/index.js').initDB;
 initDB();
 const elasticsearch = require('./elasticsearch/index.js');
-const cloudinary = require('cloudinary');
+// const cloudinary = require('cloudinary');
 const cloudinaryAPI = require('./../config/cloudinaryconfig.js');
+const promiseUtil = require('./promiseFuncs');
 
 const PORT = process.env.PORT || 8000;
 
@@ -95,8 +96,21 @@ passport.use(new LocalStrategy(
     }
   }));
 
+
 app.get('/hello', (req, res) => {
-  res.send('Hello World');
+  const HelloWorld = function () {
+    return new Promise (function(resolve, reject) {
+      console.log('Hello World');
+      resolve('bye');
+    })
+  }
+
+  HelloWorld().then((greeting2) => {
+    return new Promise ()
+    console.log(greeting2);
+  }).then(() => {
+
+  })
 });
 
 app.get('/verifyLogin', (req, res) => {
@@ -198,7 +212,7 @@ app.post('/postingJob', (req, res) => {
       console.log('err', err);
       res.json(err);
     } else {
-      console.log('job posting successful!: ', data);
+      // console.log('job posting successful!: ', data);
       res.redirect('/');
 
       // index elasticsearch with new applicant
@@ -207,168 +221,108 @@ app.post('/postingJob', (req, res) => {
   });
 });
 
-//break down all async fnc
-//create new promise using bluebird
-//chaining promises
-
-  // ATTEMPT TO PROMISIFY
-// app.post('/signupApplicant', upload.any(), (req, res) => {
-//   let queryStr = 'SELECT * FROM applicants WHERE username=?;';
-
-//   return db.query(queryStr, req.body.username)
-// }
-
-// app.post('signupApplicant', (req, res) => {
-//   const name;
-//   db.queryAsync('select * from applicants;')
-//   .then( (data) => {
-//     console.log('REQUESTING: ', req);
-//     console.log('DATA: ', data);
-//     name = data;
-//     db.queryAsync('select * from employer;')
-//   })
-//   .then()
-// })
-
 app.post('/signupApplicant', (req, res) => {
-  // console.log(" ========================= ", req._parsedOriginalUrl.path);
-  // console.log('REQ.URL: ', req.url);
-  // console.log("'REQ.BODY.RESUME: ", req.body.resume);
-  let queryStr = `SELECT * FROM applicants WHERE username="${req.body.username}";`;
-  db.query(queryStr, (err1, data) => {
-    if (err1) {
-      console.log('signup applicant query error', err1);
-      res.status(500).send('Internal Server Error');
-    } else if (data.length !== 0) {
-      // case when no such your exists
-      const redirectUrl = `import React from 'react';
-        const redirect = () => (
-        <Redirect to="${req._parsedOriginalUrl.path}">);`;
-      res.send(redirectUrl);
-    } else if (req.body.profilePhoto.length !== 0) {
-      // upload the picture
-      cloudinary.v2.uploader.upload(`${req.body.profilePhoto}`, { resource_type: 'auto'}, (err2, image) => {
-        if ('ERROR 2 ', err2) {
-          console.log('error sending profile picture to cloud ', err2);
-        } else if (req.body.resume.length !== 0) {
-          // console.log('IMAGE URL: ', image);
-          // upload resume
-          cloudinary.v2.uploader.upload(`${req.body.resume}`, { resource_type: 'raw' }, (err3, resume) => {
-            if ('ERROR 3', err3) {
-              console.log('error sending resume to cloud ', err3);
-            } else if (req.body.coverLetter.length !== 0) {
-              // console.log('RESUME URL: ', resume);
-              // upload cover letter
-              cloudinary.v2.uploader.upload(`${req.body.coverLetter}`, { resource_type: 'raw' }, (err4, coverLetter) => {
-                if ('ERROR 4: ', err4) {
-                  console.log('error sending cover letter to cloud ', err4);
-                } else {
-                  console.log('COVER LETTER URL: '.coverLetter);
-                // console.log('SECURE IMAGE URL:', image.secure_url);
-                  bcrypt.hash(req.body.password, 10, (err5, hash) => {
-                    if (err5) {
-                      res.status(500).send('Internal Server Error');
-                    }
-                      // insert into DB
-                      // console.log('request username and fullname = ' + req.body.username);
-                    queryStr = `INSERT INTO applicants (username, password, firstname, lastname, email, phone_number, city, state, country, profile_pic_url, resume_url, coverletter_url) values
-                      ("${req.body.username}", "${hash}", "${req.body.firstName}", "${req.body.lastName}",
-                      "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}", "${image.secure_url}", "${resume.secure_url}", "${coverLetter.secure_url}"
-                      );`;
-                    db.query(queryStr, (err6, data) => {
-                      if (err6) {
-                        console.log('err', err6);
-                        res.status(500).send('Internal Server Error');
-                      } else {
-                        // console.log('applicant has signed up!', data);
-                        res.json(data);
+  const checkApplicantUser = `SELECT * FROM applicants WHERE username="${req.body.username}";`;
+  let resumeURL = null;
+  let coverletterURL = null;
+  let profilePicURL = null;
+  const files = [];
 
-                        // index elasticsearch with new applicant
-                        elasticsearch.indexDatabase();
-                      }
-                    });
-                  });
-                }
-              });
-            }
-          });
-        }
-      });
+  promiseUtil.checkUsername(checkApplicantUser)
+  .then(() => {
+    const promiseArray = [];
+
+    if (req.body.resume) {
+      promiseArray.push(promiseUtil.uploadToCloudinaryAsync(req.body.resume));
+      files.push('resume');
     }
+    if (req.body.coverLetter) {
+      promiseArray.push(promiseUtil.uploadToCloudinaryAsync(req.body.coverLetter));
+      files.push('coverLetter');
+    }
+    if (req.body.profilePhoto) {
+      promiseArray.push(promiseUtil.uploadToCloudinaryAsync(req.body.profilePhoto));
+      files.push('profilePhoto');
+    }
+    
+    return Promise.all(promiseArray).then((values) => {
+      // console.log('values from promise all', values);
+      for (var i = 0; i < files.length; i++) {
+        if (files[i] === 'resume') {
+          resumeURL = values[i].secure_url;
+        } else if (files[i] === 'coverLetter') {
+          coverletterURL = values[i].secure_url;
+        } else {
+          profilePicURL = values[i].secure_url;
+        }
+      }
+    });
+  })
+  .then(() => {
+    return promiseUtil.hashedPassword(req.body.password, 10);
+  })
+  .then((hash) => {
+    const insertApplicant = `INSERT INTO applicants SET ?`;
+    const values = {
+      username: req.body.username,
+      password: hash,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      phone_number: req.body.phoneNumber,
+      city: req.body.city,
+      state: req.body.state,
+      country: req.body.country,
+      resume_url: resumeURL,
+      coverletter_url: coverletterURL,
+      profile_pic_url: profilePicURL,
+    };
+    db.queryAsyncQuestion(insertApplicant, values);
+  })
+  .then(() => {
+    console.log('applicant has signed up!');
+    res.redirect('/');
+  })
+  .catch((error) => {
+    res.status(500).send('Internal Server Error');
   });
 });
 
 app.post('/signupEmployer', (req, res) => {
-  // console.log(" ========================= ", req._parsedOriginalUrl.path);
-  // console.log('REQ.URL: ', req.url);
-  // console.log('REQ.BODY: ', req.body);
-  let queryStr = `SELECT * FROM employer WHERE username="${req.body.username}";`;
-  db.query(queryStr, (err1, data) => {
-    if (err1) {
-      console.log(err1);
-      res.status(500).send('Internal Server Error');
-    } else if (data.length !== 0) {
-      // case when no such your exists
-      const redirectUrl = `import React from 'react';
-        const redirect = () => (
-        <Redirect to="${req._parsedOriginalUrl.path}">);`;
-      res.send(redirectUrl);
-    } else {
-      // upload the logo
-      cloudinary.v2.uploader.upload(`${req.body.logo}`, { resource_type: 'auto'}, (err2, image) => {
-        if ('ERROR 2 ', err2) {
-          console.log('error sending logo to cloud ', err2);
-        } else {
-          // console.log('IMAGE URL: ', image);
-          bcrypt.hash(req.body.password, 10, (err5, hash) => {
-            if (err5) {
-              res.status(500).send('Internal Server Error');
-            }
-              // insert into DB
-              // console.log('request username and fullname = ' + req.body.username);
-            queryStr = `INSERT INTO employer (username, password, company_name, email, phone_number, city, state, country, logo_url) values
-              ("${req.body.username}", "${hash}", "${req.body.companyName}",
-              "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}", "${image.secure_url}"
-              );`;
-            db.query(queryStr, (err6, data) => {
-              if (err6) {
-                console.log('ERROR 6', err6);
-                res.status(500).send('Internal Server Error');
-              } else {
-                // console.log('employer has signed up!', data);
-                res.redirect('/');
+  const checkEmployerUser = `SELECT * FROM employer WHERE username="${req.body.username}";`;
+  let logoURL;
+  promiseUtil.checkUsername(checkEmployerUser)
+  .then(() => promiseUtil.uploadToCloudinaryAsync(req.body.logo))
+  .then((logo) => {
+    logoURL = logo.secure_url;
+    return promiseUtil.hashedPassword(req.body.password, 10);
+  })
+  .then((hash) => {
+    const insertEmployer = `INSERT INTO employer SET ?`;
+    const values = {
+      username: req.body.username,
+      password: hash,
+      company_name: req.body.companyName,
+      email: req.body.email,
+      phone_number: req.body.phoneNumber,
+      city: req.body.city,
+      state: req.body.state,
+      country: req.body.country,
+      logo_url: logoURL,
+    };
+    db.queryAsyncQuestion(insertEmployer, values);
+  })
+  .then(() => {
+    console.log('employer has signed up!');
+    res.redirect('/');
 
-                // index elasticsearch with new applicant
-                elasticsearch.indexDatabase();
-              }
-            });
-          });
-        }
-      });
-    }
+    // index elasticsearch with new applicant
+    elasticsearch.indexDatabase();
+  })
+  .catch((error) => {
+    res.status(500).send('Internal Server Error');
   });
 });
-
-
-//OLD SIGN UP EMPLOYER ROUTE
-// app.post('/signupEmployer', (req, res) => {
-//   bcrypt.hash(req.body.password, 10, (err, hash) => {
-//     if (err) {
-//       console.log('ERROR signup in server: ', err);
-//       res.sendStatus(500);
-//     }
-//     console.log('request body ', req.body);
-//     const queryStr = `INSERT INTO employer (username, password, company_name, email, phone_number, city, state, country) values ("${req.body.username}", "${hash}", "${req.body.companyName}", "${req.body.email}", "${req.body.phoneNumber}", "${req.body.city}", "${req.body.state}", "${req.body.country}");`;
-//     db.query(queryStr, (error, data) => {
-//       if (error) {
-//         console.log('err', error);
-//       } else {
-//         console.log('employer has signed up!', data);
-//         res.redirect('/');
-//       }
-//     });
-//   });
-// });
 
 app.post('/apply', (req, res) => {
   const postId = JSON.parse(req.body.jobPostingId);
@@ -454,12 +408,7 @@ app.post('/requestCall', (req, res) => {
     }));
   }
   res.status(200).send(room);
-});
-
-// app.post('/postMessage', (req, res) => {
-//   var query = `INSERT INTO meesages_content VALUES (null, 'this is a test');`
-//   db.query(query, function(error, results) {console.log(results)})
-// });
+})
 
 const server = http.createServer(app);
 
@@ -509,18 +458,14 @@ wss.on('connection', (ws) => {
       wsClient.send( JSON.stringify(data) );
     });
 
-    // clearInterval(oneSetInterval);
+    clearInterval(oneSetInterval);
   });
 
-  // var oneSetInterval = setInterval( ()=> {
-  //   ws.send( JSON.stringify(new Date().toTimeString()) );
-  // }, 10000);
+  var oneSetInterval = setInterval( ()=> {
+    ws.send( JSON.stringify(new Date().toTimeString()) );
+  }, 10000);
 });
 
-// //update the picture
-// cloudinary.uploader.upload("test1.jpg", function(result) {
-//   console.log(result)
-// });
 
 
 elasticsearch.indexDatabase();

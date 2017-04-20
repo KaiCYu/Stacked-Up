@@ -22,7 +22,6 @@ class SignupClient extends React.Component {
       coverLetter: '',
       profilePhoto: '',
     };
-
     this.initialState = this.state;
 
     this.previewFile = this.previewFile.bind(this);
@@ -37,11 +36,11 @@ class SignupClient extends React.Component {
 
     //store the preview in state ==> faster to get.
     const preview = document.querySelector('#preview');
-    console.log('PREVIEW', preview);
+    // console.log('PREVIEW', preview);
     const file = document.getElementById(`${name}`).files[0];
     // console.log('FILE *************: ', file);
 
-    const reader  = new FileReader();
+    const reader = new FileReader();
 
     reader.onloadend = (event) => {
       // console.log('READER: ', reader);
@@ -49,7 +48,7 @@ class SignupClient extends React.Component {
     };
 
     reader.addEventListener("loadend", () => {
-      console.log('read the picture******************');
+      // console.log('read the picture******************');
         const image = new Image();
         image.height = 100;
         image.title = file.name;
@@ -57,12 +56,10 @@ class SignupClient extends React.Component {
         preview.appendChild( image );
     }, false);
 
-    // if (file) {
-    //   reader.readAsDataURL(file);
-    // }
     if (file && file.type === 'text/plain') {
       reader.readAsText(file);
-    } else {
+    }
+    if (file && file.type !== 'text/plain') {
       reader.readAsDataURL(file);
     }
   }
@@ -87,7 +84,7 @@ class SignupClient extends React.Component {
       url: '/signupApplicant',
       data: applicantData,
       success: (results) => {
-        console.log('signed up as an applicant!', results);
+        console.log('signed up as an applicant!');
         this.props.history.push('/login');
       },
       error: (error) => {
@@ -109,36 +106,16 @@ class SignupClient extends React.Component {
           <FormInput title={'Phone Number'} type={'text'} value={this.state.phoneNumber} name={'phoneNumber'} placeholder={'(123)456-7890'} onChange={this.onInputChange}/> <br />
           <FormInput title={'City'} type={'text'} value={this.state.city} name={'city'} placeholder={'San Francisco'} onChange={this.onInputChange}/>
           <FormInput title={'State'} type={'text'} value={this.state.state} name={'state'} placeholder={'California'} onChange={this.onInputChange}/>
-          <FormInput title={'Country'} type={'text'} value={this.state.country} name={'country'} placeholder={'USA'} onChange={this.onInputChange}/> <br/>
-          <label> Upload your resume
-            <input
-              id="resume"
-              type="file"
-              name="resume"
-              onChange={this.previewFile} /><br />
-          </label>
-          <label> Upload your cover letter
-            <input
-              id="coverLetter"
-              type="file"
-              name="coverLetter"
-              onChange={this.previewFile} /><br />
-          </label>
-          <label> Upload your photo
-            <input
-              id="profilePhoto"
-              type="file"
-              name="profilePhoto"
-              onChange={this.previewFile}
-            /><br />
-          </label>
+          <FormInput title={'Country'} type={'text'} value={this.state.country} name={'country'} placeholder={'USA'} onChange={this.onInputChange}/> <br />
 
+          <FormInput title={'Upload your resume'} id={"resume"} type={"file"} name={"resume"} onChange={this.previewFile} /> <br />
+          <FormInput title={'Upload your cover letter'} id={"coverLetter"} type={"file"} name={"coverLetter"} onChange={this.previewFile} /> <br />
+          <FormInput title={'Upload your photo'} id={"profilePhoto"} type={"file"} name={"profilePhoto"} onChange={this.previewFile} />
+
+          <br/>
           <p>*Required</p>
 
           <br />
-          {/*<img className="previewImage" src="" height="200" alt="Image preview..."></img>
-          <img className="previewResume" src="" height="200" alt="Resume preview..."></img>
-          <img className="previewCoverLetter" src="" height="200" alt="Cover Letter preview..."></img>*/}
           <div id="preview"></div>
 
           {/*<Dropzone />*/}
@@ -150,7 +127,6 @@ class SignupClient extends React.Component {
 
           {/*if we need ajax post call on applicant sign up*/}
           {/*<Link to="/applicantProfile" onClick={props.submitApplicant}>Submit</Link>*/}
-          
       </div>
     )};
 }
