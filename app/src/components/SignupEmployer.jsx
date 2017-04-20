@@ -34,6 +34,10 @@ class SignupEmployer extends React.Component {
     });
   }
 
+  onResetForm() {
+    this.setState(this.initialState);
+  }
+  
   previewFile(event) {
     const name = event.target.name;
     // console.log('NAME', name);
@@ -59,10 +63,6 @@ class SignupEmployer extends React.Component {
     if (file) {
       reader.readAsDataURL(file);
     }
-  }
-
-  onResetForm() {
-    this.setState(this.initialState);
   }
 
   handleSubmit(event) {

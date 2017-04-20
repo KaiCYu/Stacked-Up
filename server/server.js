@@ -291,6 +291,7 @@ app.post('/signupApplicant', (req, res) => {
 app.post('/signupEmployer', (req, res) => {
   const checkEmployerUser = `SELECT * FROM employer WHERE username="${req.body.username}";`;
   let logoURL;
+  
   promiseUtil.checkUsername(checkEmployerUser)
   .then(() => promiseUtil.uploadToCloudinaryAsync(req.body.logo))
   .then((logo) => {

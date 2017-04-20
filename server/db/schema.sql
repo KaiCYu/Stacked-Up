@@ -21,7 +21,7 @@ CREATE TABLE applicants(
   UNIQUE INDEX(username)
 );
 
-CREATE TABLE applicant_files(
+CREATE TABLE applicant_files(   --only resumes and coverletter URLs
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   url VARCHAR(255),
   type VARCHAR(20),

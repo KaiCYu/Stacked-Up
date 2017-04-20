@@ -1,6 +1,7 @@
 import React from 'react';
 import ProfilePicture from './ProfilePicture';
 import { BrowserRouter as Link } from 'react-router-dom';
+import FormInput from './FormInput';
 
 // import WorkHistoryEntry from './WorkHistoryEntry';
 
@@ -21,7 +22,7 @@ const ApplicantProfile = (props) => {
         <a href={props.info.resume_url} target="_blank">Resume</a> <br />
         <a href={props.info.coverletter_url} target="_blank">Cover Letter</a>
         
-        <FormInput title={'Upload another Resume'} id={"resume"} type={"file"} name={"resume"} onChange={this.previewFile} />
+        {/*<FormInput title={'Upload another Resume'} id={"resume"} type={"file"} name={"resume"} onChange={this.previewFile} />*/}
         
         {/*<div>Work History:
           {props.info.workHistory.map((workEntry, index) => {

@@ -30,6 +30,17 @@ class SignupClient extends React.Component {
     this.onResetForm = this.onResetForm.bind(this);
   }
 
+  onInputChange(event) {
+    const name = event.target.name
+    this.setState({
+      [name]: event.target.value
+    });
+  }
+
+  onResetForm() {
+    this.setState(this.initialState);
+  }
+
   previewFile(event) {
     const name = event.target.name;
     // console.log('NAME', name);
@@ -42,18 +53,18 @@ class SignupClient extends React.Component {
 
     const reader = new FileReader();
 
-    reader.onloadend = (event) => {
+    reader.onloadend = () => {
       // console.log('READER: ', reader);
       this.setState({ [name]: reader.result });
     };
 
     reader.addEventListener("loadend", () => {
       // console.log('read the picture******************');
-        const image = new Image();
-        image.height = 100;
-        image.title = file.name;
-        image.src = reader.result;
-        preview.appendChild( image );
+      const image = new Image();
+      image.height = 100;
+      image.title = file.name;
+      image.src = reader.result;
+      preview.appendChild(image);
     }, false);
 
     if (file && file.type === 'text/plain') {
@@ -62,17 +73,6 @@ class SignupClient extends React.Component {
     if (file && file.type !== 'text/plain') {
       reader.readAsDataURL(file);
     }
-  }
-
-  onInputChange(event) {
-    const name = event.target.name
-    this.setState({
-      [name]: event.target.value
-    });
-  }
-
-  onResetForm() {
-    this.setState(this.initialState);
   }
 
   handleSubmit(event) {
