@@ -347,6 +347,13 @@ app.post('/apply', (req, res) => {
   });
 });
 
+app.post('/codeTest', (req, res) => {
+  console.log(req.body);
+  const line = 'var func = function(test){\n  console.log("hello world!");\n};';
+  req.body.snippet = line;
+  res.send(req.body);
+});
+
 /*
  * route for searching
  * :query represents the value being searched
