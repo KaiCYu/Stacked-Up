@@ -1,7 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
-import JobPostEntry from './JobPostEntry';
 import { Table, TableBody, TableHeader, TableRow, TableHeaderColumn } from 'material-ui';
+import JobPostEntry from './JobPostEntry';
 
 class JobPost extends React.Component {
   constructor(props) {

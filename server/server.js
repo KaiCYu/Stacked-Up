@@ -157,6 +157,7 @@ app.post('/login', passport.authenticate('local'),
   });
 
 app.get('/logout', (req, res) => {
+  console.log('--> logout user check', req.user);
   const username = req.user.username;
   delete loggedInUsers[username];
   req.logout();

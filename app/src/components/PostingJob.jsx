@@ -46,12 +46,12 @@ class PostingJob extends React.Component {
         <h1>Post your job here</h1>
         <span> Position: </span><input type="text" name="position" onChange={this.onInputChange} /><br />
         <span> Location: </span><input type="text" name="location" onChange={this.onInputChange} /><br />
-        <span> State: </span><span> dropbox of states here</span><br />
-        <span> Job type: </span><span> dropbox of job type here </span><br />
+        <span> State: </span><input type="text" name="state" onChange={this.onInputChange} /><br />
+        <span> Job type: </span><span> dropbox of job type here fulltime, parttime, contract, intern etc </span><br />
         <span> Starting Salary </span><input type="text" name="salary" onChange={this.onInputChange} /><br />
         <span> Job Description </span><br />
-        <textarea placeholder="enter here" name="description" onChange={this.onInputChange} />
-        <button onClick={this.handleJobPosting}>Sign Up</button>
+        <textarea rows="6" cols="60" placeholder="enter here" name="description" onChange={this.onInputChange} />
+        <button onClick={this.handleJobPosting}>Post</button>
         <button>Cancel</button>
       </div>
     );

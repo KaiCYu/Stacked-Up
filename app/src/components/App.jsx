@@ -18,6 +18,7 @@ import ApplicantProfile from './ApplicantProfile';
 import utils from './../../../lib/utility';
 import PrivateRoute from './privateRoute';
 import ApplicantsList from './ApplicantsList';
+import CodePad from './CodePad';
 
 class App extends React.Component {
   constructor(props) {
@@ -502,6 +503,10 @@ class App extends React.Component {
                 path="/ApplicantsList"
                 component={ApplicantsList}
                 loggedInUsers={this.state.searchResults.applicants}
+              />
+              <Route
+                path="/CodePad"
+                component={CodePad}
               />
             </div>
           </div>

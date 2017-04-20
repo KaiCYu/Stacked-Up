@@ -4,7 +4,6 @@ import RaisedButton from 'material-ui/FlatButton';
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 
-
 const Navbar = (props) => {
   const searchSubmit = (event) => {
     props.history.push('/search');
@@ -24,6 +23,11 @@ const Navbar = (props) => {
       <ToolbarGroup>
         <Link to="/main">
           <RaisedButton>StackedUp</RaisedButton>
+        </Link>
+      </ToolbarGroup>
+      <ToolbarGroup>
+        <Link to="/CodePad">
+          <RaisedButton>CodePad</RaisedButton>
         </Link>
       </ToolbarGroup>
       <ToolbarGroup>

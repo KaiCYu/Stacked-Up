@@ -4,7 +4,7 @@ import { TableRow, TableRowColumn } from 'material-ui';
 const ApplicantsListEntry = props => (
   <TableRow>
     <TableRowColumn>
-      {props.entry.firstName} + {props.entry.lastName}
+      {props.entry.firstName + ' ' + props.entry.lastName}
     </TableRowColumn>
     <TableRowColumn>
       {props.entry.email}
