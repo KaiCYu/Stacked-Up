@@ -3,9 +3,6 @@ const Promise = require("bluebird");
 const cloudinary = require('cloudinary');
 const bcrypt = require('bcrypt');
 
-// const cloudinary = Promise.promisify(require('cloudinary'));
-// db = Promise.promisifyAll(db, { multiArgs: true });
-
 const checkUsername = (queryStr) => {
   return new Promise((resolve, reject) => {
     db.queryAsync(queryStr).then((data) => {
@@ -26,8 +23,11 @@ const checkUsername = (queryStr) => {
 const uploadToCloudinaryAsync = (file) => {
   return new Promise((resolve, reject) => {
     cloudinary.v2.uploader.upload(file, { resource_type: 'auto' }, (error, result) => {
-      if (error) reject(error);
-      resolve(result);
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
     });
   });
 };
@@ -35,15 +35,18 @@ const uploadToCloudinaryAsync = (file) => {
 const hashedPassword = (password, salt) => {
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, salt, (err, hash) => {
-      if (err) reject(err);
-      resolve(hash);
+      if (err) {
+        reject(err);
+      } else {
+        resolve(hash);
+      }
     });
   });
 };
 
-const insertEmployerToDB = (queryStr) => {
+const insertEmployerToDB = (queryStr, params) => {
   return new Promise((resolve, reject) => {
-    db.queryAsync(queryStr);
+    db.queryAsync(queryStr, params);
   })
 }
 
