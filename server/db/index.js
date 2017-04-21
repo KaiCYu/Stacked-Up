@@ -35,6 +35,14 @@ pool.queryAsyncQuestion = function (command, query) {
     });
 };
 
+pool.querySet = function (command, query) {
+    return Promise.using(getConn(), function(conn) {
+    return conn.queryAsync(command, query)
+    .then(()=>conn.queryAsync(schema.LASTINSERT))   
+    .catch((error)=>(console.log(error)))
+    });
+};
+
 pool.query = function (command, cb) {
     return Promise.using(getConn(), function(conn) {
     return conn.queryAsync(command)
@@ -96,7 +104,26 @@ module.exports.initDB = function() {
         .then(()=> conn.queryAsync(schema.setNewApplicant, demoAppicant1))
         .then(()=> conn.queryAsync(schema.setNewApplicant, demoAppicant2))
         .then(()=> conn.queryAsync(schema.setNewApplicant, demoAppicant3))
-        .then(()=> conn.queryAsync(schema.addDemoMessageContent))
+        .then(()=> conn.queryAsync(schema.addDemoMessageContent1))
+        .then(()=> conn.queryAsync(schema.LASTINSERT))
+        .then((result)=> { 
+            const msgContentInsertID = result[0]['LAST_INSERT_ID()'];
+            return  conn.queryAsync(schema.getEmployerID, 'hackreactor')
+            .then((result)=> {
+                const employerID = result[0].id;
+                const demoMsg = Object.assign(
+                    JSON.parse(JSON.stringify(schema.msgJoin)), 
+                    { recipient: 'bobs', 
+                    sender_employer_id: employerID,
+                    message_content_id: msgContentInsertID, });
+                return conn.queryAsync(schema.setMsgJoin, demoMsg)
+                .then(()=>Object.assign(demoMsg, {recipient: 'marks'}))
+                .then(()=>conn.queryAsync(schema.setMsgJoin, demoMsg))
+                .then(()=>Object.assign(demoMsg, {recipient: 'toms'}))
+                .then(()=>conn.queryAsync(schema.setMsgJoin, demoMsg))
+            });
+        })
+        .then(()=> conn.queryAsync(schema.addDemoMessageContent2))
         .then(()=> conn.queryAsync(schema.LASTINSERT))
         .then((result)=> { 
             const msgContentInsertID = result[0]['LAST_INSERT_ID()'];

@@ -15,6 +15,7 @@ const initDB = require('./db/index.js').initDB;
 initDB();
 const elasticsearch = require('./elasticsearch/index.js');
 // const cloudinary = require('cloudinary');
+const schema = require('./db/schema.js')
 const cloudinaryAPI = require('./../config/cloudinaryconfig.js');
 const promiseUtil = require('./promiseFuncs');
 
@@ -174,7 +175,9 @@ app.get('/logout', (req, res) => {
   console.log('--> logout user check', req.user);
   const username = req.user.username;
   delete loggedInUsers[username];
-  req.logout();
+  req.session.destroy(function (err) {
+    res.redirect('/'); //Inside a callback… bulletproof!
+  });
 
   console.log('loggedInUsers = ', Object.keys(loggedInUsers));
   let loggedInUsersInfoUpdate = {};
@@ -189,7 +192,7 @@ app.get('/logout', (req, res) => {
     let wsClient = loggedInUsers[key][1];
     wsClient.send( JSON.stringify(data) );
   });
-  res.redirect('/');
+  // res.redirect('/');
 });
 
 
@@ -426,6 +429,77 @@ app.post('/requestCall', (req, res) => {
     }));
   }
   res.status(200).send(room);
+});
+
+
+app.post('/sendMessage', (req, res) => {
+  // console.log('post received to /sendMessage by, ', req.user);
+  // console.log('AAAAA Message received to /messages POST // req.body = ', req.body)
+  let msgContent = Object.assign( JSON.parse(JSON.stringify(schema.msgContent)), 
+    { subject: req.body.prev_subject,
+    message: req.body.msgContent, });
+  db.querySet(schema.setMsgContent, msgContent)
+  .then((result)=> {
+    // console.log('\n\n\n RESULT', result);
+    let msgContentInsertID = result[0]['LAST_INSERT_ID()'];
+    // console.log('\n\n\n MSGCONTENTINSERTID', msgContentInsertID);
+    let msgJoin = Object.assign( JSON.parse(JSON.stringify(schema.msgJoin)), 
+      { recipient: req.body.recipient, 
+      sender_applicants_id: req.body.sender_type==="applicant"?req.user.id:null,
+      sender_employer_id: req.body.sender_type==="company"?req.user.id:null,
+      message_content_id: msgContentInsertID,
+      prev_message_id: req.body.prev_msgId,
+      recipient: req.body.recipient,
+      mark_read: 0,
+      send_date: null, });
+    // console.log('\n\n\n MSGJOIN', msgJoin);
+    return db.queryAsyncQuestion(schema.setMsgJoin, msgJoin)
+    .then(()=>res.send('successfully submitted message to DB')); 
+  })
+})
+
+
+app.get('/getMessages', (req,res) => {
+  var messagesObject = {receive:[], sent:[]};
+  var id = req.user.id;  //need to secure this from user tampering with req.user
+  if (req.query.userType&& req.query.userType=== 'applicant') {
+    var recipientNameQuery = schema.getApplicantName;
+    var msgJoinSenderQuery = schema.getMsgJoinByApplicantIDSender;
+  } else if (req.query.userType&&req.query.userType === 'company') {
+    var recipientNameQuery = schema.getEmployerName;
+    var msgJoinSenderQuery = schema.getMsgJoinBySenderIDSender;
+  }
+  db.queryAsyncQuestion(recipientNameQuery, id)
+  .then((result)=>result[0].username)
+  .then((username)=>db.queryAsyncQuestion(schema.getMsgJoinByRecipient, username))
+  .then((message_joins)=> {
+    return Promise.all(message_joins.map(function(message_join) {
+      if (message_join.sender_employer_id) {
+        var querySender=schema.getEmployerName;
+      } else if (message_join.sender_applicants_id) {
+        var querySender=schema.getApplicantName;
+      }
+      return db.queryAsyncQuestion(querySender, message_join.sender_applicants_id||message_join.sender_employer_id)
+      .then((sender)=>message_join.sender=sender[0].username)
+      .then(()=>db.queryAsyncQuestion(schema.getMsgContent, message_join.message_content_id))
+      .then((message_content)=> Object.assign(message_join, (({subject, message})=>({subject, message}))(message_content[0])))
+      .then(()=>message_join.send_date=message_join.send_date.toString());
+    }))
+    .then(()=>messagesObject.receive = message_joins);
+    // .then(()=>console.log(utility.formatMysqlTime(messagesObject.receive[0].send_date)))
+    // .then(()=>console.log(messagesObject));
+
+  })
+  .then(()=>db.queryAsyncQuestion(msgJoinSenderQuery, id))
+  .then((message_joins)=> {
+    return Promise.all(message_joins.map(function(message_join) {
+      return db.queryAsyncQuestion(schema.getMsgContent, message_join.message_content_id)
+      .then((message_content)=> Object.assign(message_join, (({subject, message})=>({subject, message}))(message_content[0])))
+      .then(()=>message_join.send_date=message_join.send_date.toString());
+    }))
+    .then(()=>messagesObject.sent = message_joins);
+  })
+  .then(()=>res.send(messagesObject));
 })
 
 const server = http.createServer(app);

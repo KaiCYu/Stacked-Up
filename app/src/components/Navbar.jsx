@@ -65,6 +65,20 @@ const Navbar = (props) => {
         </ToolbarGroup> :
           null
       }
+      {props.isLoggedIn 
+      ?
+      <ToolbarGroup>
+        <Link to="/messages">
+          <RaisedButton>Messages</RaisedButton>
+        </Link>
+      </ToolbarGroup>
+      :
+      <ToolbarGroup>
+        <Link to="/login">
+          <RaisedButton>Messages</RaisedButton>
+        </Link>
+      </ToolbarGroup>
+      }
       <ToolbarGroup>
         {props.isLoggedIn ?
           <RaisedButton

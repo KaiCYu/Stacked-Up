@@ -18,7 +18,7 @@ module.exports = {
     coverletter_url: null,
   },
   getApplicantID: `Select id FROM applicants WHERE username=?;`,
-  getApplicantName: `Select username FROM applicants WHERE id=?`,
+  getApplicantName: `Select username FROM applicants WHERE id=?;`,
   applicantsDrop: 'DROP TABLE IF EXISTS applicants;',
   applicants: 'CREATE TABLE IF NOT EXISTS applicants (' +
   'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +
@@ -107,7 +107,10 @@ module.exports = {
     mark_read: 0,
     send_date: null,
   },
-  getMsgJoin: `SELECT * FROM messages_join WHERE ID=?`,
+  getMsgJoin: `SELECT * FROM messages_join WHERE ID=? ORDER BY send_date DESC`,
+  getMsgJoinByRecipient: `SELECT * FROM messages_join WHERE recipient=? ORDER BY send_date DESC`,
+  getMsgJoinByApplicantIDSender: `SELECT * FROM messages_join WHERE sender_applicants_id=? ORDER BY send_date DESC`,
+  getMsgJoinBySenderIDSender: `SELECT * FROM messages_join WHERE sender_employer_id=? ORDER BY send_date DESC`,
   messages_joinDrop: 'DROP TABLE IF EXISTS messages_join;',
   messages_join: 'CREATE TABLE IF NOT EXISTS messages_join (' +
   'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +
@@ -122,16 +125,25 @@ module.exports = {
   'FOREIGN KEY (sender_employer_id) REFERENCES employer(id),'+
   'FOREIGN KEY (message_content_id) REFERENCES messages_content(id)'+
   ')',
+  setMsgContent: `INSERT INTO messages_content SET ?`,
+  msgContent: {
+    id: null,
+    subject: null,
+    message:null,
+  },
+  getMsgContent: `SELECT * FROM messages_content WHERE ID=?`,
   messages_contentDrop: 'DROP TABLE IF EXISTS messages_content;',
   messages_content: 'CREATE TABLE IF NOT EXISTS messages_content (' +
   'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +
+  'subject VARCHAR(255),' +
   'message VARCHAR(2550)' +
   ')',
   alter_employer: 'ALTER TABLE employer ' +
   'ADD CONSTRAINT FK_job_postings_employer ' +
   'FOREIGN KEY (job_postings_id) REFERENCES employer(id)',  
-  addDemoMessageContent: `INSERT INTO messages_content VALUES (null, 'Welcome to Hack Reactor!');`,
-  addDemoMessageContentReply: `INSERT INTO messages_content VALUES (null, 'THANK YOU VERY MUCH!!!');`,
+  addDemoMessageContent1: `INSERT INTO messages_content VALUES (null, 'Welcome to Hack Reactor!', 'You will love it here.  Keep in Touch!');`,
+  addDemoMessageContent2: `INSERT INTO messages_content VALUES (null, 'Acceptance Letter', 'Here is your formal acceptance letter');`,
+  addDemoMessageContentReply: `INSERT INTO messages_content VALUES (null, 'acceptance', 'THANK YOU VERY MUCH!!!');`,
 
   // addDemoEmployerMessage: `INSERT INTO employer_messages (employer_id, message_join_id) VALUES `+
   // `((SELECT id FROM employer WHERE username='hackreactor'), (SELECT LAST_INSERT_ID()));`,

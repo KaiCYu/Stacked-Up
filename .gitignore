@@ -34,5 +34,6 @@ bower_components/
 # API keys
 /config
 
+
 # Visual Studio Code
 .vscode/

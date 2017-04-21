@@ -19,6 +19,7 @@ import utils from './../../../lib/utility';
 import PrivateRoute from './privateRoute';
 import ApplicantsList from './ApplicantsList';
 import CodePad from './CodePad';
+import Messages from './Messages';
 
 class App extends React.Component {
   constructor(props) {
@@ -53,6 +54,10 @@ class App extends React.Component {
         employers: [],
         jobPostings: [],
       },
+      messages: {
+        receive: [],
+        sent: [],
+      }
     };
 
     this.getMyProfileInfo = this.getMyProfileInfo.bind(this);
@@ -74,6 +79,7 @@ class App extends React.Component {
     // this.applicantInputChange = this.applicantInputChange.bind(this);
     // this.signUpSubmit = this.signUpSubmit.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
+    this.setMessagesToAppState = this.setMessagesToAppState.bind(this);
     // this.employerInputChange = this.employerInputChange.bind(this);
     // this.submitApplicant = this.submitApplicant.bind(this);
     // this.submitEmployer = this.submitEmployer.bind(this);
@@ -375,6 +381,15 @@ class App extends React.Component {
     });
   }
 
+  setMessagesToAppState(messages) {
+    this.setState({
+      messages: {
+        receive: messages.receive,
+        sent: messages.sent,
+      }
+    })
+  }
+
   sendMessage() {
     $.ajax({
       type: 'POST',
@@ -461,6 +476,15 @@ class App extends React.Component {
                 component={MyProfile}
                 option={this.state.logInOption}
                 currentUser={this.state.currentUser}
+              />
+              <PrivateRoute
+                path="/messages"
+                component={Messages}
+                logInOption={this.state.logInOption}
+                currentUser={this.state.currentUser}
+                messagesReceive={this.state.messages.receive}
+                messagesSent={this.state.messages.sent}
+                setMessagesToAppState={this.setMessagesToAppState}
               />
               <Route
                 path="/employerProfile"
