@@ -347,6 +347,23 @@ app.post('/apply', (req, res) => {
   });
 });
 
+app.get('/getAppliedCompanies', (req, res) => {
+  const queryStr = `SELECT j.*, e.company_name FROM job_postings AS j, employer AS e WHERE j.employer_id = e.id AND j.id in (SELECT a.job_posting_id FROM applicants_job_postings AS a WHERE a.applicant_id = "${req.user.id}");`;
+  db.query(queryStr, (err, result) => {
+    if (err) {
+      console.log('error occured in getting appied company list', err);
+    }
+    res.json(result);
+  });
+});
+
+app.post('/codeTest', (req, res) => {
+  console.log(req.body);
+  const line = 'var func = function(test){\n  console.log("hello world!");\n};';
+  req.body.snippet = line;
+  res.send(req.body);
+});
+
 /*
  * route for searching
  * :query represents the value being searched
