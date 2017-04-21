@@ -92,6 +92,7 @@ module.exports.initDB = function() {
         //Demo Data:
         // The following sends a message from an employer to 3 applicants
         .then(()=> conn.queryAsync(schema.setNewEmployer, demoEmployer1))
+        .then(()=> conn.queryAsync(schema.setNewEmployer, demoEmployer2))
         .then(()=> conn.queryAsync(schema.setNewApplicant, demoAppicant1))
         .then(()=> conn.queryAsync(schema.setNewApplicant, demoAppicant2))
         .then(()=> conn.queryAsync(schema.setNewApplicant, demoAppicant3))
@@ -207,6 +208,20 @@ const demoEmployer1 = Object.assign(
     email: 'awesome@hackreactor.com',
     phone_number: '(987)654-3210',
     city: 'San Francisco',
+    state: 'CA',
+    country: 'USA',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    job_postings_id: null, });
+
+const demoEmployer2 = Object.assign(
+    JSON.parse(JSON.stringify(schema.newEmployer)), 
+    {id: null,
+    username: 'apple',
+    password: '$2a$10$h8sw.jt81MP/AlhpBHgtUu/84kAHw.Cg0ACZIGbNn/CQCUSbshzOK',
+    company_name: 'apple',
+    email: 'apple@apple.com',
+    phone_number: '(650)650-6500',
+    city: 'Cupertino',
     state: 'CA',
     country: 'USA',
     logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',

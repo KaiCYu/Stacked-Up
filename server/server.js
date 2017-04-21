@@ -348,7 +348,7 @@ app.post('/apply', (req, res) => {
 });
 
 app.get('/getAppliedCompanies', (req, res) => {
-  const queryStr = `SELECT * FROM job_postings as j WHERE a.id in (SELECT a.job_postings_id FROM applicants_job_postings AS a WHERE a.job_posting_id = "${req.user.id}");`;
+  const queryStr = `SELECT j.*, e.company_name FROM job_postings AS j, employer AS e WHERE j.employer_id = e.id AND j.id in (SELECT a.job_posting_id FROM applicants_job_postings AS a WHERE a.applicant_id = "${req.user.id}");`;
   db.query(queryStr, (err, result) => {
     if (err) {
       console.log('error occured in getting appied company list', err);

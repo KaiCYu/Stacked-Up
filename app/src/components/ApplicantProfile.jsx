@@ -16,21 +16,21 @@ class ApplicantProfile extends React.Component {
     };
   }
 
-  // componentDidMount() {
-  //   $.ajax({
-  //     url: '/getAppliedCompanies',
-  //     type: 'GET',
-  //     success: (result) => {
-  //       console.log(result);
-  //       this.setState({
-  //         list: result,
-  //       });
-  //     },
-  //     error: (error) => {
-  //       console.log('this is the error', error);
-  //     },
-  //   });
-  // }
+  componentDidMount() {
+    $.ajax({
+      url: '/getAppliedCompanies',
+      type: 'GET',
+      success: (result) => {
+        console.log(result);
+        this.setState({
+          list: result,
+        });
+      },
+      error: (error) => {
+        console.log('this is the error', error);
+      },
+    });
+  }
 
   render() {
     return (
@@ -38,16 +38,16 @@ class ApplicantProfile extends React.Component {
       {/*{console.log('props in applicant profile: ', props.info)}*/}
         <h1>Applicant Profile</h1>
         <div>
-          <ProfilePicture src={props.info.profile_pic_url}/>
-          <h3>Username: {props.info.username}</h3>
-          <h4>Name: {`${props.info.firstName} ${props.info.lastName}`}</h4>
-          <h5>Email: {props.info.email}</h5>
-          <h5>Phone Number: {props.info.phone_number}</h5>
-          <h5>Location: {`${props.info.city}, ${props.info.state} ${props.info.country}`}</h5>
+          <ProfilePicture src={this.props.info.profile_pic_url}/>
+          <h3>Username: {this.props.info.username}</h3>
+          <h4>Name: {`${this.props.info.firstName} ${this.props.info.lastName}`}</h4>
+          <h5>Email: {this.props.info.email}</h5>
+          <h5>Phone Number: {this.props.info.phone_number}</h5>
+          <h5>Location: {`${this.props.info.city}, ${this.props.info.state} ${this.props.info.country}`}</h5>
 
           
-          <a href={props.info.resume_url} target="_blank">Resume</a> <br />
-          <a href={props.info.coverletter_url} target="_blank">Cover Letter</a>
+          <a href={this.props.info.resume_url} target="_blank">Resume</a> <br />
+          <a href={this.props.info.coverletter_url} target="_blank">Cover Letter</a>
           
           {/*<FormInput title={'Upload another Resume'} id={"resume"} type={"file"} name={"resume"} onChange={this.previewFile} />*/}
           
@@ -68,14 +68,14 @@ class ApplicantProfile extends React.Component {
                 <TableHeaderColumn>Starting Salary</TableHeaderColumn>
               </TableRow>
             </TableHeader>
-            {/*<TableBody displayRowCheckbox={false}>
+            <TableBody displayRowCheckbox={false}>
               {this.state.list.map(entry =>
                 <AppliedCompanyEntry
                   entry={entry}
                   key={entry.id}
                 />)
               }
-            </TableBody>*/}
+            </TableBody>
           </Table>
         </div>
       </div>

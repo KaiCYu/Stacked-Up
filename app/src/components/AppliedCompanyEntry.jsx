@@ -4,13 +4,13 @@ import { TableRow, TableRowColumn } from 'material-ui';
 const AppliedCompanyEntry = props => (
   <TableRow>
     <TableRowColumn>
-      {props.entry.companyName}
+      {props.entry.company_name}
     </TableRowColumn>
     <TableRowColumn>
       {props.entry.position}
     </TableRowColumn>
     <TableRowColumn>
-      {props.entry.Description}
+      {props.entry.description}
     </TableRowColumn>
     <TableRowColumn>
       {props.entry.location}
