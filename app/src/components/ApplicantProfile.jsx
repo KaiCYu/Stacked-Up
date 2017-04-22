@@ -108,6 +108,7 @@ class ApplicantProfile extends React.Component {
     this.setState({ resumesUpload: [], coverLettersUpload: [] });
   }
 
+
   handleUpload() {
     // event.preventDefault();
     const fileData = {

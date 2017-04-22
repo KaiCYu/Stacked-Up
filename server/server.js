@@ -453,8 +453,10 @@ app.delete('/deleteFile', (req, res) => {
 
 app.post('/uploadFile', (req, res) => {
   const username = req.body.username;
-  const resumes = req.body.resumes;
-  const coverLetters = req.body.coverLetters;
+  const resumes = req.body.resumes || [];
+  const coverLetters = req.body.coverLetters || [];
+  console.log('resumes list', resumes);
+  console.log('cl list', coverLetters);
   let promiseArray = [];
   const filesURL = [];
 
@@ -475,6 +477,7 @@ app.post('/uploadFile', (req, res) => {
         db.queryAsync(queryStr);
       });
       console.log('coverletters uploaded!');
+      // res.redirect('/myProfile');
     } catch (error) {
       res.status(500).send('Internal Server Error', error);
     }
@@ -509,7 +512,7 @@ app.post('/uploadFile', (req, res) => {
   })
   .then(() => {
     console.log('resumes has been uploaded!');
-    res.redirect('/');
+    res.redirect('/myProfile');
   })
   .catch((error) => {
     res.status(500).send('Internal Server Error', error);
