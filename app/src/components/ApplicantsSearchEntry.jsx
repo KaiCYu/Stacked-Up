@@ -11,7 +11,7 @@ const ApplicantsSearchEntry = ({applicant}) => (
     <TableRowColumn>{applicant.city+', '+applicant.country}</TableRowColumn>
     <TableRowColumn>
       {applicant.online?
-        <a href="#" onclick={`window.sendVideoCallRequest('${applicant.username}')`}>{`Call ${applicant.username}!`}</a>
+        <a href="#" onClick={`window.sendVideoCallRequest('${applicant.username}')`}>{`Call ${applicant.username}!`}</a>
         :"offline"}
     </TableRowColumn>
   </TableRow>

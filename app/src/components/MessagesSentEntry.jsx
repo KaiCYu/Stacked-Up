@@ -1,7 +1,8 @@
 import React from 'react';
 // import { Table, TableHeader, TableBody, TableRow, TableRowColumn } from 'material-ui';
 
-const MessagesSentEntry = ({message})=> (
+
+const MessagesSentEntry = ({message, showMsgContent, setComposeRecipient, setViewedMessage})=> (
 	<tr>
 		<td style={{width:'20%'}}>
 			{message.send_date.toString()}
@@ -10,7 +11,14 @@ const MessagesSentEntry = ({message})=> (
 			{message.recipient}
 		</td>
 		<td style={{width:'40%'}}>
-			{message.subject}
+			<a 
+		 		href="#" 
+		 		onClick={()=>{
+		 		showMsgContent(message.message);
+		 		}}
+		 	>
+		 	{message.subject}
+		 	</a>
 		</td>
 		<td style={{width:'15%'}}>
 			recipients

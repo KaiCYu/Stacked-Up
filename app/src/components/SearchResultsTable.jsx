@@ -16,7 +16,7 @@ class SearchResultsTable extends React.Component {
   componentDidUpdate() {
     console.log('SearchResultsTable updated, this.props.searchResults.applicants = ', this.props.searchResults.applicants)
     var applicants = this.props.searchResults.applicants;
-    // if (applicants && applicants.length>0) {
+    if (applicants && applicants.length>0) {
       $('.table-applicants tbody').children().remove();
       applicants.forEach(applicant => {
       var camlink=applicant.online?
@@ -32,7 +32,7 @@ class SearchResultsTable extends React.Component {
         </tr>'
         )
       });
-    // }
+    }
   }
 
   render() {

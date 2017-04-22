@@ -436,7 +436,7 @@ app.post('/sendMessage', (req, res) => {
   // console.log('post received to /sendMessage by, ', req.user);
   // console.log('AAAAA Message received to /messages POST // req.body = ', req.body)
   let msgContent = Object.assign( JSON.parse(JSON.stringify(schema.msgContent)), 
-    { subject: req.body.prev_subject,
+    { subject: req.body.subject||req.body.prev_subject,
     message: req.body.msgContent, });
   db.querySet(schema.setMsgContent, msgContent)
   .then((result)=> {
@@ -448,7 +448,8 @@ app.post('/sendMessage', (req, res) => {
       sender_applicants_id: req.body.sender_type==="applicant"?req.user.id:null,
       sender_employer_id: req.body.sender_type==="company"?req.user.id:null,
       message_content_id: msgContentInsertID,
-      prev_message_id: req.body.prev_msgId,
+      prev_message_id: req.body.prev_msgId.length>0?
+      req.body.prev_msgId.lengthnull:null,
       recipient: req.body.recipient,
       mark_read: 0,
       send_date: null, });
@@ -550,12 +551,12 @@ wss.on('connection', (ws) => {
       wsClient.send( JSON.stringify(data) );
     });
 
-    clearInterval(oneSetInterval);
+    // clearInterval(oneSetInterval);
   });
 
-  var oneSetInterval = setInterval( ()=> {
-    ws.send( JSON.stringify(new Date().toTimeString()) );
-  }, 10000);
+  // var oneSetInterval = setInterval( ()=> {
+  //   ws.send( JSON.stringify(new Date().toTimeString()) );
+  // }, 10000);
 });
 
 
