@@ -11,8 +11,8 @@ const MessagesReceiveEntry = ({message, showMsgContent, setComposeRecipient, set
 			{message.sender}
 		</td>
 		<td style={{width:'40%'}}>
-		 	<a 
-		 		href="#" 
+		 	<a
+		 		href="#"
 		 		onClick={()=>{
 		 		showMsgContent(message.message);
 		 		setComposeRecipient(message.sender);
@@ -27,7 +27,7 @@ const MessagesReceiveEntry = ({message, showMsgContent, setComposeRecipient, set
 		</td>
 		<td style={{width:'10%'}}>
 			Visit Profile
-		</td>						
+		</td>
 	</tr>
 )
 
