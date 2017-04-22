@@ -144,7 +144,9 @@ app.get('/getApplicants', (req, res) => {
         delete data[i].password;
       }
       const users = Array.from(Object.keys(loggedInUsers));
-      data[0].users = users;
+      if (data[0]) {
+        data[0].users = users;
+      }
       console.log('data after adding users ->', data);
       res.json(data);
     }

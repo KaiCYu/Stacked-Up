@@ -18,12 +18,14 @@ class ApplicantsList extends React.Component {
       type: 'GET',
       data: { jobPosting_id: this.props.location.state.jobInfo.id },
       success: (results) => {
-        const user = results[0].users;
-        delete results[0].users;
-        this.setState({
-          applicants: results,
-          loggedInUser: user,
-        });
+        if (results[0]) {
+          const user = results[0].users;
+          delete results[0].users;
+          this.setState({
+            applicants: results,
+            loggedInUser: user,
+          });
+        }
       },
       error: (error) => {
         console.log(error, '<===== failed to get applicants');
