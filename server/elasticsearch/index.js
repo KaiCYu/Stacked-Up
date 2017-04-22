@@ -124,7 +124,7 @@ const indexDatabase = () => {
       }
     })
     .catch(() => {
-      console.log('Elasticsearch outputs this error when database is empty');
+
     });
   });
 };

@@ -10,7 +10,7 @@ class CodePad extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      code: '// code',
+      code: this.props.updatedCode,
     };
     this.updateCode = this.updateCode.bind(this);
     this.codeTest = this.codeTest.bind(this);
@@ -36,9 +36,7 @@ class CodePad extends React.Component {
   }
 
   updateCode(newCode) {
-    this.setState({
-      code: newCode,
-    });
+    this.props.sendUpdatedCode(newCode);
   }
 
   render() {
@@ -46,7 +44,6 @@ class CodePad extends React.Component {
       lineNumbers: true,
       mode: 'javascript',
     };
-    console.log(CodeMirror);
     return (
       <div style={{ border: '1px solid black' }}>
         <CodeMirror value={this.state.code} onChange={this.updateCode} options={options} />

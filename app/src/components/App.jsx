@@ -57,7 +57,10 @@ class App extends React.Component {
       messages: {
         receive: [],
         sent: [],
-      }
+      },
+      ws: null,
+      userBeingCalled: '',
+      updatedCode: '// code',
     };
 
     this.getMyProfileInfo = this.getMyProfileInfo.bind(this);
@@ -88,6 +91,7 @@ class App extends React.Component {
     this.sendMessage = this.sendMessage.bind(this);
     window.checkState = this.checkState.bind(this);
     // this.previewFile = this.previewFile.bind(this);
+    this.sendUpdatedCode = this.sendUpdatedCode.bind(this);
   }
 
   componentDidMount() {
@@ -147,8 +151,21 @@ class App extends React.Component {
 
   }
 
+  sendUpdatedCode(updatedCode) {
+    const user = this.state.username;
+    const userInCallWith = this.state.userBeingCalled || this.state.incomingVideoCaller;
+    if (user && userInCallWith) {
+      this.state.ws.send(JSON.stringify({
+        updatedCode,
+        user,
+        userInCallWith,
+      }));
+    }
+  }
+
   sendVideoCallRequest(username) {
     var requestor = this.state.username
+    this.setState({ userBeingCalled: username });
     var callWindow = window.open();
     $(callWindow.document).ready(function() {
       callWindow.document.write("<div style='height:700px;' id=\"mainDiv\"></div>");
@@ -230,6 +247,7 @@ class App extends React.Component {
         var HOST = location.origin.replace(/^http/, 'ws')
           console.log('mounted, HOST = ', HOST);
           var ws = new WebSocket(HOST+'/?username=' + results);
+        this.setState({ ws });
           ws.onmessage = function (msg) {
             msg = JSON.parse(msg.data);
             console.log(msg);
@@ -243,6 +261,8 @@ class App extends React.Component {
                 incomingVideoCaller: msg.requestor,
                 incomingVideoRoom: msg.room,
               });
+            } else if (msg.type === 'updatedCode') {
+              context.setState({ updatedCode: msg.updatedCode });
             }
           };
         this.setState({
@@ -420,7 +440,7 @@ class App extends React.Component {
       }
     });
   }
-  
+
   searchAll() {
     const searchURL = `/search/${this.state.searchUsername}/2/10`;
     $.ajax({
@@ -530,7 +550,13 @@ class App extends React.Component {
               />
               <Route
                 path="/CodePad"
-                component={CodePad}
+                component={() => (
+                  <CodePad
+                    sendUpdatedCode={this.sendUpdatedCode}
+                    ws={this.state.ws}
+                    updatedCode={this.state.updatedCode}
+                  />
+                )}
               />
             </div>
           </div>

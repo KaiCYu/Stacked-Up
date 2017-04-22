@@ -247,7 +247,7 @@ app.post('/signupApplicant', (req, res) => {
       promiseArray.push(promiseUtil.uploadToCloudinaryAsync(req.body.profilePhoto));
       files.push('profilePhoto');
     }
-    
+
     return Promise.all(promiseArray).then((values) => {
       // console.log('values from promise all', values);
       for (var i = 0; i < files.length; i++) {
@@ -294,7 +294,7 @@ app.post('/signupApplicant', (req, res) => {
 app.post('/signupEmployer', (req, res) => {
   const checkEmployerUser = `SELECT * FROM employer WHERE username="${req.body.username}";`;
   let logoURL;
-  
+
   promiseUtil.checkUsername(checkEmployerUser)
   .then(() => promiseUtil.uploadToCloudinaryAsync(req.body.logo))
   .then((logo) => {
@@ -390,7 +390,7 @@ app.get('/search/:query/:fuzziness/:size', (req, res) => {
       },
     },
   };
-  
+
   elasticsearch.search(dbName, body)
   .then((results) => {
     // console.log("SEARCH RESULTS =", results);
@@ -421,7 +421,7 @@ app.post('/requestCall', (req, res) => {
     let wsClient = loggedInUsers[req.body.called][1];
     let requestorID = loggedInUsers[req.body.requestor][0];
     let calledID = loggedInUsers[req.body.called][0];
-    var room = requestorID+calledID;
+    var room = requestorID + calledID;
     wsClient.send(JSON.stringify({
       type: 'videoCallRequest',
       requestor: req.body.requestor,
@@ -435,7 +435,7 @@ app.post('/requestCall', (req, res) => {
 app.post('/sendMessage', (req, res) => {
   // console.log('post received to /sendMessage by, ', req.user);
   // console.log('AAAAA Message received to /messages POST // req.body = ', req.body)
-  let msgContent = Object.assign( JSON.parse(JSON.stringify(schema.msgContent)), 
+  let msgContent = Object.assign( JSON.parse(JSON.stringify(schema.msgContent)),
     { subject: req.body.subject||req.body.prev_subject,
     message: req.body.msgContent, });
   db.querySet(schema.setMsgContent, msgContent)
@@ -443,8 +443,8 @@ app.post('/sendMessage', (req, res) => {
     // console.log('\n\n\n RESULT', result);
     let msgContentInsertID = result[0]['LAST_INSERT_ID()'];
     // console.log('\n\n\n MSGCONTENTINSERTID', msgContentInsertID);
-    let msgJoin = Object.assign( JSON.parse(JSON.stringify(schema.msgJoin)), 
-      { recipient: req.body.recipient, 
+    let msgJoin = Object.assign( JSON.parse(JSON.stringify(schema.msgJoin)),
+      { recipient: req.body.recipient,
       sender_applicants_id: req.body.sender_type==="applicant"?req.user.id:null,
       sender_employer_id: req.body.sender_type==="company"?req.user.id:null,
       message_content_id: msgContentInsertID,
@@ -455,7 +455,7 @@ app.post('/sendMessage', (req, res) => {
       send_date: null, });
     // console.log('\n\n\n MSGJOIN', msgJoin);
     return db.queryAsyncQuestion(schema.setMsgJoin, msgJoin)
-    .then(()=>res.send('successfully submitted message to DB')); 
+    .then(()=>res.send('successfully submitted message to DB'));
   })
 })
 
@@ -501,12 +501,20 @@ app.get('/getMessages', (req,res) => {
     .then(()=>messagesObject.sent = message_joins);
   })
   .then(()=>res.send(messagesObject));
-})
+});
+
+app.post('/updateCode', (req, res) => {
+  console.log(req.body);
+});
 
 const server = http.createServer(app);
 
-server.listen(PORT, () => {
-  console.log(`Server now listening on port ${PORT}`);
+server.listen(PORT, (err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(`Server now listening on port ${PORT}`);
+  }
 });
 const wss = new WebSocket.Server({ server });
 
@@ -530,6 +538,18 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('message', (recObj)=> {
+    const message = JSON.parse(recObj);
+    const sendUpdateToUser = message.userInCallWith;
+    const messageData = {
+      type: 'updatedCode',
+      updatedCode: message.updatedCode,
+    };
+    const loggedInUsersArray = Object.keys(loggedInUsers);
+    loggedInUsersArray.forEach((user) => {
+      if (user === sendUpdateToUser) {
+        loggedInUsers[user][1].send(JSON.stringify(messageData));
+      }
+    });
     recObj = JSON.parse(recObj);
   });
 
@@ -559,7 +579,5 @@ wss.on('connection', (ws) => {
   // }, 10000);
 });
 
-
-
 elasticsearch.indexDatabase();
-
+exports.server = server;
