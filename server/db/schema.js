@@ -33,14 +33,6 @@ module.exports = {
   'profile_pic_url VARCHAR(255),' +
   'UNIQUE INDEX(username)' +
   ')',
-  applicantsFiles: 'CREATE TABLE IF NOT EXISTS applicant_files (' +
-  'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +
-  'url VARCHAR(255),' +
-  'type VARCHAR(255),' +
-  'applicant_id int,' +
-  'UNIQUE INDEX(username)' +
-  'FOREIGN KEY (applicant_id REFERENCES applicants(id)' +
-  ')',
   setNewEmployer: `INSERT INTO employer SET ?`,
   newEmployer: {
     id: null,

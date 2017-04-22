@@ -197,7 +197,6 @@ class ApplicantProfile extends React.Component {
 
           <button onClick={this.handleUpload}>Upload Files</button>
 
-          <h1>Companies You&#39;ve Applied To</h1>
           <h1>List of Applied Companies</h1>
           <Table>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
