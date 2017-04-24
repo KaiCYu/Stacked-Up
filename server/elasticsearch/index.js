@@ -1,3 +1,4 @@
+'use strict'; 
 const elasticsearch = require('elasticsearch');
 const mysql = require('mysql');
 const Promise = require('bluebird');
