@@ -86,6 +86,8 @@ module.exports.initDB = function() {
         Promise.using(getConn(), function(conn) {
         return conn.queryAsync(`DROP DATABASE IF EXISTS ${databaseName}`)
         .then(()=> conn.queryAsync(`CREATE DATABASE ${databaseName}`))
+        .then(()=> conn.queryAsync(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME ='${databaseName}';`))
+        .then((result)=> console.log(result))
         .then(()=> conn.queryAsync(`USE ${databaseName}`))
         .then(()=> conn.queryAsync(schema.applicants))
         .then(()=> conn.queryAsync(schema.employer))
