@@ -1,3 +1,7 @@
 test:
   override:
-    - ./mocha --recursive tests
+
+    - mysql.server start
+    - node server/server.js
+    - mocha --recursive tests
+
