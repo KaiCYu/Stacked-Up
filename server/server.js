@@ -455,8 +455,8 @@ app.post('/uploadFile', (req, res) => {
   const username = req.body.username;
   const resumes = req.body.resumes || [];
   const coverLetters = req.body.coverLetters || [];
-  console.log('resumes list', resumes);
-  console.log('cl list', coverLetters);
+  // console.log('resumes list', resumes);
+  // console.log('cl list', coverLetters);
   let promiseArray = [];
   const filesURL = [];
 
@@ -482,41 +482,48 @@ app.post('/uploadFile', (req, res) => {
       res.status(500).send('Internal Server Error', error);
     }
   };
-  uploadCoverLetters();
+
+  if (coverLetters.length > 0) {
+    uploadCoverLetters();
+  }
 
   //clear promiseArray before uploading resumes
   promiseArray = [];
 
-  resumes.forEach((resume) => {
-    promiseArray.push(promiseUtil.uploadToCloudinaryAsync(resume));
-  })
-  //upload each file to cloudinary
-  return Promise.all(promiseArray)
-  .then((files) => {
-    // console.log('FILES: ', files);
-    files.forEach((file) => {
-      filesURL.push(file.secure_url);
-    });
-  })
-  .then(() => {
-    //get applicant_id
-    return db.queryAsync(`SELECT id FROM applicants WHERE username="${username}";`);
-  })
-  .then((applicant) => {
-    const applicantId = applicant[0].id;
-    filesURL.forEach((file) => {
-      let queryStr = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${file}", "resume", ${applicantId});`;
+  if (resumes.length > 0) {
+    resumes.forEach((resume) => {
+      promiseArray.push(promiseUtil.uploadToCloudinaryAsync(resume));
+    })
+    //upload each file to cloudinary
+    return Promise.all(promiseArray)
+    .then((files) => {
+      // console.log('FILES: ', files);
+      files.forEach((file) => {
+        filesURL.push(file.secure_url);
+      });
+    })
+    .then(() => {
+      //get applicant_id
+      return db.queryAsync(`SELECT id FROM applicants WHERE username="${username}";`);
+    })
+    .then((applicant) => {
+      const applicantId = applicant[0].id;
+      filesURL.forEach((file) => {
+        let queryStr = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${file}", "resume", ${applicantId});`;
 
-      return db.queryAsync(queryStr);
+        return db.queryAsync(queryStr);
+      });
+    })
+    .then(() => {
+      console.log('resumes has been uploaded!');
+      // res.redirect('/');
+      
+      res.sendStatus(200);
+    })
+    .catch((error) => {
+      res.status(500).send('Internal Server Error', error);
     });
-  })
-  .then(() => {
-    console.log('resumes has been uploaded!');
-    res.redirect('/myProfile');
-  })
-  .catch((error) => {
-    res.status(500).send('Internal Server Error', error);
-  });
+  }
 });
 
 app.post('/apply', (req, res) => {

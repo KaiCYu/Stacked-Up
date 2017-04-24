@@ -42,6 +42,24 @@ class ApplicantProfile extends React.Component {
         console.log('this is the error', error);
       },
     });
+
+    // console.log('username: ', this.props.info.username); //undefined
+
+    // $.ajax({
+    //   url: '/getApplicantFiles',
+    //   type: 'GET',
+    //   data: {
+    //     username: this.props.info.username,
+    //   },
+    //   success: (result) => {
+    //     console.log('got applicant files!', result);
+    //     //set state for resumes/coverletters
+    //     // this.setState({resumes : result})
+    //   },
+    //   error: (error) => {
+    //     console.log('error getting applicant files', error);
+    //   },
+    // });
   }
 
   updateFiles() {
