@@ -2,16 +2,16 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import $ from 'jquery';
 import 'jquery-ui-bundle';
-import Navbar from './Navbar.jsx';
-import Main from './Main.jsx';
-import Search from './Search.jsx';
-import Login from './Login.jsx';
-import MyProfile from './MyProfile.jsx';
-import Profile from './Profile.jsx';
-import EmployerProfile from './EmployerProfile.jsx';
-import JobPost from './JobPost.jsx';
-import SignupClient from './SignupClient.jsx';
-import SignupEmployer from './SignupEmployer.jsx';
+import Navbar from './Navbar';
+import Main from './Main';
+import Search from './Search';
+import Login from './Login';
+import MyProfile from './MyProfile';
+import Profile from './Profile';
+import EmployerProfile from './EmployerProfile';
+import JobPost from './JobPost';
+import SignupClient from './SignupClient';
+import SignupEmployer from './SignupEmployer';
 import PostingJob from './PostingJob';
 import StreamVideo from './StreamVideo';
 import ApplicantProfile from './ApplicantProfile';
@@ -63,13 +63,7 @@ class App extends React.Component {
       updatedCode: '// code',
     };
 
-    this.getMyProfileInfo = this.getMyProfileInfo.bind(this);
-    this.d = this.d.bind(this);
-    this.getEmployerProfileInfo = this.getEmployerProfileInfo.bind(this);
     // this.getApplicantProfileInfo = this.getApplicantProfileInfo.bind(this);
-    this.getProfileInfo = this.getProfileInfo.bind(this);
-    this.getEmployerInfo = this.getEmployerInfo.bind(this);
-    this.getJobPostInfo = this.getJobPostInfo.bind(this);
     this.loginUrl = 'https://localhost:8000/login';
     this.sendLoginInfo = this.sendLoginInfo.bind(this);
     this.sendSearchInfo = this.sendSearchInfo.bind(this);
@@ -88,7 +82,6 @@ class App extends React.Component {
     // this.submitEmployer = this.submitEmployer.bind(this);
     this.searchAll = this.searchAll.bind(this);
     // this.submitEmployer = this.submitEmployer.bind(this);
-    this.sendMessage = this.sendMessage.bind(this);
     window.checkState = this.checkState.bind(this);
     // this.previewFile = this.previewFile.bind(this);
     this.sendUpdatedCode = this.sendUpdatedCode.bind(this);
@@ -107,7 +100,7 @@ class App extends React.Component {
       },
       error: (error) => {
         console.log('user verified log in failed!: ', error);
-      }
+      },
     });
   }
 
@@ -116,19 +109,19 @@ class App extends React.Component {
       console.log('setState detected and state.incomingVideoCall = ', this.state.incomingVideoCall)
       this.state.incomingVideoCall = false;
       var requestor = this.state.incomingVideoCaller;
-      var room = this.state.incomingVideoRoom
-      console.log('video call request receive launched, call from = ', requestor)
+      var room = this.state.incomingVideoRoom;
+      console.log('video call request receive launched, call from = ', requestor);
       var receiveCallWindow = `<div id="receiveCallWindow"><p>Receive call from ${requestor}?</p></div>`;
-      $(".currentPage").append(receiveCallWindow);
+      $('.currentPage').append(receiveCallWindow);
       var submitReceiveLink = `<button onclick="window.handleReceiveCallWindow('${requestor, room}')">Accept</button>`;
-      $("#receiveCallWindow").append(submitReceiveLink);
+      $('#receiveCallWindow').append(submitReceiveLink);
 
       $(function() {
-        $( "#receiveCallWindow" ).dialog({
-            position: {
-                my: "left top",
-                at: "right bottom"
-            }
+        $('#receiveCallWindow').dialog({
+          position: {
+            my: 'left top',
+            at: 'right bottom',
+          }
         });
       });
     }
@@ -164,7 +157,7 @@ class App extends React.Component {
   }
 
   sendVideoCallRequest(username) {
-    var requestor = this.state.username
+    var requestor = this.state.username;
     this.setState({ userBeingCalled: username });
     var callWindow = window.open();
     $(callWindow.document).ready(function() {
@@ -176,13 +169,13 @@ class App extends React.Component {
       // mainDiv.find('#msgBanner').load('https://live-video-server.herokuapp.com');
       var data = {
         called: username,
-        requestor: requestor,
-      }
+        requestor,
+      };
 
       $.ajax({
         type: 'POST',
         url: '/requestCall',
-        data: data,
+        data,
         success: (room) => {
           console.log('Room for videochat will be ', room);
 
@@ -228,7 +221,7 @@ class App extends React.Component {
   onInputChange(event) {
     const name = event.target.name;
     this.setState({
-      [name]: event.target.value
+      [name]: event.target.value,
     });
   }
 
@@ -297,130 +290,12 @@ class App extends React.Component {
     });
   }
 
-  d() {
-    const context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/employerprofileinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got employerprofileinfo from server // profile = ', results);
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error);
-      },
-    });
-  }
-
-  getMyProfileInfo() {
-    const context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/myprofileinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got myprofile from server // profile = ', results)
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error)
-      }
-    });
-  }
-
-  getProfileInfo() {
-    const context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/profileinfo',
-      success: (results) => {
-        console.log('got profileinfo from server // profile = ', results)
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error)
-      }
-    });
-  }
-
-  getEmployerProfileInfo() {
-    const context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/employerprofileinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got employerprofileinfo from server // profile = ', results)
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error)
-      }
-    });
-  }
-
-  getApplicantProfileInfo() {
-    const context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/applicantrprofileinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got applicantrprofileinfo from server // profile = ', results);
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error);
-      },
-    });
-  }
-
-  getEmployerInfo() {
-    const context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/employerinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got employerinfo from server // profile = ', results)
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error)
-      }
-    });
-  }
-
-  getJobPostInfo() {
-    const context = this;
-    $.ajax({
-      type: 'GET',
-      url: '/jobpostinfo',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('got jobpostinfo from server // profile = ', results)
-      },
-      error: (error) => {
-        console.log('error on getting profile from server // error', error)
-      }
-    });
-  }
-
   setMessagesToAppState(messages) {
     this.setState({
       messages: {
         receive: messages.receive,
         sent: messages.sent,
-      }
-    })
-  }
-
-  sendMessage() {
-    $.ajax({
-      type: 'POST',
-      url: '/sendMessage',
-      contentType: 'application/json',
-      success: (results) => {
-        console.log('sent message to the server // message = ', results)
       },
-      error: (error) => {
-        console.log('error on sending message to server // error', error)
-      }
     });
   }
 
@@ -518,7 +393,6 @@ class App extends React.Component {
                 path="/profile"
                 getProfileInfo={this.state.getProfileInfo}
                 component={Profile}
-                sendMessage={this.sendMessage}
               />
               <PrivateRoute
                 path="/jobPost"

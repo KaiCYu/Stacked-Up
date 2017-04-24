@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import $ from 'jquery';
 import { Table, TableBody } from 'material-ui';
@@ -9,10 +7,10 @@ import EmployersSearchEntry from './EmployersSearchEntry';
 import JobPostsSearchEntry from './JobPostsSearchEntry';
 
 class SearchResultsTable extends React.Component {
-
   constructor(props) {
     super(props);
   }
+
   componentDidUpdate() {
     console.log('SearchResultsTable updated, this.props.searchResults.applicants = ', this.props.searchResults.applicants)
     var applicants = this.props.searchResults.applicants;
@@ -57,16 +55,16 @@ class SearchResultsTable extends React.Component {
       </div>
       <div>
         <Table>
-          <TableBody 
+          <TableBody
           displayRowCheckbox={false}>
             <h3>Applicants</h3>
-            { this.props.searchResults.applicants && 
+            { this.props.searchResults.applicants &&
               this.props.searchResults.applicants.map(applicant => (
                 <ApplicantsSearchEntry key={applicant.id} applicant={applicant} />
               ))
             }
             <h3>Employers</h3>
-            { this.props.searchResults.employers && 
+            { this.props.searchResults.employers &&
               this.props.searchResults.employers.map(employer => (
                 <EmployersSearchEntry key={employer.id} employer={employer} />
               ))
