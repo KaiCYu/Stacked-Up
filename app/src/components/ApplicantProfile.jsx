@@ -147,10 +147,6 @@ class ApplicantProfile extends React.Component {
           this.updateFiles();
           this.clearPreviewAndState();
           console.log('files have been uploaded!');
-          this.updateFiles();
-          console.log('files updated');
-          this.clearPreviewAndState();
-          console.log('previews and state cleared');
         },
         error: (error) => {
           console.log('error uploading files to server // error', error);

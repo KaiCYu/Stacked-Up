@@ -455,11 +455,8 @@ app.post('/uploadFile', (req, res) => {
   const username = req.body.username;
   const resumes = req.body.resumes || [];
   const coverLetters = req.body.coverLetters || [];
-  // console.log('resumes list', resumes);
-  // console.log('cl list', coverLetters);
   const coverLettersPromise = [];
   const resumesPromise = [];
-  // const filesURL = [];
 
   //USING ASYNC/AWAIT
   const uploadFiles = async () => {
