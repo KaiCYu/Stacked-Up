@@ -452,7 +452,7 @@ app.post('/sendMessage', (req, res) => {
       sender_applicants_id: req.body.sender_type==="applicant"?req.user.id:null,
       sender_employer_id: req.body.sender_type==="company"?req.user.id:null,
       message_content_id: msgContentInsertID,
-      prev_message_id: req.body.prev_msgId.length>0?
+      prev_message_id: req.body.prev_msgId&&req.body.prev_msgId.length>0?
       req.body.prev_msgId.lengthnull:null,
       recipient: req.body.recipient,
       mark_read: 0,
@@ -487,7 +487,7 @@ app.get('/getMessages', (req,res) => {
       return db.queryAsyncQuestion(querySender, message_join.sender_applicants_id||message_join.sender_employer_id)
       .then((sender)=>message_join.sender=sender[0].username)
       .then(()=>db.queryAsyncQuestion(schema.getMsgContent, message_join.message_content_id))
-      .then((message_content)=> Object.assign(message_join, (({subject, message})=>({subject, message}))(message_content[0])))
+      .then((message_content)=> Object.assign(message_join, message_content[0]))
       .then(()=>message_join.send_date=message_join.send_date.toString());
     }))
     .then(()=>messagesObject.receive = message_joins);
