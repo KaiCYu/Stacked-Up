@@ -42,24 +42,26 @@ class ApplicantProfile extends React.Component {
         console.log('this is the error', error);
       },
     });
+  }
 
-    // console.log('username: ', this.props.info.username); //undefined
-
-    // $.ajax({
-    //   url: '/getApplicantFiles',
-    //   type: 'GET',
-    //   data: {
-    //     username: this.props.info.username,
-    //   },
-    //   success: (result) => {
-    //     console.log('got applicant files!', result);
-    //     //set state for resumes/coverletters
-    //     // this.setState({resumes : result})
-    //   },
-    //   error: (error) => {
-    //     console.log('error getting applicant files', error);
-    //   },
-    // });
+  updateFiles() {
+    // let coverLettersArr = this.state.coverLetters;
+    $.ajax({
+      type: 'GET',
+      url: '/updateFiles',
+      success: (results) => {
+        // const resumesArr = this.state.resumes.concat(results.resumes);
+        // coverLettersArr = coverLettersArr.concat(results.coverLetters);
+        // console.log(resumesArr);
+        // console.log(coverLettersArr);
+        // this.setState({ resumes: resumesArr, coverLetters: coverLettersArr });
+        this.setState({ resumes: results.resumes, coverLetters: results.coverLetters });
+        console.log('files have been updated!');
+      },
+      error: (error) => {
+        console.log('error updating files from DB ', error);
+      },
+    });
   }
 
   updateFiles() {
@@ -126,7 +128,6 @@ class ApplicantProfile extends React.Component {
     this.setState({ resumesUpload: [], coverLettersUpload: [] });
   }
 
-
   handleUpload() {
     // event.preventDefault();
     const fileData = {
@@ -146,6 +147,10 @@ class ApplicantProfile extends React.Component {
           this.updateFiles();
           this.clearPreviewAndState();
           console.log('files have been uploaded!');
+          this.updateFiles();
+          console.log('files updated');
+          this.clearPreviewAndState();
+          console.log('previews and state cleared');
         },
         error: (error) => {
           console.log('error uploading files to server // error', error);
