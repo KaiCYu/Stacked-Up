@@ -499,7 +499,7 @@ app.get('/getMessages', (req,res) => {
   .then((message_joins)=> {
     return Promise.all(message_joins.map(function(message_join) {
       return db.queryAsyncQuestion(schema.getMsgContent, message_join.message_content_id)
-      .then((message_content)=> Object.assign(message_join, (({subject, message})=>({subject, message}))(message_content[0])))
+      .then((message_content)=> Object.assign(message_join, message_content[0]))
       .then(()=>message_join.send_date=message_join.send_date.toString());
     }))
     .then(()=>messagesObject.sent = message_joins);

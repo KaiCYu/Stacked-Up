@@ -1,5 +1,6 @@
 test:
   override:
-    - mysql.server start
+
     - node server/server.js
     - mocha --recursive tests
+
