@@ -1,3 +1,7 @@
+database:
+  override:
+    - mysql -u root < server/db/schema2.sql
+
 test:
   override:
 
