@@ -1,6 +1,5 @@
-
 DROP DATABASE IF EXISTS stackedup;
-DROP DATABASE IF EXISTS stackdup;
-CREATE DATABASE stackeup;
+
+CREATE DATABASE stackedup;
 
 USE stackedup;
