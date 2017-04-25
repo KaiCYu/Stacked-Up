@@ -45,16 +45,10 @@ class ApplicantProfile extends React.Component {
   }
 
   updateFiles() {
-    // let coverLettersArr = this.state.coverLetters;
     $.ajax({
       type: 'GET',
       url: '/updateFiles',
       success: (results) => {
-        // const resumesArr = this.state.resumes.concat(results.resumes);
-        // coverLettersArr = coverLettersArr.concat(results.coverLetters);
-        // console.log(resumesArr);
-        // console.log(coverLettersArr);
-        // this.setState({ resumes: resumesArr, coverLetters: coverLettersArr });
         this.setState({ resumes: results.resumes, coverLetters: results.coverLetters });
         console.log('files have been updated!');
       },

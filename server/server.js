@@ -533,6 +533,21 @@ app.post('/uploadFile', (req, res) => {
   // }
 });
 
+app.delete('/deleteFile', (req, res) => {
+  const fileId = req.body.fileId;
+  const deleteFile = async () => {
+    try {
+      const queryStr = `DELETE FROM applicant_files WHERE id=${fileId}`;
+      await db.queryAsync(queryStr);
+      console.log('deleted file from DB!');
+      res.sendStatus(200);
+    } catch (error) {
+      res.status(500).send('Internal Server Error', error);
+    }
+  };
+  deleteFile();
+});
+
 app.post('/apply', (req, res) => {
   const postId = JSON.parse(req.body.jobPostingId);
   const queryStr = `SELECT * FROM applicants_job_postings WHERE applicant_id="${req.user.id}" AND job_posting_id="${postId}";`;
