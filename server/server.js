@@ -457,6 +457,7 @@ app.post('/uploadFile', (req, res) => {
   const coverLetters = req.body.coverLetters || [];
   const coverLettersPromise = [];
   const resumesPromise = [];
+  // console.log('INSIDE UPLOAD FILE', req.user.id);
 
   //USING ASYNC/AWAIT
   const uploadFiles = async () => {
@@ -474,6 +475,16 @@ app.post('/uploadFile', (req, res) => {
       // console.log(resumesURLS)
       const applicant = await db.queryAsync(`SELECT id FROM applicants WHERE username="${username}";`);
       const applicantID = applicant[0].id;
+
+      // for (let i = 0; i < coverLetterURLS.length; i++) {
+      //   let coverLetterQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${coverLetterURLS[i].secure_url}", "coverletter", ${applicantID});`;
+      //   await db.queryAsync(coverLetterQuery);
+      // }
+
+      // for (let i = 0; i < resumesURLS.length; i++) {
+      //   let resumeQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${resumesURLS[i].secure_url}", "resume", ${applicantID});`;
+      //   await db.queryAsync(resumeQuery);
+      // }
 
       await coverLetterURLS.forEach((cloudObj) => {
         const coverLetterQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${cloudObj.secure_url}", "coverletter", ${applicantID});`;
@@ -495,42 +506,6 @@ app.post('/uploadFile', (req, res) => {
   if (coverLetters.length > 0 || resumes.length > 0) {
     uploadFiles();
   }
-
-  // //clear promiseArray before uploading resumes
-  // promiseArray = [];
-
-  // if (resumes.length > 0) {
-  //   resumes.forEach((resume) => {
-  //     promiseArray.push(promiseUtil.uploadToCloudinaryAsync(resume));
-  //   })
-  //   //upload each file to cloudinary
-  //   return Promise.all(promiseArray)
-  //   .then((files) => {
-  //     // console.log('FILES: ', files);
-  //     files.forEach((file) => {
-  //       filesURL.push(file.secure_url);
-  //     });
-  //   })
-  //   .then(() => {
-  //     //get applicant_id
-  //     return db.queryAsync(`SELECT id FROM applicants WHERE username="${username}";`);
-  //   })
-  //   .then((applicant) => {
-  //     const applicantId = applicant[0].id;
-  //     filesURL.forEach((file) => {
-  //       let queryStr = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${file}", "resume", ${applicantId});`;
-
-  //       return db.queryAsync(queryStr);
-  //     });
-  //   })
-  //   .then(() => {
-  //     console.log('resumes has been uploaded!');
-  //     res.sendStatus(200);
-  //   })
-  //   .catch((error) => {
-  //     res.status(500).send('Internal Server Error', error);
-  //   });
-  // }
 });
 
 app.delete('/deleteFile', (req, res) => {
@@ -571,6 +546,9 @@ app.post('/apply', (req, res) => {
 });
 
 app.get('/updateFiles', (req, res) => {
+  console.log('REQ.USER.ID FROM UPDATE FILES:', req.user.id);
+  // console.log('REQ.USER.ID FROM UPDATE FILES:', req);
+
   const queryApplicantFiles = `SELECT * FROM applicant_files WHERE \
   applicant_id=${req.user.id}`;
   const resultObj = {
