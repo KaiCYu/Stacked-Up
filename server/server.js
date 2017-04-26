@@ -296,7 +296,7 @@ app.post('/signupApplicant', (req, res) => {
   .tap((result) => {
     applicantId = result[0].id;
     // console.log('APPLICANT ID: ', applicantId);
-    
+
     const insertApplicantResume = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${resumeURL}", "resume", ${applicantId});`;
 
     return db.query(insertApplicantResume);
@@ -512,6 +512,8 @@ app.get('/getAppliedCompanies', (req, res) => {
         res.json(resultObj);
       });
     }
+  });
+});
 
 app.post('/codeTest', (req, res) => {
   console.log(req.body.snippet);
