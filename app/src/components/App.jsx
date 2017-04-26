@@ -329,6 +329,7 @@ class App extends React.Component {
       <div className="site">
         <Router>
           <div className="conditionals-container">
+            <Redirect from="/" to="/main"/>
             <PrivateRoute
               component={Navbar}
               searchAll={this.searchAll}
@@ -340,6 +341,7 @@ class App extends React.Component {
               <Route
                 path="/main"
                 component={Main}
+                logInOption={this.state.logInOption}
               />
               <Route
                 path="/search"

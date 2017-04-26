@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const schema = require('./schema.js');
+const demo = require('./demo.js')
 const Promise = require('bluebird');
 Promise.promisifyAll(mysql);
 Promise.promisifyAll(require('mysql/lib/Connection').prototype);
@@ -21,6 +22,26 @@ const getConn = function() {
     connection.release();
   });
 };
+
+
+const multiQuery = function(paramsArray, command, conn) {
+  var i = 0;
+  // var dataHold = {};
+  var recursivequery = function(param) {
+    if (param) {
+      return conn.queryAsync(command, param).then((result)=>{
+        if (paramsArray[i+1]) {
+          console.log('Param = ', param)
+          i++;
+          return recursivequery(paramsArray[i])
+        } else {
+          return null;
+        }
+      })
+    }
+  }
+  return recursivequery(paramsArray[0])
+}
 
 pool.queryAsync = function (command) {
   return Promise.using(getConn(), function(conn) {
@@ -77,18 +98,12 @@ module.exports.initDB = function() {
         .then(()=> conn.queryAsync(schema.messages_content))
         .then(()=> conn.queryAsync(schema.messages_join))
         .then(()=> conn.queryAsync(schema.alter_employer))
-        // .then(()=> conn.queryAsync(schema.addDemoApplicant))
-        // .then(()=> conn.queryAsync(schema.selectApplicants))})
-        // .then((results)=> (console.log('ZZZZ  Applicants table =', results)))
-        // .using(getConn(), (conn)=> elasticsearch.indexDatabase())
         .catch((error) => console.log("ALERT ALERT ALERT XXXXXXXXXX Promise Rejected, Error = ", error))
         });
     } else {
       Promise.using(getConn(), function(conn) {
           return conn.queryAsync(`DROP DATABASE IF EXISTS ${databaseName}`)
         .then(()=> conn.queryAsync(`CREATE DATABASE ${databaseName}`))
-        .then(()=> conn.queryAsync(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME ='${databaseName}';`))
-        .then((result)=> console.log(result))
         .then(()=> conn.queryAsync(`USE ${databaseName}`))
         .then(()=> conn.queryAsync(schema.applicants))
         .then(()=> conn.queryAsync(schema.employer))
@@ -101,15 +116,14 @@ module.exports.initDB = function() {
         .then(()=> conn.queryAsync(schema.messages_join))
         .then(()=> conn.queryAsync(schema.alter_employer))
         //
-        //Demo Data:
+        //demo. Data:
+        // .then(()=>multiQueryInside(demo.MultiQuery2, demo.MultiParams2, conn))
+        .then(()=>multiQuery(demo.employer, schema.setNewEmployer, conn))
+        .then(()=>multiQuery(demo.applicants, schema.setNewApplicant, conn))
+        .then(()=>multiQuery(demo.jobPost, schema.setNewJobPost, conn))
+        .then(()=> conn.queryAsync(schema.setNewApplicantFile, demo.Resume))
+        .then(()=> conn.queryAsync(schema.setNewApplicantFile, demo.CoverLetter))
         // The following sends a message from an employer to 3 applicants
-        .then(()=> conn.queryAsync(schema.setNewEmployer, demoEmployer1))
-        .then(()=> conn.queryAsync(schema.setNewEmployer, demoEmployer2))
-        .then(()=> conn.queryAsync(schema.setNewApplicant, demoAppicant1))
-        .then(()=> conn.queryAsync(schema.setNewApplicant, demoAppicant2))
-        .then(()=> conn.queryAsync(schema.setNewApplicant, demoAppicant3))
-        .then(()=> conn.queryAsync(schema.setNewApplicantFile, demoResume))
-        .then(()=> conn.queryAsync(schema.setNewApplicantFile, demoCoverLetter))
         .then(()=> conn.queryAsync(schema.addDemoMessageContent1))
         .then(()=> conn.queryAsync(schema.LASTINSERT))
         .then((result)=> { 
@@ -165,92 +179,4 @@ module.exports.initDB = function() {
     }
 }
 
-const demoAppicant1 = Object.assign(
-    JSON.parse(JSON.stringify(schema.newApplicant)), 
-  { id: null,
-    username: 'bobs',
-    password: '$2a$10$h8sw.jt81MP/AlhpBHgtUu/84kAHw.Cg0ACZIGbNn/CQCUSbshzOK',
-    firstName: 'Bobs',
-    lastName: 'UpAndDownInTheWater',
-    email: 'bobs@gmail.com',
-    phone_number: '(123)456-7890',
-    city: 'San Francisco',
-    state: 'CA',
-    country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
-  });
 
-const demoAppicant2 = Object.assign(
-    JSON.parse(JSON.stringify(schema.newApplicant)), 
-  { id: null,
-    username: 'marks',
-    password: '$2a$10$h8sw.jt81MP/AlhpBHgtUu/84kAHw.Cg0ACZIGbNn/CQCUSbshzOK',
-    firstName: 'Marks',
-    lastName: 'OnYourShirt',
-    email: 'marks@gmail.com',
-    phone_number: '(123)456-7891',
-    city: 'San Francisco',
-    state: 'CA',
-    country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
-  });
-
-const demoAppicant3 = Object.assign(
-    JSON.parse(JSON.stringify(schema.newApplicant)), 
-  { id: null,
-    username: 'toms',
-    password: '$2a$10$h8sw.jt81MP/AlhpBHgtUu/84kAHw.Cg0ACZIGbNn/CQCUSbshzOK',
-    firstName: 'Toms',
-    lastName: 'Peeping',
-    email: 'toms@gmail.com',
-    phone_number: '(123)456-7892',
-    city: 'San Francisco',
-    state: 'CA',
-    country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
-  });
-
-const demoEmployer1 = Object.assign(
-    JSON.parse(JSON.stringify(schema.newEmployer)),
-  { id: null,
-    username: 'hackreactor',
-    password: '$2a$10$h8sw.jt81MP/AlhpBHgtUu/84kAHw.Cg0ACZIGbNn/CQCUSbshzOK',
-    company_name: 'Hack Reactor',
-    email: 'awesome@hackreactor.com',
-    phone_number: '(987)654-3210',
-    city: 'San Francisco',
-    state: 'CA',
-    country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
-    job_postings_id: null });
-
-const demoEmployer2 = Object.assign(
-    JSON.parse(JSON.stringify(schema.newEmployer)),
-  { id: null,
-    username: 'apple',
-    password: '$2a$10$h8sw.jt81MP/AlhpBHgtUu/84kAHw.Cg0ACZIGbNn/CQCUSbshzOK',
-    company_name: 'apple',
-    email: 'apple@apple.com',
-    phone_number: '(650)650-6500',
-    city: 'Cupertino',
-    state: 'CA',
-    country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
-    job_postings_id: null });
-
-const demoResume = Object.assign(
-  JSON.parse(JSON.stringify(schema.newApplicantFile)),
-  { id: null,
-    url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492897363/ilq6ifmqammkpzlwuxjs.jpg',
-    type: 'resume',
-    applicant_id: 3,
-  });
-
-
-const demoCoverLetter = Object.assign(
-  JSON.parse(JSON.stringify(schema.newApplicantFile)),
-  { id: null,
-    url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492897363/ilq6ifmqammkpzlwuxjs.jpg',
-    type: 'coverletter',
-    applicant_id: 3,
-  });

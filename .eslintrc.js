@@ -6,5 +6,7 @@
  */
 
 module.exports = {
-  extends: 'airbnb'
+  extends: 'airbnb',
+  extend: 'hackreactor',
+  parser: "babel-eslint",
 };

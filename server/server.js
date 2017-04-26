@@ -105,22 +105,6 @@ app.get('/redirectToCodePad', (req, res) => {
   res.send({ redirect: '/CodePad' });
 });
 
-// app.get('/hello', (req, res) => {
-//   const HelloWorld = function () {
-//     return new Promise (function(resolve, reject) {
-//       console.log('Hello World');
-//       resolve('bye');
-//     })
-//   }
-
-//   HelloWorld().then((greeting2) => {
-//     return new Promise ()
-//     console.log(greeting2);
-//   }).then(() => {
-
-//   })
-// });
-
 app.get('/verifyLogin', (req, res) => {
   if (req.user) {
     res.json(true);
@@ -613,16 +597,12 @@ app.post('/requestCall', (req, res) => {
 
 
 app.post('/sendMessage', (req, res) => {
-  // console.log('post received to /sendMessage by, ', req.user);
-  // console.log('AAAAA Message received to /messages POST // req.body = ', req.body)
   let msgContent = Object.assign( JSON.parse(JSON.stringify(schema.msgContent)),
     { subject: req.body.subject||req.body.prev_subject,
     message: req.body.msgContent, });
   db.querySet(schema.setMsgContent, msgContent)
   .then((result)=> {
-    // console.log('\n\n\n RESULT', result);
     let msgContentInsertID = result[0]['LAST_INSERT_ID()'];
-    // console.log('\n\n\n MSGCONTENTINSERTID', msgContentInsertID);
     let msgJoin = Object.assign( JSON.parse(JSON.stringify(schema.msgJoin)),
       { recipient: req.body.recipient,
       sender_applicants_id: req.body.sender_type==="applicant"?req.user.id:null,
@@ -633,7 +613,6 @@ app.post('/sendMessage', (req, res) => {
       recipient: req.body.recipient,
       mark_read: 0,
       send_date: null, });
-    // console.log('\n\n\n MSGJOIN', msgJoin);
     return db.queryAsyncQuestion(schema.setMsgJoin, msgJoin)
     .then(()=>res.send('successfully submitted message to DB'));
   })
@@ -666,8 +645,6 @@ app.get('/getMessages', (req,res) => {
       .then(()=>message_join.send_date=message_join.send_date.toString());
     }))
     .then(()=>messagesObject.receive = message_joins);
-    // .then(()=>console.log(utility.formatMysqlTime(messagesObject.receive[0].send_date)))
-    // .then(()=>console.log(messagesObject));
 
   })
   .then(()=>db.queryAsyncQuestion(msgJoinSenderQuery, id))
@@ -758,12 +735,7 @@ wss.on('connection', (ws) => {
       wsClient.send( JSON.stringify(data) );
     });
 
-    // clearInterval(oneSetInterval);
   });
-
-  // var oneSetInterval = setInterval( ()=> {
-  //   ws.send( JSON.stringify(new Date().toTimeString()) );
-  // }, 10000);
 });
 
 // unhandled EndPoints

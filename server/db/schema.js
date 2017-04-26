@@ -73,6 +73,16 @@ module.exports = {
   'employer_id INT,' +
   'FOREIGN KEY (employer_id) REFERENCES employer(id)' +
   ')',
+  setNewJobPost: `INSERT INTO job_postings SET ?`,
+  job_post: {
+    id: null,
+    position: null,
+    description: null,
+    location: null,
+    salary: null,
+    post_date: null,
+    employer_id: null,
+  },
   applicant_filesDrop: 'DROP TABLE IF EXISTS applicant_files;',
   applicant_files: 'CREATE TABLE IF NOT EXISTS applicant_files (' +
   'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +

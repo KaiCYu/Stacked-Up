@@ -32,8 +32,8 @@ node_modules/
 bower_components/
 
 # API keys
-/config
-
+/config/cloudinarykeys.js
+config/cloudinarykeys.js
 
 # Visual Studio Code
 .vscode/
