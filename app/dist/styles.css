@@ -70,6 +70,10 @@ section#coverletter-list {
   /*display: block;*/
 }
 
+#search-button {
+  color: black;
+  text-decoration: none;
+}
 
 .signup-button {
   text-decoration: none;
