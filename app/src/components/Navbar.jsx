@@ -14,7 +14,6 @@ const Navbar = (props) => {
 
   const logout = () => {
     props.handleLogOut();
-    console.log(props);
     props.history.push('/main');
   };
 
@@ -65,7 +64,7 @@ const Navbar = (props) => {
         </ToolbarGroup> :
           null
       }
-      {props.isLoggedIn 
+      {props.isLoggedIn
       ?
       <ToolbarGroup>
         <Link to="/messages">

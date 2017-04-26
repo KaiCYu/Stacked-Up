@@ -54,7 +54,6 @@ class App extends React.Component {
       userBeingCalled: '',
       updatedCode: '// code',
     };
-
     this.loginUrl = 'https://localhost:8000/login';
     this.sendLoginInfo = this.sendLoginInfo.bind(this);
     this.sendSearchInfo = this.sendSearchInfo.bind(this);

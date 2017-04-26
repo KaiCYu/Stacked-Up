@@ -11,48 +11,8 @@ class SearchResultsTable extends React.Component {
     super(props);
   }
 
-  componentDidUpdate() {
-    console.log('SearchResultsTable updated, this.props.searchResults.applicants = ', this.props.searchResults.applicants)
-    var applicants = this.props.searchResults.applicants;
-    if (applicants && applicants.length>0) {
-      $('.table-applicants tbody').children().remove();
-      applicants.forEach(applicant => {
-      var camlink=applicant.online?
-      `<a href=# onclick="window.sendVideoCallRequest('${applicant.username}')">Call ${applicant.username}!</a>`:'offline'
-      $('.table-applicants tbody').append(
-        '<tr>\
-          <td>' + applicant.username + '</td>\
-          <td>' + applicant.firstname + ' ' + applicant.lastname + '</td>\
-          <td>' + applicant.email + '</td>\
-          <td>' + applicant.phone_number + '</td>\
-          <td>' + applicant.city + ', ' + applicant.country + '</td>\
-          <td>' + camlink + '</td>\
-        </tr>'
-        )
-      });
-    }
-  }
-
   render() {
     return (
-    <div>
-      <div>
-        <h3>Applicants</h3>
-        <table className="table table-applicants hidden">
-          <thead>
-            <tr>
-              <th>Userame</th>
-              <th>Full Name</th>
-              <th>Email</th>
-              <th>Phone Number</th>
-              <th>City, Country</th>
-              <th>Online Status</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
       <div>
         <Table>
           <TableBody
@@ -78,7 +38,6 @@ class SearchResultsTable extends React.Component {
           </TableBody>
         </Table>
       </div>
-    </div>
     );
   }
 }

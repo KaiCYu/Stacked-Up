@@ -1,18 +1,16 @@
 import React from 'react';
-import { TableRow, TableRowColumn } from 'material-ui';
+import { TableRow, TableRowColumn, RaisedButton } from 'material-ui';
 import utils from '../../../lib/utility';
 
-const ApplicantsSearchEntry = ({applicant}) => (
+const ApplicantsSearchEntry = ({ applicant }) => (
   <TableRow>
     <TableRowColumn>{applicant.username}</TableRowColumn>
-    <TableRowColumn>{applicant.firstName+' '+applicant.lastName}</TableRowColumn>
+    <TableRowColumn>{`${utils.capitalizeFirstLetter(applicant.firstName)} ${utils.capitalizeFirstLetter(applicant.lastName)}`}</TableRowColumn>
     <TableRowColumn>{applicant.email}</TableRowColumn>
     <TableRowColumn>{applicant.phone_number}</TableRowColumn>
-    <TableRowColumn>{applicant.city+', '+applicant.country}</TableRowColumn>
+    <TableRowColumn>{`${utils.capitalizeFirstLetter(applicant.firstName)} ${utils.capitalizeFirstLetter(applicant.lastName)}`}</TableRowColumn>
     <TableRowColumn>
-      {applicant.online?
-        <a href="#" onClick={`window.sendVideoCallRequest('${applicant.username}')`}>{`Call ${applicant.username}!`}</a>
-        :"offline"}
+      {applicant.online ? <RaisedButton onClick="window.sendVideoCallRequest">Call {applicant.username}!</RaisedButton> : 'Offline'}
     </TableRowColumn>
   </TableRow>
 );

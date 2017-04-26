@@ -1,4 +1,4 @@
-'use strict'; 
+'use strict';
 const elasticsearch = require('elasticsearch');
 const mysql = require('mysql');
 const Promise = require('bluebird');
@@ -60,39 +60,15 @@ const bulkIndex = (index, type, data) => {
 const ESsearch = Promise.promisify(esClient.search);
 // search index
 const search = (index, body) => {
-  return ESsearch({ index, body })
-  .timeout(2000, message='\n\n\nElasticSearch FAIL // falling back to MYSQL Query')
-  .catch((error)=>{
-    var query;
-    body && body.query.match._all.query ? query = body.query.match._all.query : null;
-    return error?db.queryAsyncQuestion(
-    `SELECT * FROM APPLICANTS WHERE USERNAME=?;`, query):null
-  });
-};
-
-// example function
-const test = () => {
-  const body = {
-    size: 1,
-    from: 0,
-    query: {
-      match: {
-        email: {
-          query: 'bwon', // query string
-          minimum_should_match: 0, // minimum number of words that should match in query
-          fuzziness: 0, // number of closely spelled terms
-        },
-      },
-    },
-  };
-
-  search(dbName, 'applicants', body)
-  .then((results) => {
-    console.log(`found ${results.hits.total} items in ${results.took}ms`);
-    console.log('returned article titles:');
-    results.hits.hits.forEach(item => console.log(item));
-  })
-  .catch(console.error);
+  // return ESsearch({ index, body })
+  // .timeout(2000, message='\n\n\nElasticSearch FAIL // falling back to MYSQL Query')
+  // .catch((error)=>{
+  //   var query;
+  //   body && body.query.match._all.query ? query = body.query.match._all.query : null;
+  //   return error?db.queryAsyncQuestion(
+  //   `SELECT * FROM APPLICANTS WHERE USERNAME=?;`, query):null
+  // });
+  return esClient.search({ index, body });
 };
 
 // get all from database table

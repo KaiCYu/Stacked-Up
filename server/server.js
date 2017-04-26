@@ -1,4 +1,4 @@
-'use strict'; 
+'use strict';
 
 const Promise = require('bluebird');
 const express = require('express');
@@ -403,24 +403,17 @@ app.get('/search/:query/:fuzziness/:size', (req, res) => {
   };
 
   elasticsearch.search(dbName, body)
-  .then((results) => {
-    // console.log("SEARCH RESULTS =", results);
-    if (results[0]&& results[0].username) {
-      results = results.map(function(applicant) {
-        (applicant.username in loggedInUsers)?applicant.online=true
-        :applicant.online=false;
-        return applicant;
-      });
-      res.status(200).json(results);
-    } else if (results&&results.length>0) {
-      results = results.hits.hits.map(function(hit) {
-        var applicant = hit._source;
-        (applicant.username in loggedInUsers)?applicant.online=true
-        :applicant.online=false;
-        return applicant;
-      });
-      res.status(200).json(results);
-    }
+  .then((searchResults) => {
+    const newResults = searchResults.hits.hits.map((hit) => {
+      const data = hit._source;
+      if (data.username in loggedInUsers) {
+        data.online = true;
+      } else {
+        data.online = false;
+      }
+      return data;
+    });
+    res.status(200).json(newResults);
   })
   .catch(() => {
     res.sendStatus(404);
