@@ -8,17 +8,17 @@ table {
 	margin:0 auto 0 auto;
 	padding:5px;
 	border:1px solid #cccccc;
-	background:#ffffff; 
+	background:#ffffff;
 }
 
 .messages-receive {
 	border:1px solid #cccccc;
-	background:#ffffff; 
+	background:#ffffff;
 }
 
 .messages-sent {
 	border:1px solid #cccccc;
-	background:#ffffff; 
+	background:#ffffff;
 }
 
 textarea-receive {
@@ -68,4 +68,8 @@ section#resume-list {
 
 section#coverletter-list {
   /*display: block;*/
+}
+
+.signup-button {
+  text-decoration: none;
 }

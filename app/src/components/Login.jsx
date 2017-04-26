@@ -1,6 +1,9 @@
 import React from 'react';
 import $ from 'jquery';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 class Login extends React.Component {
   constructor(props) {
@@ -51,31 +54,37 @@ class Login extends React.Component {
                   applicant
                 </label>
               </div>
-              <input
+              <TextField
                 type="text"
                 name="username"
                 id="inputID"
-                placeholder="ID"
+                placeholder="Username"
                 onChange={this.handleInputChange}
               />
-              <input
+              <br />
+              <TextField
                 type="password"
                 name="password"
-                placeholder="password"
+                placeholder="Password"
                 onChange={this.handleInputChange}
               />
-              <button
+              <br />
+              <RaisedButton
+                primary="true"
                 type="submit"
-              >Log In</button>
+              >Log In</RaisedButton>
             </form>
-            <div>
-              <Link to="/signupClient">
-                Sign up as a Client</Link>
-            </div>
-            <div>
-              <Link to="/signupEmployer">
-              Sign up as an Employer</Link>
-            </div>
+            <FlatButton primary="true">
+              <Link
+                to="/signupClient"
+                className="signup-button"
+              >Sign up as a Client
+              </Link>
+            </FlatButton>
+            <br />
+            <FlatButton primary="true">
+              <Link to="/signupEmployer" className="signup-button">Sign up as an Employer</Link>
+            </FlatButton>
           </div>
         }
       </div>

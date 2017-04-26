@@ -86,7 +86,7 @@ const Navbar = (props) => {
           >Logout
           </RaisedButton> :
           <Link to="/login">
-            <RaisedButton>Log In</RaisedButton>
+            <RaisedButton>Login</RaisedButton>
           </Link>}
       </ToolbarGroup>
     </Toolbar>
