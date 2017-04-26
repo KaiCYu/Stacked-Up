@@ -85,6 +85,7 @@ class App extends React.Component {
     window.checkState = this.checkState.bind(this);
     // this.previewFile = this.previewFile.bind(this);
     this.sendUpdatedCode = this.sendUpdatedCode.bind(this);
+    this.redirectToCodePad = this.redirectToCodePad.bind(this);
   }
 
   componentDidMount() {
@@ -136,7 +137,7 @@ class App extends React.Component {
       mainDiv.append("<div id=\"msgBanner\"></div>")
       mainDiv.append("<div id=\"videoElement\"></div>")
       mainDiv.find('#msgBanner').append(`<p>Setting up Video Call request from ${requestor}</p>`);
-      mainDiv.find('#videoElement').html(`<object style="height:450px;" data="https://live-video-server.herokuapp.com/?${requestor}"/>`);
+      mainDiv.find('#videoElement').html(`<object style="height:450px;" data="https://live-video-server.herokuapp.com/?${requestor}"/>`)
     });
   }
 
@@ -148,6 +149,8 @@ class App extends React.Component {
     const user = this.state.username;
     const userInCallWith = this.state.userBeingCalled || this.state.incomingVideoCaller;
     if (user && userInCallWith) {
+      this.state.updatedCode = updatedCode;
+      console.log('===>>>>>', this.state.updatedCode);
       this.state.ws.send(JSON.stringify({
         updatedCode,
         user,
@@ -157,6 +160,7 @@ class App extends React.Component {
   }
 
   sendVideoCallRequest(username) {
+    const self = this;
     var requestor = this.state.username;
     this.setState({ userBeingCalled: username });
     var callWindow = window.open();
@@ -332,6 +336,19 @@ class App extends React.Component {
     });
   }
 
+  redirectToCodePad() {
+    $.ajax({
+      url: '/redirectToCodePad',
+      type: 'GET',
+      success: (result) => {
+        window.location = result.redirect;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
   render() {
     return (
       <div className="site">
@@ -422,15 +439,12 @@ class App extends React.Component {
                 component={ApplicantsList}
                 loggedInUsers={this.state.searchResults.applicants}
               />
-              <Route
+              <PrivateRoute
                 path="/CodePad"
-                component={() => (
-                  <CodePad
-                    sendUpdatedCode={this.sendUpdatedCode}
-                    ws={this.state.ws}
-                    updatedCode={this.state.updatedCode}
-                  />
-                )}
+                component={CodePad}
+                sendUpdatedCode={this.sendUpdatedCode}
+                ws={this.state.ws}
+                updatedCode={this.state.updatedCode}
               />
             </div>
           </div>

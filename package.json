@@ -47,6 +47,7 @@
     "redux-thunk": "^2.2.0",
     "request": "^2.81.0",
     "socket.io": "^1.7.3",
+    "sandbox": "^0.8.6",
     "ws": "^2.2.3"
   },
   "devDependencies": {

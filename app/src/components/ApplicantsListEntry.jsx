@@ -20,7 +20,8 @@ const ApplicantsListEntry = props => (
     </TableRowColumn>
     <TableRowColumn>
       { props.check ?
-        <a href="#" onClick={() => window.sendVideoCallRequest(props.entry.username)}>Call Now</a>
+        <a href="#" onClick={() => {
+          window.sendVideoCallRequest(props.entry.username)}}>Call Now</a>
         : 'offline' }
     </TableRowColumn>
   </TableRow>

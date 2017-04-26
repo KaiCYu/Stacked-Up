@@ -10,16 +10,18 @@ const LocalStrategy = require('passport-local').Strategy;
 // const cookie = require('cookie-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
-const fs = require('fs');
+const SandBox = require('sandbox');
+const path = require('path');
 const db = require('./db/index.js').connection;
 const dbName = require('./db/index.js').dbName;
 const initDB = require('./db/index.js').initDB;
-initDB();
 const elasticsearch = require('./elasticsearch/index.js');
 // const cloudinary = require('cloudinary');
-const schema = require('./db/schema.js')
+const schema = require('./db/schema.js');
 const cloudinaryAPI = require('./../config/cloudinaryconfig.js');
 const promiseUtil = require('./promiseFuncs');
+
+initDB();
 
 const PORT = process.env.PORT || 8000;
 
@@ -40,20 +42,20 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  console.log('serialize User in passport ====>', user?user.username:'');
+  console.log('serialize User in passport ====>', user ? user.username : '');
   done(null, user);
 });
 
 passport.deserializeUser((user, done) => {
-  console.log('deserializeUser in passport', user?user.username:'');
+  console.log('deserializeUser in passport', user ? user.username : '');
   let queryStr;
   if (user.type === 'applicant') {
     queryStr = `SELECT * FROM applicants WHERE id = "${user.id}";`;
   } else {
     queryStr = `SELECT * FROM employer WHERE id = "${user.id}";`;
   }
-  db.query(queryStr, (err, user) => {
-    done(err, user[0]);
+  db.query(queryStr, (err, userdata) => {
+    done(err, userdata[0]);
   });
 });
 
@@ -99,6 +101,9 @@ passport.use(new LocalStrategy(
     }
   }));
 
+app.get('/redirectToCodePad', (req, res) => {
+  res.send({ redirect: '/CodePad' });
+});
 
 app.get('/hello', (req, res) => {
   const HelloWorld = function () {
@@ -365,10 +370,12 @@ app.get('/getAppliedCompanies', (req, res) => {
 });
 
 app.post('/codeTest', (req, res) => {
-  console.log(req.body);
-  const line = 'var func = function(test){\n  console.log("hello world!");\n};';
-  req.body.snippet = line;
-  res.send(req.body);
+  console.log(req.body.snippet);
+  const s = new SandBox();
+  s.run(req.body.snippet, (output) => {
+    console.log(output);
+    res.send(output);
+  });
 });
 
 /*
@@ -520,6 +527,7 @@ server.listen(PORT, (err) => {
     console.log(`Server now listening on port ${PORT}`);
   }
 });
+
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws) => {
@@ -543,7 +551,11 @@ wss.on('connection', (ws) => {
 
   ws.on('message', (recObj)=> {
     const message = JSON.parse(recObj);
+    console.log('=======================');
+    console.log(message);
+    console.log('=======================');
     const sendUpdateToUser = message.userInCallWith;
+    const sender = message.user;
     const messageData = {
       type: 'updatedCode',
       updatedCode: message.updatedCode,
@@ -551,6 +563,9 @@ wss.on('connection', (ws) => {
     const loggedInUsersArray = Object.keys(loggedInUsers);
     loggedInUsersArray.forEach((user) => {
       if (user === sendUpdateToUser) {
+        console.log("===============");
+        console.log(loggedInUsers[user]);
+        console.log("===============");
         loggedInUsers[user][1].send(JSON.stringify(messageData));
       }
     });
@@ -582,6 +597,16 @@ wss.on('connection', (ws) => {
   //   ws.send( JSON.stringify(new Date().toTimeString()) );
   // }, 10000);
 });
+
+// unhandled EndPoints
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../app/dist', 'index.html'));
+});
+
+app.get('/*', (req, res) => {
+  res.redirect('/');
+});
+
 
 elasticsearch.indexDatabase();
 exports.server = server;

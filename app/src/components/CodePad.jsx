@@ -10,7 +10,9 @@ class CodePad extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      code: this.props.updatedCode,
+      code: props.updatedCode,
+      output: '',
+      logs: '',
     };
     this.updateCode = this.updateCode.bind(this);
     this.codeTest = this.codeTest.bind(this);
@@ -18,7 +20,8 @@ class CodePad extends React.Component {
 
   codeTest() {
     const code = {};
-    code.snippet = this.state.code;
+    code.snippet = this.currentCode;
+    console.log('>>>>>>>>>', this.currentCode);
     $.ajax({
       url: '/codeTest',
       type: 'POST',
@@ -26,7 +29,8 @@ class CodePad extends React.Component {
       success: (result) => {
         console.log('codeTesting result', result);
         this.setState({
-          code: result.snippet,
+          output: result.result,
+          logs: result.console,
         });
       },
       error: (error) => {
@@ -36,6 +40,7 @@ class CodePad extends React.Component {
   }
 
   updateCode(newCode) {
+    this.currentCode = newCode;
     this.props.sendUpdatedCode(newCode);
   }
 
@@ -46,8 +51,14 @@ class CodePad extends React.Component {
     };
     return (
       <div style={{ border: '1px solid black' }}>
-        <CodeMirror value={this.state.code} onChange={this.updateCode} options={options} />
+        <CodeMirror value={this.props.updatedCode} onChange={this.updateCode} options={options} />
         <button onClick={this.codeTest}>Submit</button>
+        <div>
+          <span>Output</span>
+          <span id="output">{this.state.output}</span><br />
+          <span>Console Logs</span>
+          <span id="logs">{this.state.logs}</span>
+        </div>
       </div>
     );
   }

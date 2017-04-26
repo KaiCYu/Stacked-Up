@@ -36,6 +36,7 @@ class ApplicantsList extends React.Component {
   render() {
     return (
       <div>
+        {console.log(this.props)}
         <Table>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>
