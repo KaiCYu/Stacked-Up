@@ -13,10 +13,10 @@ const ApplicantsListEntry = props => (
       {props.entry.phone_number}
     </TableRowColumn>
     <TableRowColumn>
-      <a href={props.entry.resume_url}>Resume</a>
+      <a href={props.entry.resume}>Resume</a>
     </TableRowColumn>
     <TableRowColumn>
-      <a href={props.entry.coverletter_url}>Cover Letter</a>
+      <a href={props.entry.coverletter}>Cover Letter</a>
     </TableRowColumn>
     <TableRowColumn>
       { props.check ?

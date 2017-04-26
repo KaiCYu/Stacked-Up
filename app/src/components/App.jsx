@@ -67,6 +67,10 @@ class App extends React.Component {
     this.searchAll = this.searchAll.bind(this);
     this.sendUpdatedCode = this.sendUpdatedCode.bind(this);
     this.redirectToCodePad = this.redirectToCodePad.bind(this);
+    // this.submitEmployer = this.submitEmployer.bind(this);
+    // this.previewFile = this.previewFile.bind(this);
+    this.sendUpdatedCode = this.sendUpdatedCode.bind(this);
+    this.redirectToCodePad = this.redirectToCodePad.bind(this);
   }
 
   componentDidMount() {
@@ -117,6 +121,20 @@ class App extends React.Component {
       mainDiv.find('#msgBanner').append(`<p>Setting up Video Call request from ${requestor}</p>`);
       mainDiv.find('#videoElement').html(`<object style="height:450px;" data="https://live-video-server.herokuapp.com/?${requestor}"/>`)
     });
+  }
+
+  sendUpdatedCode(updatedCode) {
+    const user = this.state.username;
+    const userInCallWith = this.state.userBeingCalled || this.state.incomingVideoCaller;
+    if (user && userInCallWith) {
+      this.state.updatedCode = updatedCode;
+      console.log('===>>>>>', this.state.updatedCode);
+      this.state.ws.send(JSON.stringify({
+        updatedCode,
+        user,
+        userInCallWith,
+      }));
+    }
   }
 
   sendUpdatedCode(updatedCode) {

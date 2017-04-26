@@ -150,23 +150,53 @@ app.get('/getApplicants', (req, res) => {
       for (let i = 0; i < data.length; i += 1) {
         delete data[i].password;
       }
-      const users = Array.from(Object.keys(loggedInUsers));
-      if (data[0]) {
-        data[0].users = users;
+      for (let j = 0; j < data.length; j += 1) {
+        const queryFiles = `SELECT * FROM applicant_files WHERE applicant_id = ${data[j].id};`;
+        db.query(queryFiles, (err, result) => {
+          for (let k = 0; k < result.length; k += 1) {
+            if (result[k].type === 'resume') {
+              data[j].resume = result[k].url;
+            } else {
+              data[j].coverletter = result[k].url;
+            }
+          }
+          const users = Array.from(Object.keys(loggedInUsers));
+          if (data[0]) {
+            data[0].users = users;
+          }
+          console.log('data after adding users ->', data);
+          res.json(data);
+        });
       }
-      console.log('data after adding users ->', data);
-      res.json(data);
     }
   });
 });
 
 app.get('/getJobPostings', (req, res) => {
   const queryStr = 'select job_postings.*, employer.company_name from job_postings inner join employer on job_postings.employer_id = employer.id;';
+  const queryAnotherStr = `SELECT * FROM applicants_job_postings WHERE applicant_id = '${req.user.id}';`;
   db.query(queryStr, (error, data) => {
     if (error) {
       console.log('failed to get job posting data', error);
     } else {
-      res.send(data);
+      console.log('data -------->', data);
+      db.query(queryAnotherStr, (error, results) => {
+        if (error) {
+          console.log('failed to get applicant data from join table ', error);
+        } else {
+          console.log(data.length, results.length);
+          for (let j = 0; j < data.length; j += 1) {
+            for (let i = 0; i < results.length; i += 1) {
+              if (results[i].job_posting_id === data[j].id) {
+                console.log("--------", results[i], data[j], "[][][][]");
+                data[j].apply = true;
+              }
+            }
+          }
+          console.log(data);
+          res.send(data);
+        }
+      });
     }
   });
 });

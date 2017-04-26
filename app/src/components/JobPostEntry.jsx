@@ -1,6 +1,7 @@
 import React from 'react';
 import { TableRow, TableRowColumn, RaisedButton } from 'material-ui';
 import { Link } from 'react-router-dom';
+import JobPostEntryButton from './JobPostEntryButton';
 
 const JobPostEntry = props => (
   <TableRow>
@@ -32,12 +33,11 @@ const JobPostEntry = props => (
       </TableRowColumn>
     :
       <TableRowColumn>
-        <button
-          onClick={() => {
-            props.handleApply(props.entry.id)
-          }}
-        >Apply
-        </button>
+        <JobPostEntryButton
+          handleApply={props.handleApply}
+          id={props.entry.id}
+          apply={props.entry.apply}
+        />
       </TableRowColumn>
     }
   </TableRow>
