@@ -35,14 +35,6 @@ class App extends React.Component {
       employerInfo: {},
       jobPostInfo: {},
       myProfileInfo: {},
-      // employerProfileInfo: {
-      //   companyName: '',
-      //   phoneNumber: '',
-      //   email: '',
-      //   city: '',
-      //   state: '',
-      //   country: '',
-      // },
       loggedInUsers: {},
       searchApplicantsResults: [],
       searchUsername: '',
@@ -63,27 +55,17 @@ class App extends React.Component {
       updatedCode: '// code',
     };
 
-    // this.getApplicantProfileInfo = this.getApplicantProfileInfo.bind(this);
     this.loginUrl = 'https://localhost:8000/login';
     this.sendLoginInfo = this.sendLoginInfo.bind(this);
     this.sendSearchInfo = this.sendSearchInfo.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.updateUsersLoginStatus = this.updateUsersLoginStatus.bind(this);
     window.handleReceiveCallWindow = this.handleReceiveCallWindow.bind(this);
-    this.receiveCall = this.receiveCall.bind(this);
     window.sendVideoCallRequest = this.sendVideoCallRequest.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
-    // this.applicantInputChange = this.applicantInputChange.bind(this);
-    // this.signUpSubmit = this.signUpSubmit.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
     this.setMessagesToAppState = this.setMessagesToAppState.bind(this);
-    // this.employerInputChange = this.employerInputChange.bind(this);
-    // this.submitApplicant = this.submitApplicant.bind(this);
-    // this.submitEmployer = this.submitEmployer.bind(this);
     this.searchAll = this.searchAll.bind(this);
-    // this.submitEmployer = this.submitEmployer.bind(this);
-    window.checkState = this.checkState.bind(this);
-    // this.previewFile = this.previewFile.bind(this);
     this.sendUpdatedCode = this.sendUpdatedCode.bind(this);
     this.redirectToCodePad = this.redirectToCodePad.bind(this);
   }
@@ -107,42 +89,35 @@ class App extends React.Component {
 
   componentDidUpdate() {
     if (this.state.incomingVideoCall) {
-      console.log('setState detected and state.incomingVideoCall = ', this.state.incomingVideoCall)
       this.state.incomingVideoCall = false;
-      var requestor = this.state.incomingVideoCaller;
-      var room = this.state.incomingVideoRoom;
-      console.log('video call request receive launched, call from = ', requestor);
-      var receiveCallWindow = `<div id="receiveCallWindow"><p>Receive call from ${requestor}?</p></div>`;
+      const requestor = this.state.incomingVideoCaller;
+      const room = this.state.incomingVideoRoom;
+      const receiveCallWindow = `<div id="receiveCallWindow"><p>Receive call from ${requestor}?</p></div>`;
       $('.currentPage').append(receiveCallWindow);
-      var submitReceiveLink = `<button onclick="window.handleReceiveCallWindow('${requestor, room}')">Accept</button>`;
+      const submitReceiveLink = `<button onclick="window.handleReceiveCallWindow('${requestor, room}')">Accept</button>`;
       $('#receiveCallWindow').append(submitReceiveLink);
 
-      $(function() {
+      $(() => {
         $('#receiveCallWindow').dialog({
           position: {
             my: 'left top',
             at: 'right bottom',
-          }
+          },
         });
       });
     }
   }
 
-  handleReceiveCallWindow(requestor, room) {
-    var receiveCallWindow = window.open();
-    console.log('receiveCallWindow = ', receiveCallWindow);
-    $(receiveCallWindow.document).ready(function() {
-      receiveCallWindow.document.write("<div id=\"mainDiv\"></div>");
-      var mainDiv = $(receiveCallWindow.document).find('#mainDiv');
-      mainDiv.append("<div id=\"msgBanner\"></div>")
-      mainDiv.append("<div id=\"videoElement\"></div>")
+  handleReceiveCallWindow(requestor) {
+    const receiveCallWindow = window.open();
+    $(receiveCallWindow.document).ready(() => {
+      receiveCallWindow.document.write('<div id="mainDiv"></div>');
+      const mainDiv = $(receiveCallWindow.document).find('#mainDiv');
+      mainDiv.append('<div id="msgBanner"></div>');
+      mainDiv.append('<div id="videoElement"></div>');
       mainDiv.find('#msgBanner').append(`<p>Setting up Video Call request from ${requestor}</p>`);
       mainDiv.find('#videoElement').html(`<object style="height:450px;" data="https://live-video-server.herokuapp.com/?${requestor}"/>`)
     });
-  }
-
-  receiveCall() {
-
   }
 
   sendUpdatedCode(updatedCode) {
@@ -160,18 +135,16 @@ class App extends React.Component {
   }
 
   sendVideoCallRequest(username) {
-    const self = this;
-    var requestor = this.state.username;
+    const requestor = this.state.username;
     this.setState({ userBeingCalled: username });
-    var callWindow = window.open();
-    $(callWindow.document).ready(function() {
-      callWindow.document.write("<div style='height:700px;' id=\"mainDiv\"></div>");
-      var mainDiv = $(callWindow.document).find('#mainDiv');
-      mainDiv.append("<div id=\"msgBanner\"></div>")
-      mainDiv.append("<div id=\"videoElement\"></div>")
+    const callWindow = window.open();
+    $(callWindow.document).ready(() => {
+      callWindow.document.write('<div style="height:700px;" id="mainDiv"></div>');
+      const mainDiv = $(callWindow.document).find('#mainDiv');
+      mainDiv.append('<div id="msgBanner"></div>');
+      mainDiv.append('<div id="videoElement"></div>');
       mainDiv.find('#msgBanner').append(`<p>Calling ${username}, Please hold...</p>`);
-      // mainDiv.find('#msgBanner').load('https://live-video-server.herokuapp.com');
-      var data = {
+      const data = {
         called: username,
         requestor,
       };
@@ -181,8 +154,6 @@ class App extends React.Component {
         url: '/requestCall',
         data,
         success: (room) => {
-          console.log('Room for videochat will be ', room);
-
           $.ajax({
             type: 'GET',
             url: 'https://live-video-server.herokuapp.com',
@@ -191,35 +162,35 @@ class App extends React.Component {
             },
             error: (error) => {
               console.log('error...error = ', error);
-            }
-          })
-
+            },
+          });
         },
         error: (error) => {
           console.log('error...error = ', error);
-        }
-      })
+        },
+      });
     });
-    console.log('lets call', username);
   }
 
 
   updateUsersLoginStatus(loggedInUsers) {
-    // const newSearchApplicantsResults = this.state.searchApplicantsResults
     const newSearchApplicantsResults = this.state.searchResults.applicants
-    .map(function(applicant) {
-      console.log('loggedInUsers updated, loggedInUsers = ', loggedInUsers)
+    .map((applicant) => {
+      const newApplicant = applicant;
       if (applicant.username in loggedInUsers) {
-        applicant.online = true;
-        applicant.camlink = `<a href=# onclick="window.sendVideoCallRequest('${applicant.username}')">Call ${applicant.username}!</a>`
+        newApplicant.online = true;
+        newApplicant.camlink = `<a href=# onclick="window.sendVideoCallRequest('${applicant.username}')">Call ${applicant.username}!</a>`
       } else {
-        applicant.online = false;
-        applicant.camlink = 'offline';
+        newApplicant.online = false;
+        newApplicant.camlink = 'offline';
       }
-      return applicant;
-    })
-    console.log('newSearchApplicantsResults = ', newSearchApplicantsResults)
-    this.setState({searchResults: {applicants: newSearchApplicantsResults}});
+      return newApplicant;
+    });
+    this.setState({
+      searchResults: {
+        applicants: newSearchApplicantsResults,
+      },
+    });
   }
 
   onInputChange(event) {
@@ -230,8 +201,6 @@ class App extends React.Component {
   }
 
   sendLoginInfo() {
-    console.log('login in App.jsx sendLoginInfo() = ', this.state.username, this.state.password)
-    const context = this;
     const userdata = {};
     userdata.username = this.state.username + '/' + this.state.logInOption;
     userdata.password = this.state.password;
@@ -240,48 +209,37 @@ class App extends React.Component {
       url: '/login',
       data: userdata,
       success: (results) => {
-        console.log('sent login info, results =', results)
-        var HOST = location.origin.replace(/^http/, 'ws')
-          console.log('mounted, HOST = ', HOST);
-          var ws = new WebSocket(HOST+'/?username=' + results);
+        const HOST = location.origin.replace(/^http/, 'ws');
+        const ws = new WebSocket(HOST + '/?username=' + results);
         this.setState({ ws });
-          ws.onmessage = function (msg) {
-            msg = JSON.parse(msg.data);
-            console.log(msg);
-            if (msg.type === 'loggedInUsersUpdate') {
-              context.updateUsersLoginStatus(msg.loggedInUsers);
-            } else if (msg.type === 'videoCallRequest') {
-              console.log('room = ', msg.room);
-              console.log('msg = ', msg)
-              context.setState({
-                incomingVideoCall: true,
-                incomingVideoCaller: msg.requestor,
-                incomingVideoRoom: msg.room,
-              });
-            } else if (msg.type === 'updatedCode') {
-              context.setState({ updatedCode: msg.updatedCode });
-            }
-          };
+        ws.onmessage = (msg) => {
+          const message = JSON.parse(msg.data);
+          if (message.type === 'loggedInUsersUpdate') {
+            this.updateUsersLoginStatus(message.loggedInUsers);
+          } else if (message.type === 'videoCallRequest') {
+            this.setState({
+              incomingVideoCall: true,
+              incomingVideoCaller: message.requestor,
+              incomingVideoRoom: message.room,
+            });
+          } else if (message.type === 'updatedCode') {
+            this.setState({ updatedCode: msg.updatedCode });
+          }
+        };
         this.setState({
           isLoggedIn: true,
-          currentUser: results
+          currentUser: results,
         });
-        console.log('current user on app.jsx : ', this.state.currentUser);
       },
       error: (error) => {
         console.log('error on sending login info, error =', error);
-      }
+      },
     });
   }
 
-  checkState() {
-    console.log(this.state);
-  }
-
   sendSearchInfo() {
-    console.log('searching for username = ', this.state.searchUsername)
     const context = this;
-    const searchURL = '/search/' + this.state.searchUsername + '/10'
+    const searchURL = '/search/' + this.state.searchUsername + '/10';
     $.ajax({
       type: 'GET',
       url: searchURL,
@@ -289,7 +247,7 @@ class App extends React.Component {
         context.setState({ searchApplicantsResults: results });
       },
       error: (error) => {
-        console.log('error on sending search info, error =', error)
+        console.log('error on sending search info, error =', error);
       },
     });
   }
