@@ -105,21 +105,21 @@ app.get('/redirectToCodePad', (req, res) => {
   res.send({ redirect: '/CodePad' });
 });
 
-app.get('/hello', (req, res) => {
-  const HelloWorld = function () {
-    return new Promise (function(resolve, reject) {
-      console.log('Hello World');
-      resolve('bye');
-    })
-  }
+// app.get('/hello', (req, res) => {
+//   const HelloWorld = function () {
+//     return new Promise (function(resolve, reject) {
+//       console.log('Hello World');
+//       resolve('bye');
+//     })
+//   }
 
-  HelloWorld().then((greeting2) => {
-    return new Promise ()
-    console.log(greeting2);
-  }).then(() => {
+//   HelloWorld().then((greeting2) => {
+//     return new Promise ()
+//     console.log(greeting2);
+//   }).then(() => {
 
-  })
-});
+//   })
+// });
 
 app.get('/verifyLogin', (req, res) => {
   if (req.user) {
@@ -130,7 +130,7 @@ app.get('/verifyLogin', (req, res) => {
 });
 
 app.get('/getCurrentUser', (req, res) => {
-  console.log('REQ.USER', req.user?req.user.username:'');
+  // console.log('REQ.USER', req.user?req.user.username:'');
   if (req.user) {
     const currentUser = req.user;
     delete currentUser.password;
@@ -204,8 +204,6 @@ app.get('/logout', (req, res) => {
   // res.redirect('/');
 });
 
-
-
 app.get('/profileinfo', passport.authenticate('local'),
   (req, res) => {
     if (req.user) {
@@ -238,6 +236,7 @@ app.post('/signupApplicant', (req, res) => {
   let resumeURL = null;
   let coverletterURL = null;
   let profilePicURL = null;
+  let applicantId;
   const files = [];
 
   promiseUtil.checkUsername(checkApplicantUser)
@@ -256,15 +255,14 @@ app.post('/signupApplicant', (req, res) => {
       promiseArray.push(promiseUtil.uploadToCloudinaryAsync(req.body.profilePhoto));
       files.push('profilePhoto');
     }
-
     return Promise.all(promiseArray).then((values) => {
       // console.log('values from promise all', values);
       for (var i = 0; i < files.length; i++) {
-        if (files[i] === 'resume') {
+        if (files[i] === 'resume') {  //resume
           resumeURL = values[i].secure_url;
-        } else if (files[i] === 'coverLetter') {
+        } else if (files[i] === 'coverLetter') {  //coverletter
           coverletterURL = values[i].secure_url;
-        } else {
+        } else {  //profile picture
           profilePicURL = values[i].secure_url;
         }
       }
@@ -275,7 +273,8 @@ app.post('/signupApplicant', (req, res) => {
   })
   .then((hash) => {
     const insertApplicant = `INSERT INTO applicants SET ?`;
-    const values = {
+
+    const applicantValues = {
       username: req.body.username,
       password: hash,
       firstName: req.body.firstName,
@@ -285,11 +284,27 @@ app.post('/signupApplicant', (req, res) => {
       city: req.body.city,
       state: req.body.state,
       country: req.body.country,
-      resume_url: resumeURL,
-      coverletter_url: coverletterURL,
+      // resume_url: resumeURL,
+      // coverletter_url: coverletterURL,
       profile_pic_url: profilePicURL,
     };
-    db.queryAsyncQuestion(insertApplicant, values);
+    return db.queryAsyncQuestion(insertApplicant, applicantValues);
+  })
+  .then(() => {
+    return db.queryAsync(`SELECT id FROM applicants WHERE username="${req.body.username}";`);
+  })
+  .tap((result) => {
+    applicantId = result[0].id;
+    // console.log('APPLICANT ID: ', applicantId);
+    
+    const insertApplicantResume = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${resumeURL}", "resume", ${applicantId});`;
+
+    return db.query(insertApplicantResume);
+  })
+  .then((result) => {
+    const insertApplicantCoverLetter = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${coverletterURL}, "coverletter", ${applicantId});`;
+
+    return db.query(insertApplicantCoverLetter);
   })
   .then(() => {
     console.log('applicant has signed up!');
@@ -304,37 +319,108 @@ app.post('/signupEmployer', (req, res) => {
   const checkEmployerUser = `SELECT * FROM employer WHERE username="${req.body.username}";`;
   let logoURL;
 
-  promiseUtil.checkUsername(checkEmployerUser)
-  .then(() => promiseUtil.uploadToCloudinaryAsync(req.body.logo))
-  .then((logo) => {
-    logoURL = logo.secure_url;
-    return promiseUtil.hashedPassword(req.body.password, 10);
-  })
-  .then((hash) => {
-    const insertEmployer = `INSERT INTO employer SET ?`;
-    const values = {
-      username: req.body.username,
-      password: hash,
-      company_name: req.body.companyName,
-      email: req.body.email,
-      phone_number: req.body.phoneNumber,
-      city: req.body.city,
-      state: req.body.state,
-      country: req.body.country,
-      logo_url: logoURL,
-    };
-    db.queryAsyncQuestion(insertEmployer, values);
-  })
-  .then(() => {
-    console.log('employer has signed up!');
-    res.redirect('/');
+  const signupEmployer = async () => {
+    try {
+      const isUser = await promiseUtil.checkUsername(checkEmployerUser);
+      console.log(req.body.logo)
+      if (!isUser && req.body.logo !== '') {
+        logoURL = await promiseUtil.uploadToCloudinaryAsync(req.body.logo);
+        logoURL = logoURL.secure_url;
+      }
+      const hash = await promiseUtil.hashedPassword(req.body.password, 10);
+      const insertEmployer = `INSERT INTO employer SET ?`;
+      const values = {
+        username: req.body.username,
+        password: hash,
+        company_name: req.body.companyName,
+        email: req.body.email,
+        phone_number: req.body.phoneNumber,
+        city: req.body.city,
+        state: req.body.state,
+        country: req.body.country,
+        logo_url: logoURL,
+      };
+      await db.queryAsyncQuestion(insertEmployer, values);
 
-    // index elasticsearch with new applicant
-    elasticsearch.indexDatabase();
-  })
-  .catch((error) => {
-    res.status(500).send('Internal Server Error');
-  });
+      console.log('employer has signed up!');
+      res.redirect('/');
+    } catch (error) {
+      res.status(500).send('Internal Server Error', error);
+    }
+  };
+  signupEmployer();
+});
+
+app.post('/uploadFile', (req, res) => {
+  const username = req.body.username;
+  const resumes = req.body.resumes || [];
+  const coverLetters = req.body.coverLetters || [];
+  const coverLettersPromise = [];
+  const resumesPromise = [];
+  // console.log('INSIDE UPLOAD FILE', req.user.id);
+
+  //USING ASYNC/AWAIT
+  const uploadFiles = async () => {
+    try {
+      coverLetters.forEach((coverLetter) => {
+        coverLettersPromise.push(promiseUtil.uploadToCloudinaryAsync(coverLetter));
+      });
+      resumes.forEach((resume) => {
+        resumesPromise.push(promiseUtil.uploadToCloudinaryAsync(resume));
+      });
+
+      const coverLetterURLS = await Promise.all(coverLettersPromise);
+      // console.log(coverLetterURLS)
+      const resumesURLS = await Promise.all(resumesPromise);
+      // console.log(resumesURLS)
+      const applicant = await db.queryAsync(`SELECT id FROM applicants WHERE username="${username}";`);
+      const applicantID = applicant[0].id;
+
+      // for (let i = 0; i < coverLetterURLS.length; i++) {
+      //   let coverLetterQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${coverLetterURLS[i].secure_url}", "coverletter", ${applicantID});`;
+      //   await db.queryAsync(coverLetterQuery);
+      // }
+
+      // for (let i = 0; i < resumesURLS.length; i++) {
+      //   let resumeQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${resumesURLS[i].secure_url}", "resume", ${applicantID});`;
+      //   await db.queryAsync(resumeQuery);
+      // }
+
+      await coverLetterURLS.forEach((cloudObj) => {
+        const coverLetterQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${cloudObj.secure_url}", "coverletter", ${applicantID});`;
+        db.queryAsync(coverLetterQuery);
+      });
+
+      await resumesURLS.forEach((cloudObj) => {
+        const resumeQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${cloudObj.secure_url}", "resume", ${applicantID});`;
+        db.queryAsync(resumeQuery);
+      });
+
+      console.log('files stored into DB!');
+      res.sendStatus(200);
+    } catch (error) {
+      res.status(500).send('Internal Server Error', error);
+    }
+  };
+
+  if (coverLetters.length > 0 || resumes.length > 0) {
+    uploadFiles();
+  }
+});
+
+app.delete('/deleteFile', (req, res) => {
+  const fileId = req.body.fileId;
+  const deleteFile = async () => {
+    try {
+      const queryStr = `DELETE FROM applicant_files WHERE id=${fileId}`;
+      await db.queryAsync(queryStr);
+      console.log('deleted file from DB!');
+      res.sendStatus(200);
+    } catch (error) {
+      res.status(500).send('Internal Server Error', error);
+    }
+  };
+  deleteFile();
 });
 
 app.post('/apply', (req, res) => {
@@ -359,15 +445,73 @@ app.post('/apply', (req, res) => {
   });
 });
 
+app.get('/updateFiles', (req, res) => {
+  console.log('REQ.USER.ID FROM UPDATE FILES:', req.user.id);
+  // console.log('REQ.USER.ID FROM UPDATE FILES:', req);
+
+  const queryApplicantFiles = `SELECT * FROM applicant_files WHERE \
+  applicant_id=${req.user.id}`;
+  const resultObj = {
+    resumes: [],
+    coverLetters: [],
+  };
+
+  db.query(queryApplicantFiles, (err, files) => {
+    if (err) {
+      console.log('error getting applicant files', err);
+    }
+    // console.log('FILES', files);
+    resultObj.resumes = files.filter((file) => {
+      if (file.type === 'resume') {
+        return file;
+      }
+    });
+    resultObj.coverLetters = files.filter((file) => {
+      if (file.type === 'coverletter') {
+        return file;
+      }
+    });
+    res.json(resultObj);
+  });
+
+});
+
+
 app.get('/getAppliedCompanies', (req, res) => {
-  const queryStr = `SELECT j.*, e.company_name FROM job_postings AS j, employer AS e WHERE j.employer_id = e.id AND j.id in (SELECT a.job_posting_id FROM applicants_job_postings AS a WHERE a.applicant_id = "${req.user.id}");`;
-  db.query(queryStr, (err, result) => {
+  console.log('USER ID', req.user.id);
+  const resultObj = {
+    resumes: [],
+    coverletters: [],
+    companies: [],
+  };
+  const queryAppliedCompanies = `SELECT j.*, e.company_name FROM job_postings AS j, employer AS e WHERE j.employer_id = e.id AND j.id in (SELECT a.job_posting_id FROM applicants_job_postings AS a WHERE a.applicant_id = "${req.user.id}");`;
+
+  const queryApplicantFiles = `SELECT * FROM applicant_files WHERE \
+  applicant_id=${req.user.id}`;
+
+  db.query(queryAppliedCompanies, (err, result) => {
     if (err) {
       console.log('error occured in getting appied company list', err);
+    } else {
+      resultObj.companies = result;
+      db.query(queryApplicantFiles, (err2, files) => {
+        if (err2) {
+          console.log('error getting applicant files', err2);
+        }
+        // console.log('FILES', files);
+        resultObj.resumes = files.filter((file) => {
+          if (file.type === 'resume') {
+            return file.url;
+          }
+        });
+        resultObj.coverletters = files.filter((file) => {
+          if (file.type === 'coverletter') {
+            return file.url;
+          }
+        });
+        res.json(resultObj);
+      });
     }
-    res.json(result);
-  });
-});
 
 app.post('/codeTest', (req, res) => {
   console.log(req.body.snippet);
@@ -462,7 +606,6 @@ app.post('/sendMessage', (req, res) => {
     .then(()=>res.send('successfully submitted message to DB'));
   })
 })
-
 
 app.get('/getMessages', (req,res) => {
   var messagesObject = {receive:[], sent:[]};

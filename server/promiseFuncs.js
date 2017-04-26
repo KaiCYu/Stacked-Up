@@ -10,15 +10,15 @@ const checkUsername = (queryStr) => {
       if (data.length !== 0) {
         const redirectUrl = `import React from 'react';
           const redirect = () => (
-          <Redirect to="${req._parsedOriginalUrl.path}">);`;
+          <Redirect to=${req._parsedOriginalUrl.path}>);`;
           // console.log('REDIRECT ', redirectUrl);
         res.send(redirectUrl);
       } else {
         resolve();
       }
-    })
+    });
   });
-}
+};
 
 const uploadToCloudinaryAsync = (file) => {
   return new Promise((resolve, reject) => {
@@ -50,9 +50,6 @@ const insertEmployerToDB = (queryStr, params) => {
   })
 }
 
-
-// const hashedPassword = bcrypt.hash(req.body.password, 10, (err, hash) => {         resolve(hash)
-// });
 
 module.exports = {
   insertEmployerToDB,

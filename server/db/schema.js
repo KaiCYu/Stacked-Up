@@ -14,8 +14,6 @@ module.exports = {
     state: null,
     country: null,
     profile_pic_url: null,
-    resume_url: null,
-    coverletter_url: null,
   },
   getApplicantID: `Select id FROM applicants WHERE username=?;`,
   getApplicantName: `Select username FROM applicants WHERE id=?;`,
@@ -32,8 +30,6 @@ module.exports = {
   'state VARCHAR(255),' +
   'country VARCHAR(255),' +
   'profile_pic_url VARCHAR(255),' +
-  'resume_url VARCHAR(255),' +
-  'coverletter_url VARCHAR(255),' +
   'UNIQUE INDEX(username)' +
   ')',
   setNewEmployer: `INSERT INTO employer SET ?`,
@@ -65,7 +61,7 @@ module.exports = {
   'country VARCHAR(255),' +
   'logo_url VARCHAR(255),' +
   'job_postings_id INT' +
-  ')', 
+  ')',
   job_postingsDrop: 'DROP TABLE IF EXISTS job_postings;',
   job_postings: 'CREATE TABLE IF NOT EXISTS job_postings (' +
   'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +
@@ -75,8 +71,23 @@ module.exports = {
   'salary INT,' +
   'post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
   'employer_id INT,' +
-  'FOREIGN KEY (employer_id) REFERENCES employer(id)'+
+  'FOREIGN KEY (employer_id) REFERENCES employer(id)' +
   ')',
+  applicant_filesDrop: 'DROP TABLE IF EXISTS applicant_files;',
+  applicant_files: 'CREATE TABLE IF NOT EXISTS applicant_files (' +
+  'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +
+  'url VARCHAR(255),' +
+  'type VARCHAR(20),' +
+  'applicant_id INT,' +
+  'FOREIGN KEY (applicant_id) REFERENCES applicants(id)' +
+  ')',
+  setNewApplicantFile: `INSERT INTO applicant_files SET ?`,
+  newApplicantFile: {
+    id: null,
+    url: null,
+    type: null,
+    applicant_id: null,
+  },
   skillsDrop: 'DROP TABLE IF EXISTS skills;',
   skills: 'CREATE TABLE IF NOT EXISTS skills (' +
   'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +
@@ -144,6 +155,8 @@ module.exports = {
   addDemoMessageContent1: `INSERT INTO messages_content VALUES (null, 'Welcome to Hack Reactor!', 'You will love it here.  Keep in Touch!');`,
   addDemoMessageContent2: `INSERT INTO messages_content VALUES (null, 'Acceptance Letter', 'Here is your formal acceptance letter');`,
   addDemoMessageContentReply: `INSERT INTO messages_content VALUES (null, 'acceptance', 'THANK YOU VERY MUCH!!!');`,
+  addDemoResume: `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("https://res.cloudinary.com/dse6qhxk5/image/upload/v1492897363/ilq6ifmqammkpzlwuxjs.jpg", "resume", 3);`,
+  addDemoCoverLetter: `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("https://res.cloudinary.com/dse6qhxk5/image/upload/v1492897363/ilq6ifmqammkpzlwuxjs.jpg", "coverletter", 3);`,
 
   // addDemoEmployerMessage: `INSERT INTO employer_messages (employer_id, message_join_id) VALUES `+
   // `((SELECT id FROM employer WHERE username='hackreactor'), (SELECT LAST_INSERT_ID()));`,

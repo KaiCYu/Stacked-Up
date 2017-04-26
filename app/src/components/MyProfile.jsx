@@ -17,7 +17,6 @@ class MyProfile extends React.Component {
       url: '/getCurrentUser',
       type: 'GET',
       success: (currentUser) => {
-        console.log(this.props);
         console.log('currentUser profile! : ', currentUser);
         this.setState({ currentUser: currentUser });
       },
@@ -30,10 +29,11 @@ class MyProfile extends React.Component {
   render() {
     return (
       <div className="search-container">
+        {/*{console.log('HISTORY', this.props.history)}*/}
         <div>
           { this.props.option === 'company' ?
             <EmployerProfile info={this.state.currentUser} /> :
-            <ApplicantProfile info={this.state.currentUser} /> }
+            <ApplicantProfile history={this.props.history} info={this.state.currentUser} /> }
         </div>
         {this.props.option === 'company' ? <Link to="/postingjob">Post job</Link> : null}
       </div>

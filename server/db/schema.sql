@@ -16,12 +16,12 @@ CREATE TABLE applicants(
   state VARCHAR(255),
   country VARCHAR(255),
   profile_pic_url VARCHAR(255), -- will be hosted on a cloud service
-  resume_url VARCHAR(255), -- will be hosted on a cloud service
-  coverletter_url VARCHAR(255), -- will be hosted on a cloud service
+  -- resume_url VARCHAR(255), -- will be hosted on a cloud service
+  -- coverletter_url VARCHAR(255), -- will be hosted on a cloud service
   UNIQUE INDEX(username)
 );
 
-CREATE TABLE applicant_files(   --only resumes and coverletter URLs
+CREATE TABLE applicant_files(
   id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   url VARCHAR(255),
   type VARCHAR(20),
@@ -80,4 +80,3 @@ CREATE TABLE applicants_job_postings(
 -- Problem exists because of the order these tables must be created.
 ALTER TABLE employer
   ADD CONSTRAINT FK_job_postings_employer FOREIGN KEY (job_postings_id) REFERENCES employer(id)
-
