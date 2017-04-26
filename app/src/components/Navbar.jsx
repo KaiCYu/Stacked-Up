@@ -41,14 +41,18 @@ const Navbar = (props) => {
             onChange={(event) => {
               props.onInputChange(event);
             }}
+            placeholder="Search text here"
           />
-          <Link
-            to="/search"
-            onClick={(event) => {
-              searchSubmit(event);
-            }}
-          >Search
-          </Link>
+          <RaisedButton>
+            <Link
+              id="search-button"
+              to="/search"
+              onClick={(event) => {
+                searchSubmit(event);
+              }}
+            >Search
+            </Link>
+          </RaisedButton>
         </form>
       </ToolbarGroup>
       <ToolbarGroup>
