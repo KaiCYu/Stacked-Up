@@ -277,6 +277,7 @@ app.post('/signupApplicant', (req, res) => {
   let profilePicURL = null;
   let applicantId;
   const files = [];
+  let resumePics = [];
 
   promiseUtil.checkUsername(checkApplicantUser)
   .then(() => {
@@ -345,6 +346,7 @@ app.post('/signupApplicant', (req, res) => {
 
     return db.query(insertApplicantCoverLetter);
   })
+
   .then(() => {
     console.log('applicant has signed up!');
     res.redirect('/');
@@ -361,7 +363,6 @@ app.post('/signupEmployer', (req, res) => {
   const signupEmployer = async () => {
     try {
       const isUser = await promiseUtil.checkUsername(checkEmployerUser);
-      console.log(req.body.logo)
       if (!isUser && req.body.logo !== '') {
         logoURL = await promiseUtil.uploadToCloudinaryAsync(req.body.logo);
         logoURL = logoURL.secure_url;
@@ -414,16 +415,6 @@ app.post('/uploadFile', (req, res) => {
       // console.log(resumesURLS)
       const applicant = await db.queryAsync(`SELECT id FROM applicants WHERE username="${username}";`);
       const applicantID = applicant[0].id;
-
-      // for (let i = 0; i < coverLetterURLS.length; i++) {
-      //   let coverLetterQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${coverLetterURLS[i].secure_url}", "coverletter", ${applicantID});`;
-      //   await db.queryAsync(coverLetterQuery);
-      // }
-
-      // for (let i = 0; i < resumesURLS.length; i++) {
-      //   let resumeQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${resumesURLS[i].secure_url}", "resume", ${applicantID});`;
-      //   await db.queryAsync(resumeQuery);
-      // }
 
       await coverLetterURLS.forEach((cloudObj) => {
         const coverLetterQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${cloudObj.secure_url}", "coverletter", ${applicantID});`;
@@ -515,7 +506,6 @@ app.get('/updateFiles', (req, res) => {
 
 });
 
-
 app.get('/getAppliedCompanies', (req, res) => {
   console.log('USER ID', req.user.id);
   const resultObj = {
@@ -551,15 +541,6 @@ app.get('/getAppliedCompanies', (req, res) => {
         res.json(resultObj);
       });
     }
-  });
-});
-
-app.post('/codeTest', (req, res) => {
-  console.log(req.body.snippet);
-  const s = new SandBox();
-  s.run(req.body.snippet, (output) => {
-    console.log(output);
-    res.send(output);
   });
 });
 
@@ -771,7 +752,6 @@ app.get('*', (req, res) => {
 app.get('/*', (req, res) => {
   res.redirect('/');
 });
-
 
 elasticsearch.indexDatabase();
 exports.server = server;

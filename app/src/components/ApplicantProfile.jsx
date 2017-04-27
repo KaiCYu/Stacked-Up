@@ -57,6 +57,20 @@ class ApplicantProfile extends React.Component {
     });
   }
 
+  updateFiles() {
+    $.ajax({
+      type: 'GET',
+      url: '/updateFiles',
+      success: (results) => {
+        this.setState({ resumes: results.resumes, coverLetters: results.coverLetters });
+        console.log('files have been updated!');
+      },
+      error: (error) => {
+        console.log('error updating files from DB ', error);
+      },
+    });
+  }
+
   addFile(event) {
     const name = event.target.name;
     // console.log('NAME', name);

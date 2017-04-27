@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom'
 import $ from 'jquery';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import FormInput from './FormInput';
+import TextField from 'material-ui/TextField';
+import { black, blue500 } from 'material-ui/styles/colors';
+import FlatButton from 'material-ui/FlatButton';
+import {Grid, Row, Column} from 'react-cellblock';
+
 // import Dropzone from './Dropzone';
 
 class SignupClient extends React.Component {
@@ -22,6 +27,25 @@ class SignupClient extends React.Component {
       coverLetter: '',
       profilePhoto: '',
     };
+    this.styles = {
+      floatingLabelStyle: {
+        color: black,
+      },
+      uploadButton: {
+        verticalAlign: 'middle',
+        color: blue500,
+      },
+      uploadInput: {
+        cursor: 'pointer',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        width: '100%',
+        opacity: 0,
+      },
+    },
     this.initialState = this.state;
 
     this.previewFile = this.previewFile.bind(this);
@@ -31,9 +55,9 @@ class SignupClient extends React.Component {
   }
 
   onInputChange(event) {
-    const name = event.target.name
+    const name = event.target.name;
     this.setState({
-      [name]: event.target.value
+      [name]: event.target.value,
     });
   }
 
@@ -43,11 +67,10 @@ class SignupClient extends React.Component {
 
   previewFile(event) {
     const name = event.target.name;
-    // console.log('NAME', name);
+    console.log('NAME', name);
 
-    //store the preview in state ==> faster to get.
-    const preview = document.querySelector('#preview');
-    // console.log('PREVIEW', preview);
+    const preview = document.querySelector(`#${name}-preview`);
+    console.log('PREVIEW', preview);
     const file = document.getElementById(`${name}`).files[0];
     // console.log('FILE *************: ', file);
 
@@ -98,35 +121,182 @@ class SignupClient extends React.Component {
       <div className="SignupClient-container">
         <h1>Signup as a Client</h1>
         <form id="signupApplicant" onSubmit={this.handleSubmit}>
-          <FormInput title={'Username*'} type={'text'} value={this.state.username} name={'username'} placeholder={'AwesomeEngineer'} onChange={this.onInputChange} />
-          <FormInput title={'Password*'} type={'password'} value={this.state.password} name={'password'} onChange={this.onInputChange}/> <br />
-          <FormInput title={'First Name*'} type={'text'} value={this.state.firstName} name={'firstName'} placeholder={'Erik'} onChange={this.onInputChange}/>
-          <FormInput title={'Last Name*'} type={'text'} value={this.state.lastName} name={'lastName'} placeholder={'Brown'} onChange={this.onInputChange}/> <br />
-          <FormInput title={'E-mail*'} type={'text'} value={this.state.email} name={'email'} placeholder={'awesomebot@gmail.com'} onChange={this.onInputChange}/>
-          <FormInput title={'Phone Number'} type={'text'} value={this.state.phoneNumber} name={'phoneNumber'} placeholder={'(123)456-7890'} onChange={this.onInputChange}/> <br />
-          <FormInput title={'City'} type={'text'} value={this.state.city} name={'city'} placeholder={'San Francisco'} onChange={this.onInputChange}/>
-          <FormInput title={'State'} type={'text'} value={this.state.state} name={'state'} placeholder={'California'} onChange={this.onInputChange}/>
-          <FormInput title={'Country'} type={'text'} value={this.state.country} name={'country'} placeholder={'USA'} onChange={this.onInputChange}/> <br />
-
-          <FormInput title={'Upload your resume'} id={"resume"} type={"file"} name={"resume"} onChange={this.previewFile} /> <br />
-          <FormInput title={'Upload your cover letter'} id={"coverLetter"} type={"file"} name={"coverLetter"} onChange={this.previewFile} /> <br />
-          <FormInput title={'Upload your photo'} id={"profilePhoto"} type={"file"} name={"profilePhoto"} onChange={this.previewFile} />
-
-          <br/>
-          <p>*Required</p>
-
+          <TextField
+            hintText="AwesomeEngineer"
+            floatingLabelText="Username*"
+            floatingLabelFixed={true}
+            type={'text'}
+            value={this.state.username}
+            name={'username'}
+            floatingLabelStyle={this.styles.floatingLabelStyle}
+            onChange={this.onInputChange}
+          />
+          <TextField
+            floatingLabelText="Password*"
+            floatingLabelFixed={true}
+            type={'password'}
+            value={this.state.password}
+            name={'password'}
+            floatingLabelStyle={this.styles.floatingLabelStyle}
+            onChange={this.onInputChange}
+          /><br />
+          <TextField
+            hintText="Erik"
+            floatingLabelText="First Name*"
+            floatingLabelFixed={true}
+            type={'text'}
+            value={this.state.firstName}
+            name={'firstName'}
+            floatingLabelStyle={this.styles.floatingLabelStyle}
+            onChange={this.onInputChange}
+          />
+          <TextField
+            hintText="Brown"
+            floatingLabelText="Last Name*"
+            floatingLabelFixed={true}
+            type={'text'}
+            value={this.state.lastName}
+            name={'lastName'}
+            floatingLabelStyle={this.styles.floatingLabelStyle}
+            onChange={this.onInputChange}
+          />
           <br />
-          <div id="preview"></div>
+          <TextField
+            hintText="awesomebot@gmail.com"
+            floatingLabelText="Email"
+            floatingLabelFixed={true}
+            type={'text'}
+            value={this.state.email}
+            name={'email'}
+            floatingLabelStyle={this.styles.floatingLabelStyle}
+            onChange={this.onInputChange}
+          />
+          <TextField
+            hintText="(123)456-7890"
+            floatingLabelText="Phone Number"
+            floatingLabelFixed={true}
+            type={'text'}
+            value={this.state.phoneNumber}
+            name={'phoneNumber'}
+            floatingLabelStyle={this.styles.floatingLabelStyle}
+            onChange={this.onInputChange}
+          />
+          <br />
+          <TextField
+            hintText="San Francisco"
+            floatingLabelText="City"
+            floatingLabelFixed={true}
+            type={'text'}
+            value={this.state.city}
+            name={'city'}
+            floatingLabelStyle={this.styles.floatingLabelStyle}
+            onChange={this.onInputChange}
+          />
+          <TextField
+            hintText="CA"
+            floatingLabelText="State"
+            floatingLabelFixed={true}
+            type={'text'}
+            value={this.state.state}
+            name={'state'}
+            floatingLabelStyle={this.styles.floatingLabelStyle}
+            onChange={this.onInputChange}
+          />
+          <TextField
+            hintText="USA"
+            floatingLabelText="Country"
+            floatingLabelFixed={true}
+            type={'text'}
+            value={this.state.country}
+            name={'country'}
+            floatingLabelStyle={this.styles.floatingLabelStyle}
+            onChange={this.onInputChange}
+          />
+          <br />
+
+          <Grid height="300px">
+            <Column width="1/3" height="300px">
+              <FlatButton
+                label="Upload a resume"
+                labelPosition="before"
+                style={this.styles.uploadButton}
+                containerElement="label"
+              >
+                <input
+                  type="file"
+                  id={'resume'}
+                  name={'resume'}
+                  style={this.styles.uploadInput}
+                  onChange={this.previewFile} 
+                />
+              </FlatButton>
+              <div id="resume-preview" height="300px"></div>
+            </Column>
+
+            <Column width="1/3" height="300px">
+              <FlatButton
+                label="Upload a cover letter"
+                labelPosition="before"
+                style={this.styles.uploadButton}
+                containerElement="label"
+              >
+                <input
+                  type="file"
+                  id={'coverLetter'}
+                  name={'coverLetter'}
+                  style={this.styles.uploadInput}
+                  onChange={this.previewFile} 
+                />
+              </FlatButton>
+              <div id="coverLetter-preview" height="300px"></div>
+            </Column>
+
+            <Column width="1/3" height="300px">
+              <FlatButton
+                label="Upload a profile picture"
+                labelPosition="before"
+                style={this.styles.uploadButton}
+                containerElement="label"
+              >
+                <input
+                  type="file"
+                  id={'profilePhoto'}
+                  name={'profilePhoto'}
+                  style={this.styles.uploadInput}
+                  onChange={this.previewFile} 
+                />
+              </FlatButton>
+              <div id="profilePhoto-preview" height="300px"></div>
+            </Column>
+          </Grid>
 
           {/*<Dropzone />*/}
           
           <br />
-          <input type="submit" value="sign up" />
-          <button onClick={this.onResetForm}>Clear</button>
-        </form>
+          <FlatButton
+            label="Sign Up"
+            labelPosition="before"
+            style={this.styles.uploadButton}
+            containerElement="label"
+          >
+            <input
+              type="submit"
+              style={this.styles.uploadInput}
+            />
+          </FlatButton>
+          <FlatButton
+            label="Clear"
+            labelPosition="before"
+            style={this.styles.uploadButton}
+            containerElement="label"
+          >
+            <input
+              onClick={this.onResetForm}
+              style={this.styles.uploadInput}
+            />
+          </FlatButton>
 
-          {/*if we need ajax post call on applicant sign up*/}
-          {/*<Link to="/applicantProfile" onClick={props.submitApplicant}>Submit</Link>*/}
+        </form>
       </div>
     )};
 }
