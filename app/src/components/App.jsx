@@ -289,7 +289,7 @@ class App extends React.Component {
   }
 
   searchAll() {
-    const searchURL = `/search/${this.state.searchUsername}/2/10`;
+    const searchURL = `/search/${this.state.searchUsername}/1/10`;
     $.ajax({
       type: 'GET',
       url: searchURL,
