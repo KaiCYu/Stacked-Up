@@ -37,7 +37,7 @@ class SignupClient extends React.Component {
   }
 
   onInputChange(event) {
-    const name = event.target.name
+    const name = event.target.name;
     this.setState({
       [name]: event.target.value,
     });
@@ -49,7 +49,7 @@ class SignupClient extends React.Component {
 
   previewFile(event) {
     const name = event.target.name;
-    // console.log('NAME', name);
+    console.log('NAME', name);
 
     const preview = document.querySelector(`#${name}-preview`);
     console.log('PREVIEW', preview);
