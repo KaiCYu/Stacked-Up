@@ -9,7 +9,6 @@ class JobPost extends React.Component {
     this.state = {
       postings: [],
     };
-    this.handleApply = this.handleApply.bind(this);
   }
 
   componentDidMount() {
@@ -18,8 +17,6 @@ class JobPost extends React.Component {
       type: 'GET',
       contentType: 'application/json',
       success: (data) => {
-        // console.log(data);
-        // console.log(this.props.info);
         if (this.props.info) {
           const list = Array.from(Object.keys(data));
           for (let i = 0; i < list.length; i += 1) {
@@ -36,24 +33,6 @@ class JobPost extends React.Component {
     });
   }
 
-  handleApply(jobPostingId) {
-    // console.log(jobPostingId);
-    const applyingData = {};
-    applyingData.jobPostingId = jobPostingId;
-    $.ajax({
-      url: '/apply',
-      type: 'POST',
-      data: applyingData,
-      success: (data) => {
-        console.log('application successfully submitted!');
-        // TODO: change the button to applied after MVP
-      },
-      error: (error) => {
-        console.log('error on apply! ', error);
-      }
-    });
-  }
-
   render() {
     return (
       <div id="job-postings">
@@ -64,11 +43,11 @@ class JobPost extends React.Component {
         <Table>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>
-              <TableHeaderColumn>Company Name</TableHeaderColumn>
-              <TableHeaderColumn>Position</TableHeaderColumn>
-              <TableHeaderColumn>Description</TableHeaderColumn>
-              <TableHeaderColumn>Location</TableHeaderColumn>
-              <TableHeaderColumn>Starting Salary</TableHeaderColumn>
+              <TableHeaderColumn className="table-column">Company Name</TableHeaderColumn>
+              <TableHeaderColumn className="table-column">Position</TableHeaderColumn>
+              <TableHeaderColumn className="table-column">Description</TableHeaderColumn>
+              <TableHeaderColumn className="table-column">Location</TableHeaderColumn>
+              <TableHeaderColumn className="table-column">Starting Salary</TableHeaderColumn>
               { this.props.logInOption === 'applicant' ?
                 <TableHeaderColumn>Apply</TableHeaderColumn>
               : this.props.info ?
@@ -82,7 +61,6 @@ class JobPost extends React.Component {
               <JobPostEntry
                 entry={entry}
                 key={entry.id}
-                handleApply={this.handleApply}
                 logInOption={this.props.logInOption}
                 info={this.props.info}
               />)

@@ -37,7 +37,7 @@ app.use(session({
   secret: 'there is no secret',
   resave: false,
   saveUninitialized: true,
-  cookie: { name: 'StackedUp' } }));
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -156,12 +156,13 @@ app.get('/getApplicants', (req, res) => {
 });
 
 app.get('/getJobPostings', (req, res) => {
-  const queryStr = 'select job_postings.*, employer.company_name from job_postings inner join employer on job_postings.employer_id = employer.id;';
+  const queryStr = 'select job_postings.*, employer.company_name, employer.logo_url from job_postings inner join employer on job_postings.employer_id = employer.id;';
   db.query(queryStr, (error, data) => {
     if (error) {
       console.log('failed to get job posting data', error);
       res.sendStatus(500);
     } else {
+      console.log('this is user right now: ', req.user);
       if (req.user) {
         const queryAnotherStr = `SELECT * FROM applicants_job_postings WHERE applicant_id = '${req.user.id}';`;
         db.query(queryAnotherStr, (error, results) => {
@@ -169,18 +170,21 @@ app.get('/getJobPostings', (req, res) => {
             console.log('failed to get applicant data from join table ', error);
             res.sendStatus(500);
           } else {
+            console.log("I'm here!");
             for (let j = 0; j < data.length; j += 1) {
               for (let i = 0; i < results.length; i += 1) {
                 if (results[i].job_posting_id === data[j].id) {
+                  console.log('am I here?');
                   data[j].apply = true;
                 }
               }
             }
+            res.send(data);
           }
         });
+      } else {
+        res.send(data);
       }
-      console.log(data);
-      res.send(data);
     }
   });
 });
@@ -223,6 +227,7 @@ app.get('/logout', (req, res) => {
   console.log('--> logout user check', req.user);
   const username = req.user.username;
   delete loggedInUsers[username];
+  req.logOut();
   req.session.destroy(function (err) {
     res.redirect('/'); //Inside a callback… bulletproof!
   });
@@ -541,6 +546,15 @@ app.get('/getAppliedCompanies', (req, res) => {
         res.json(resultObj);
       });
     }
+  });
+});
+
+app.post('/codeTest', (req, res) => {
+  console.log(req.body.snippet);
+  const s = new SandBox();
+  s.run(req.body.snippet, (output) => {
+    console.log(output);
+    res.send(output);
   });
 });
 

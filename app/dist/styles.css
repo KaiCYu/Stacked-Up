@@ -141,6 +141,36 @@ section#coverletter-list {
   font-size: 30px;
 }
 
+.login-container {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+.radiobutton {
+  margin: auto;
+  width: 50%;
+  float: center;
+}
+
+.radiobuttons {
+  margin: 20px;
+}
+
+.inputbox {
+  margin: auto;
+  width: 50%;
+  float: center;
+}
+
+#login-title {
+  margin: auto;
+  width: 50%;
+  float: center;
+  font-family: 'Cochin';
+  font-size: 30px;
+}
+
 .job-post-column {
   text-align: center !important;
 }

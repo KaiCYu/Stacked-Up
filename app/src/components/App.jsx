@@ -22,6 +22,7 @@ import PrivateRoute from './privateRoute';
 import ApplicantsList from './ApplicantsList';
 import CodePad from './CodePad';
 import Messages from './Messages';
+import JobProfile from './JobProfile';
 
 class App extends React.Component {
   constructor(props) {
@@ -237,6 +238,10 @@ class App extends React.Component {
       },
       error: (error) => {
         console.log('log in failed!', error);
+        this.setState({
+          username: '',
+          password: '',
+        });
         this.handleOpen();
       },
     });
@@ -275,11 +280,11 @@ class App extends React.Component {
       url: '/logout',
       type: 'GET',
       success: (result) => {
-        this.setState({ isLoggedIn: false });
+        this.setState({ isLoggedIn: false, logInOption: '' });
       },
       error: (error) => {
         console.log('log out error occured', error);
-      }
+      },
     });
   }
 
@@ -405,6 +410,10 @@ class App extends React.Component {
                 sendUpdatedCode={this.sendUpdatedCode}
                 ws={this.state.ws}
                 updatedCode={this.state.updatedCode}
+              />
+              <PrivateRoute
+                path="/JobProfile"
+                component={JobProfile}
               />
             </div>
           </div>

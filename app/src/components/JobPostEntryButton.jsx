@@ -1,5 +1,5 @@
 import React from 'react';
-import RaisedButton from 'material-ui/FlatButton';
+import FlatButton from 'material-ui/FlatButton';
 
 class JobPostEntryButton extends React.Component {
   constructor(props) {
@@ -19,16 +19,19 @@ class JobPostEntryButton extends React.Component {
     return (
       <div>
         {this.state.clicked ?
-          <span> Applied </span>
+          <FlatButton
+            label="Applied"
+            primary
+          />
         :
-          <RaisedButton
+          <FlatButton
+            label="Apply"
+            primary
             onClick={() => {
               this.props.handleApply(this.props.id);
               this.setState({ clicked: true });
             }}
-          >
-            apply
-          </RaisedButton>
+          />
         }
       </div>
     );

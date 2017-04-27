@@ -77,7 +77,7 @@ class Login extends React.Component {
             </Link>
             <br />
             <Link to="/signupEmployer" className="signup-button">
-              <FlatButton label="Sign up as an Employer"primary fullWidth />
+              <FlatButton label="Sign up as an Employer" primary fullWidth />
             </Link>
           </div>
         }
