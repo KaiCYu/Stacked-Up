@@ -17,6 +17,7 @@ module.exports = {
   },
   getApplicantID: `Select id FROM applicants WHERE username=?;`,
   getApplicantName: `Select username FROM applicants WHERE id=?;`,
+  getTopApplicants: `Select * FROM applicants;`,
   applicantsDrop: 'DROP TABLE IF EXISTS applicants;',
   applicants: 'CREATE TABLE IF NOT EXISTS applicants (' +
   'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +

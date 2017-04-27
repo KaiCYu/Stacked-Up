@@ -185,6 +185,31 @@ app.get('/getJobPostings', (req, res) => {
   });
 });
 
+app.get('/getTopJobPostings', (req, res) => {
+  const queryStr = 'select job_postings.*, employer.company_name from job_postings inner join employer on job_postings.employer_id = employer.id;';
+  db.query(queryStr, (error, data) => {
+    if (error) {
+      res.status(500).send('Error on get getTopJobPostings');
+      console.log('failed to get job posting data', error);
+    } else {
+      // console.log(data);
+      res.send(data);
+    }
+  });
+});
+
+app.get('/getTopApplicants', (req, res) => {
+  db.query(schema.getTopApplicants, (error, data) => {
+    if (error) {
+      res.status(500).send('Error on get getTopApplicants');
+      console.log('failed to get Top Applicants data', error);
+    } else {
+      // console.log(data);
+      res.send(data);
+    }
+  });
+});
+
 app.post('/login', passport.authenticate('local'),
   (req, res) => {
     if (req.user) {

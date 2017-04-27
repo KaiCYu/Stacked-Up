@@ -31,7 +31,7 @@ const multiQuery = function(paramsArray, command, conn) {
     if (param) {
       return conn.queryAsync(command, param).then((result)=>{
         if (paramsArray[i+1]) {
-          console.log('Param = ', param)
+          // console.log('Param = ', param)
           i++;
           return recursivequery(paramsArray[i])
         } else {
