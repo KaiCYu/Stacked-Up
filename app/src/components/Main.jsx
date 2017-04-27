@@ -6,39 +6,39 @@ import TopApplicantsEntry from './TopApplicantsEntry';
 
 class Main extends React.Component {
   constructor(props) {
-	super(props);
-	this.state = {
-	  postings: [],
-	  topApplicants: [],
-	};
-	this.handleApply = this.handleApply.bind(this);
+    super(props);
+    this.state = {
+      postings: [],
+      topApplicants: [],
+    };
+    this.handleApply = this.handleApply.bind(this);
   }
 
   componentDidMount() {
-	$.ajax({
-	  url: '/getTopJobPostings',
-	  type: 'GET',
-	  contentType: 'application/json',
-	  success: (data) => {
-		data = data.slice(0,8)
-		this.setState({ postings: data });
-	  },
-	  error: (error) => {
-		console.log('AJAX request to get list of job postings failed due to ', error);
-	  },
-	});
-	$.ajax({
-	  url: '/getTopApplicants',
-	  type: 'GET',
-	  contentType: 'application/json',
-	  success: (data) => {
-		data = data.slice(0,6)
-		this.setState({ topApplicants: data });
-	  },
-	  error: (error) => {
-		console.log('AJAX request to get list of job postings failed due to ', error);
-	  },
-	});
+    $.ajax({
+      url: '/getTopJobPostings',
+      type: 'GET',
+      contentType: 'application/json',
+      success: (data) => {
+      	data = data.slice(0,8)
+      	this.setState({ postings: data });
+      },
+      error: (error) => {
+        console.log('AJAX request to get list of job postings failed due to ', error);
+      },
+    });
+    $.ajax({
+      url: '/getTopApplicants',
+      type: 'GET',
+      contentType: 'application/json',
+      success: (data) => {
+      	data = data.slice(0,6)
+      	this.setState({ topApplicants: data });
+      },
+      error: (error) => {
+        console.log('AJAX request to get list of job postings failed due to ', error);
+      },
+    });
   }
 
   handleApply(jobPostingId) {
