@@ -15,7 +15,6 @@ const path = require('path');
 const db = require('./db/index.js').connection;
 const dbName = require('./db/index.js').dbName;
 const initDB = require('./db/index.js').initDB;
-initDB();
 const elasticsearch = require('./elasticsearch/index.js');
 // const cloudinary = require('cloudinary');
 const schema = require('./db/schema.js');
@@ -413,78 +412,6 @@ app.post('/uploadFile', (req, res) => {
       // console.log(resumesURLS)
       const applicant = await db.queryAsync(`SELECT id FROM applicants WHERE username="${username}";`);
       const applicantID = applicant[0].id;
-
-      await coverLetterURLS.forEach((cloudObj) => {
-        const coverLetterQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${cloudObj.secure_url}", "coverletter", ${applicantID});`;
-        db.queryAsync(coverLetterQuery);
-      });
-
-      await resumesURLS.forEach((cloudObj) => {
-        const resumeQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${cloudObj.secure_url}", "resume", ${applicantID});`;
-        db.queryAsync(resumeQuery);
-      });
-
-      console.log('files stored into DB!');
-      res.sendStatus(200);
-    } catch (error) {
-      res.status(500).send('Internal Server Error', error);
-    }
-  };
-
-  if (coverLetters.length > 0 || resumes.length > 0) {
-    uploadFiles();
-  }
-});
-
-app.delete('/deleteFile', (req, res) => {
-  const fileId = req.body.fileId;
-  const deleteFile = async () => {
-    try {
-      const queryStr = `DELETE FROM applicant_files WHERE id=${fileId}`;
-      await db.queryAsync(queryStr);
-      console.log('deleted file from DB!');
-      res.sendStatus(200);
-    } catch (error) {
-      res.status(500).send('Internal Server Error', error);
-    }
-  };
-  deleteFile();
-});
-
-app.post('/uploadFile', (req, res) => {
-  const username = req.body.username;
-  const resumes = req.body.resumes || [];
-  const coverLetters = req.body.coverLetters || [];
-  const coverLettersPromise = [];
-  const resumesPromise = [];
-  // console.log('INSIDE UPLOAD FILE', req.user.id);
-
-  //USING ASYNC/AWAIT
-  const uploadFiles = async () => {
-    try {
-      coverLetters.forEach((coverLetter) => {
-        coverLettersPromise.push(promiseUtil.uploadToCloudinaryAsync(coverLetter));
-      });
-      resumes.forEach((resume) => {
-        resumesPromise.push(promiseUtil.uploadToCloudinaryAsync(resume));
-      });
-
-      const coverLetterURLS = await Promise.all(coverLettersPromise);
-      // console.log(coverLetterURLS)
-      const resumesURLS = await Promise.all(resumesPromise);
-      // console.log(resumesURLS)
-      const applicant = await db.queryAsync(`SELECT id FROM applicants WHERE username="${username}";`);
-      const applicantID = applicant[0].id;
-
-      // for (let i = 0; i < coverLetterURLS.length; i++) {
-      //   let coverLetterQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${coverLetterURLS[i].secure_url}", "coverletter", ${applicantID});`;
-      //   await db.queryAsync(coverLetterQuery);
-      // }
-
-      // for (let i = 0; i < resumesURLS.length; i++) {
-      //   let resumeQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${resumesURLS[i].secure_url}", "resume", ${applicantID});`;
-      //   await db.queryAsync(resumeQuery);
-      // }
 
       await coverLetterURLS.forEach((cloudObj) => {
         const coverLetterQuery = `INSERT INTO applicant_files (url, type, applicant_id) VALUES ("${cloudObj.secure_url}", "coverletter", ${applicantID});`;
