@@ -5,23 +5,23 @@ import JobPostEntryButton from './JobPostEntryButton';
 
 const JobPostEntry = props => (
   <TableRow hoverable={true}>
-    <TableRowColumn>
+    <TableRowColumn className="job-post-column">
       {props.entry.company_name}
     </TableRowColumn>
-    <TableRowColumn>
+    <TableRowColumn className="job-post-column">
       {props.entry.position}
     </TableRowColumn>
-    <TableRowColumn>
+    <TableRowColumn className="job-post-column">
       {props.entry.description}
     </TableRowColumn>
-    <TableRowColumn>
+    <TableRowColumn className="job-post-column">
       {props.entry.location}
     </TableRowColumn>
-    <TableRowColumn>
+    <TableRowColumn className="job-post-column">
       {props.entry.salary}
     </TableRowColumn>
     { props.logInOption === 'applicant' ?
-      <TableRowColumn>
+      <TableRowColumn className="job-post-column">
         <JobPostEntryButton
           handleApply={props.handleApply}
           id={props.entry.id}
@@ -29,7 +29,7 @@ const JobPostEntry = props => (
         />
       </TableRowColumn>
       : props.info ?
-        <TableRowColumn>
+        <TableRowColumn className="job-post-column">
           <Link
             to={{
               pathname: '/ApplicantsList',

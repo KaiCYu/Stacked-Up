@@ -58,7 +58,7 @@ class JobPost extends React.Component {
     return (
       <div id="job-postings">
         <div id="job-postings-header-container">
-          <h1>Job Postings</h1>
+          <h1 id="job-postings-main-header">Job Postings</h1>
           <h5>Find Your Next Job</h5>
         </div>
         <Table>

@@ -3,19 +3,19 @@ import { TableRow, TableRowColumn} from 'material-ui';
 
 const TopApplicantsEntry = props => (
   <TableRow>
-    <TableRowColumn>
+    <TableRowColumn className="top-applicants-column">
       {props.entry.username}
     </TableRowColumn>
-    <TableRowColumn>
+    <TableRowColumn className="top-applicants-column">
       {props.entry.firstName}
     </TableRowColumn>
-    <TableRowColumn>
+    <TableRowColumn className="top-applicants-column">
       {props.entry.lastName}
     </TableRowColumn>
-    <TableRowColumn>
+    <TableRowColumn className="top-applicants-column">
       {props.entry.email}
     </TableRowColumn>
-    <TableRowColumn>
+    <TableRowColumn className="top-applicants-column">
       {props.entry.state}
     </TableRowColumn>
   </TableRow>
