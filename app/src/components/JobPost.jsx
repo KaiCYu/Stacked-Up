@@ -59,11 +59,12 @@ class JobPost extends React.Component {
   }
 
   render() {
-    console.log(this.state.postings);
-    console.log(this.props);
     return (
-      <div>
-        <h1>JobPost</h1>
+      <div id="job-postings">
+        <div id="job-postings-header-container">
+          <h1>Job Postings</h1>
+          <h5>Find Your Next Job</h5>
+        </div>
         <Table>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>

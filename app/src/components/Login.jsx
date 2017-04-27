@@ -25,12 +25,12 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div>
+      <div id="login-page">
         { this.props.isLoggedIn ?
           <Redirect to="/myProfile" />
         :
           <div className="login-container" >
-            <h1>Login</h1>
+            <h3>Join Today.</h3>
             <form ref="login" onSubmit={this.handleLoginSubmit}>
               <div className="radio">
                 <label>

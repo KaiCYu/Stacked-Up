@@ -18,15 +18,19 @@ const Navbar = (props) => {
   };
 
   return (
-    <Toolbar>
+    <Toolbar
+      style={{
+        backgroundColor: 'rgb(0, 188, 212)',
+      }}
+    >
       <ToolbarGroup>
         <Link to="/main">
-          <RaisedButton>StackedUp</RaisedButton>
+          <RaisedButton><span className="navbar-text">StackedUp</span></RaisedButton>
         </Link>
       </ToolbarGroup>
       <ToolbarGroup>
         <Link to="/CodePad">
-          <RaisedButton>CodePad</RaisedButton>
+          <RaisedButton><span className="navbar-text">CodePad</span></RaisedButton>
         </Link>
       </ToolbarGroup>
       <ToolbarGroup>
@@ -50,47 +54,40 @@ const Navbar = (props) => {
               onClick={(event) => {
                 searchSubmit(event);
               }}
-            >Search
+            ><span className="navbar-text">Search</span>
             </Link>
           </RaisedButton>
         </form>
       </ToolbarGroup>
       <ToolbarGroup>
         <Link to="/jobPost">
-          <RaisedButton>Job Posts</RaisedButton>
+          <RaisedButton><span className="navbar-text">Job Postings</span></RaisedButton>
         </Link>
       </ToolbarGroup>
       {props.isLoggedIn ?
         <ToolbarGroup>
           <Link to="/myProfile">
-            <RaisedButton>My Profile</RaisedButton>
+            <RaisedButton><span className="navbar-text">My Profile</span></RaisedButton>
           </Link>
         </ToolbarGroup> :
           null
       }
-      {props.isLoggedIn
-      ?
-      <ToolbarGroup>
-        <Link to="/messages">
-          <RaisedButton>Messages</RaisedButton>
-        </Link>
-      </ToolbarGroup>
-      :
-      <ToolbarGroup>
-        <Link to="/login">
-          <RaisedButton>Messages</RaisedButton>
-        </Link>
-      </ToolbarGroup>
+      {props.isLoggedIn &&
+        <ToolbarGroup>
+          <Link to="/messages">
+            <RaisedButton><span className="navbar-text">Messages</span></RaisedButton>
+          </Link>
+        </ToolbarGroup>
       }
       <ToolbarGroup>
         {props.isLoggedIn ?
           <RaisedButton
             id="logout"
             onClick={logout}
-          >Logout
+          ><span className="navbar-text">Logout</span>
           </RaisedButton> :
           <Link to="/login">
-            <RaisedButton>Login</RaisedButton>
+            <RaisedButton><span className="navbar-text">Login</span></RaisedButton>
           </Link>}
       </ToolbarGroup>
     </Toolbar>

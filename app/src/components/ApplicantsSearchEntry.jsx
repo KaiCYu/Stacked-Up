@@ -4,7 +4,6 @@ import utils from '../../../lib/utility';
 
 const ApplicantsSearchEntry = ({ applicant }) => (
   <TableRow>
-    <TableRowColumn>{applicant.username}</TableRowColumn>
     <TableRowColumn>{`${utils.capitalizeFirstLetter(applicant.firstName)} ${utils.capitalizeFirstLetter(applicant.lastName)}`}</TableRowColumn>
     <TableRowColumn>{applicant.email}</TableRowColumn>
     <TableRowColumn>{applicant.phone_number}</TableRowColumn>

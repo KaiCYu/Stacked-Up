@@ -5,7 +5,7 @@ import utils from '../../../lib/utility';
 
 const Search = ({ searchResults }) => (
   <div className="search-container">
-    <h1>Search Results Found: {utils.sumPropsLengths(searchResults)}</h1>
+    <h3>Search Results Found: {utils.sumPropsLengths(searchResults)}</h3>
     <SearchResultsTable searchResults={searchResults} />
   </div>
 );
