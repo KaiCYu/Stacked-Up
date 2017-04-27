@@ -1,10 +1,10 @@
 import React from 'react';
-import { TableRow, TableRowColumn, RaisedButton } from 'material-ui';
+import { TableRow, TableRowColumn, FlatButton } from 'material-ui';
 import { Link } from 'react-router-dom';
 import JobPostEntryButton from './JobPostEntryButton';
 
 const JobPostEntry = props => (
-  <TableRow>
+  <TableRow hoverable={true}>
     <TableRowColumn>
       {props.entry.company_name}
     </TableRowColumn>
@@ -20,18 +20,7 @@ const JobPostEntry = props => (
     <TableRowColumn>
       {props.entry.salary}
     </TableRowColumn>
-    { props.logInOption === 'company' ?
-      <TableRowColumn>
-        <Link
-          to={{
-            pathname: '/ApplicantsList',
-            state: { jobInfo: props.entry },
-          }}
-        >
-          <RaisedButton>See Applicants</RaisedButton>
-        </Link>
-      </TableRowColumn>
-    :
+    { props.logInOption === 'applicant' ?
       <TableRowColumn>
         <JobPostEntryButton
           handleApply={props.handleApply}
@@ -39,6 +28,18 @@ const JobPostEntry = props => (
           apply={props.entry.apply}
         />
       </TableRowColumn>
+      : props.info ?
+        <TableRowColumn>
+          <Link
+            to={{
+              pathname: '/ApplicantsList',
+              state: { jobInfo: props.entry },
+            }}
+          >
+            <FlatButton label="See Applicants" primary />
+          </Link>
+        </TableRowColumn>
+        : null
     }
   </TableRow>
 );

@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import $ from 'jquery';
 import 'jquery-ui-bundle';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import Navbar from './Navbar';
 import Main from './Main';
 import Search from './Search';
@@ -53,6 +55,7 @@ class App extends React.Component {
       ws: null,
       userBeingCalled: '',
       updatedCode: '// code',
+      openDialog: false,
     };
     this.loginUrl = 'https://localhost:8000/login';
     this.sendLoginInfo = this.sendLoginInfo.bind(this);
@@ -66,14 +69,13 @@ class App extends React.Component {
     this.setMessagesToAppState = this.setMessagesToAppState.bind(this);
     this.searchAll = this.searchAll.bind(this);
     this.sendUpdatedCode = this.sendUpdatedCode.bind(this);
-    this.redirectToCodePad = this.redirectToCodePad.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     // this.submitEmployer = this.submitEmployer.bind(this);
     // this.previewFile = this.previewFile.bind(this);
-    this.sendUpdatedCode = this.sendUpdatedCode.bind(this);
-    this.redirectToCodePad = this.redirectToCodePad.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     $.ajax({
       url: '/verifyLogin',
       type: 'GET',
@@ -126,23 +128,8 @@ class App extends React.Component {
   sendUpdatedCode(updatedCode) {
     const user = this.state.username;
     const userInCallWith = this.state.userBeingCalled || this.state.incomingVideoCaller;
+    this.setState({ updatedCode });
     if (user && userInCallWith) {
-      this.state.updatedCode = updatedCode;
-      console.log('===>>>>>', this.state.updatedCode);
-      this.state.ws.send(JSON.stringify({
-        updatedCode,
-        user,
-        userInCallWith,
-      }));
-    }
-  }
-
-  sendUpdatedCode(updatedCode) {
-    const user = this.state.username;
-    const userInCallWith = this.state.userBeingCalled || this.state.incomingVideoCaller;
-    if (user && userInCallWith) {
-      this.state.updatedCode = updatedCode;
-      console.log('===>>>>>', this.state.updatedCode);
       this.state.ws.send(JSON.stringify({
         updatedCode,
         user,
@@ -240,7 +227,7 @@ class App extends React.Component {
               incomingVideoRoom: message.room,
             });
           } else if (message.type === 'updatedCode') {
-            this.setState({ updatedCode: msg.updatedCode });
+            this.setState({ updatedCode: message.updatedCode });
           }
         };
         this.setState({
@@ -249,7 +236,8 @@ class App extends React.Component {
         });
       },
       error: (error) => {
-        console.log('error on sending login info, error =', error);
+        console.log('log in failed!', error);
+        this.handleOpen();
       },
     });
   }
@@ -311,25 +299,20 @@ class App extends React.Component {
     });
   }
 
-  redirectToCodePad() {
-    $.ajax({
-      url: '/redirectToCodePad',
-      type: 'GET',
-      success: (result) => {
-        window.location = result.redirect;
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
-  }
+  handleOpen = () => {
+    this.setState({ openDialog: true });
+  };
+
+  handleClose = () => {
+    this.setState({ openDialog: false });
+  };
 
   render() {
     return (
       <div className="site">
         <Router>
           <div className="conditionals-container">
-            <Redirect from="/" to="/main"/>
+            { this.state.isLoggedIn ? null : <Redirect from="/" to="/main" />}
             <PrivateRoute
               component={Navbar}
               searchAll={this.searchAll}
@@ -426,6 +409,20 @@ class App extends React.Component {
             </div>
           </div>
         </Router>
+        <div>
+          <Dialog
+            actions={<FlatButton
+              label="OK"
+              primary
+              onTouchTap={this.handleClose}
+            />}
+            modal={false}
+            open={this.state.openDialog}
+            onRequestClose={this.handleClose}
+          >
+            Invalid username, password or member type
+          </Dialog>
+        </div>
       </div>
     );
   }

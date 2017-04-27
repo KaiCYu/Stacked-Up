@@ -2,7 +2,6 @@
 
 const cloudinary = require('cloudinary')
 
-
 if (typeof $cloudinary_api_key === 'undefined') {  // local deploy
 	var cloudinarykeys = require('./cloudinarykeys');
 

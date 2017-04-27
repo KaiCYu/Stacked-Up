@@ -77,6 +77,8 @@ passport.use(new LocalStrategy(
         queryStr = `SELECT * FROM applicants WHERE username = "${temp[0]}";`;
       } else if (temp[1] === 'company') {
         queryStr = `SELECT * FROM employer WHERE username = "${temp[0]}";`;
+      } else {
+        return done(null, false);
       }
       db.query(queryStr, (err1, user) => {
         if (err1) {
@@ -101,11 +103,8 @@ passport.use(new LocalStrategy(
     }
   }));
 
-app.get('/redirectToCodePad', (req, res) => {
-  res.send({ redirect: '/CodePad' });
-});
-
 app.get('/verifyLogin', (req, res) => {
+  console.log(req.user);
   if (req.user) {
     res.json(true);
   } else {
@@ -158,29 +157,30 @@ app.get('/getApplicants', (req, res) => {
 
 app.get('/getJobPostings', (req, res) => {
   const queryStr = 'select job_postings.*, employer.company_name from job_postings inner join employer on job_postings.employer_id = employer.id;';
-  const queryAnotherStr = `SELECT * FROM applicants_job_postings WHERE applicant_id = '${req.user.id}';`;
   db.query(queryStr, (error, data) => {
     if (error) {
       console.log('failed to get job posting data', error);
+      res.sendStatus(500);
     } else {
-      console.log('data -------->', data);
-      db.query(queryAnotherStr, (error, results) => {
-        if (error) {
-          console.log('failed to get applicant data from join table ', error);
-        } else {
-          console.log(data.length, results.length);
-          for (let j = 0; j < data.length; j += 1) {
-            for (let i = 0; i < results.length; i += 1) {
-              if (results[i].job_posting_id === data[j].id) {
-                console.log("--------", results[i], data[j], "[][][][]");
-                data[j].apply = true;
+      if (req.user) {
+        const queryAnotherStr = `SELECT * FROM applicants_job_postings WHERE applicant_id = '${req.user.id}';`;
+        db.query(queryAnotherStr, (error, results) => {
+          if (error) {
+            console.log('failed to get applicant data from join table ', error);
+            res.sendStatus(500);
+          } else {
+            for (let j = 0; j < data.length; j += 1) {
+              for (let i = 0; i < results.length; i += 1) {
+                if (results[i].job_posting_id === data[j].id) {
+                  data[j].apply = true;
+                }
               }
             }
           }
-          console.log(data);
-          res.send(data);
-        }
-      });
+        });
+      }
+      console.log(data);
+      res.send(data);
     }
   });
 });
@@ -192,7 +192,7 @@ app.get('/getTopJobPostings', (req, res) => {
       res.status(500).send('Error on get getTopJobPostings');
       console.log('failed to get job posting data', error);
     } else {
-      // console.log(data);
+      console.log(data);
       res.send(data);
     }
   });
@@ -215,7 +215,7 @@ app.post('/login', passport.authenticate('local'),
     if (req.user) {
       res.send(req.user.username);
     } else {
-      res.send('login fails!');
+      res.sendStatus(500);
     }
   });
 

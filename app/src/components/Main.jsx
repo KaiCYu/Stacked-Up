@@ -75,7 +75,6 @@ class Main extends React.Component {
 					  <TableHeaderColumn>Description</TableHeaderColumn>
 					  <TableHeaderColumn>Location</TableHeaderColumn>
 					  <TableHeaderColumn>Starting Salary</TableHeaderColumn>
-						<TableHeaderColumn>Apply</TableHeaderColumn>
 					</TableRow>
 				  </TableHeader>
 				  <TableBody 

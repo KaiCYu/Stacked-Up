@@ -1,6 +1,8 @@
 import React from 'react';
 import CodeMirror from 'react-codemirror';
 import $ from 'jquery';
+import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/xml/xml';
@@ -10,9 +12,7 @@ class CodePad extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      code: props.updatedCode,
       output: '',
-      logs: '',
     };
     this.options = {
       lineNumbers: true,
@@ -24,12 +24,7 @@ class CodePad extends React.Component {
 
   codeTest() {
     const code = {};
-    code.snippet = this.currentCode;
-    console.log('>>>>>>>>>', this.currentCode);
-    code.snippet = this.state.code;
-    console.log('=============');
-    console.log(code.snippet);
-    console.log('=============');
+    code.snippet = this.props.updatedCode;
     $.ajax({
       url: '/codeTest',
       type: 'POST',
@@ -38,7 +33,6 @@ class CodePad extends React.Component {
         console.log('codeTesting result', result);
         this.setState({
           output: result.result,
-          logs: result.console,
         });
       },
       error: (error) => {
@@ -48,21 +42,27 @@ class CodePad extends React.Component {
   }
 
   updateCode(newCode) {
-    this.currentCode = newCode;
     this.props.sendUpdatedCode(newCode);
   }
 
   render() {
     return (
-      <div style={{ border: '1px solid black' }}>
-        <CodeMirror value={this.props.updatedCode} onChange={this.updateCode} options={this.options} />
-        <button onClick={this.codeTest}>Submit</button>
-        <div>
-          <span>Output</span>
-          <span id="output">{this.state.output}</span><br />
-          <span>Console Logs</span>
-          <span id="logs">{this.state.logs}</span>
+      <div>
+        <div style={{ border: '1px solid black' }}>
+          <CodeMirror value={this.props.updatedCode} onChange={this.updateCode} options={this.options} />
         </div>
+        <FlatButton label="Run" onClick={this.codeTest} primary fullWidth />
+        {this.state.output ?
+          <div>
+            <div>
+              <div>Output</div>
+              <Divider inset={true} />
+              <div id="output">{this.state.output}</div>
+            </div>
+          </div>
+        :
+        null
+        }
       </div>
     );
   }

@@ -2,7 +2,6 @@ import React from 'react';
 import $ from 'jquery';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
 class Login extends React.Component {
@@ -31,9 +30,28 @@ class Login extends React.Component {
         :
           <div className="login-container" >
             <h3>Join Today.</h3>
+            <div id="login-title">
+              Login or signup
+            </div>
             <form ref="login" onSubmit={this.handleLoginSubmit}>
-              <div className="radio">
-                <label>
+              <div className="inputbox">
+                <TextField
+                  type="text"
+                  name="username"
+                  placeholder="Username"
+                  onChange={this.handleInputChange}
+                />
+                <br />
+                <TextField
+                  type="password"
+                  name="password"
+
+                  placeholder="Password"
+                  onChange={this.handleInputChange}
+                />
+              </div>
+              <div className="radiobutton">
+                <label className="radiobuttons">
                   <input
                     type="radio"
                     value="company"
@@ -42,8 +60,6 @@ class Login extends React.Component {
                   />
                   company
                 </label>
-              </div>
-              <div className="radio">
                 <label>
                   <input
                     type="radio"
@@ -54,37 +70,15 @@ class Login extends React.Component {
                   applicant
                 </label>
               </div>
-              <TextField
-                type="text"
-                name="username"
-                id="inputID"
-                placeholder="Username"
-                onChange={this.handleInputChange}
-              />
-              <br />
-              <TextField
-                type="password"
-                name="password"
-                placeholder="Password"
-                onChange={this.handleInputChange}
-              />
-              <br />
-              <RaisedButton
-                primary="true"
-                type="submit"
-              >Log In</RaisedButton>
+              <FlatButton label="Log In" type="submit" primary fullWidth />
             </form>
-            <FlatButton primary="true">
-              <Link
-                to="/signupClient"
-                className="signup-button"
-              >Sign up as a Client
-              </Link>
-            </FlatButton>
+            <Link to="/signupClient" className="signup-button">
+              <FlatButton label="Sign up as a Client" primary fullWidth />
+            </Link>
             <br />
-            <FlatButton primary="true">
-              <Link to="/signupEmployer" className="signup-button">Sign up as an Employer</Link>
-            </FlatButton>
+            <Link to="/signupEmployer" className="signup-button">
+              <FlatButton label="Sign up as an Employer"primary fullWidth />
+            </Link>
           </div>
         }
       </div>

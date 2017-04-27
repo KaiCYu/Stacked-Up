@@ -1,6 +1,8 @@
 import React from 'react';
 import $ from 'jquery';
 import { Link } from 'react-router-dom';
+import FlatButton from 'material-ui/FlatButton';
+import { blue700 } from 'material-ui/styles/colors';
 import EmployerProfile from './EmployerProfile';
 import ApplicantProfile from './ApplicantProfile';
 
@@ -35,7 +37,11 @@ class MyProfile extends React.Component {
             <EmployerProfile info={this.state.currentUser} /> :
             <ApplicantProfile history={this.props.history} info={this.state.currentUser} /> }
         </div>
-        {this.props.option === 'company' ? <Link to="/postingjob">Post job</Link> : null}
+        {this.props.option === 'company' ?
+          <Link to="/postingjob">
+            <FlatButton label="Post new job" primary fullWidth />
+          </Link>
+          : null}
       </div>
     );
   }

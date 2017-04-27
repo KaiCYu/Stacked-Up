@@ -27,12 +27,8 @@ class JobPost extends React.Component {
               delete data[list[i]];
             }
           }
-          console.log('here is the data', data);
-          console.log('here is the data', typeof data);
-          this.setState({ postings: data });
-        } else {
-          this.setState({ postings: data });
         }
+        this.setState({ postings: data });
       },
       error: (error) => {
         console.log('AJAX request to get list of job postings failed due to ', error);
@@ -73,20 +69,22 @@ class JobPost extends React.Component {
               <TableHeaderColumn>Description</TableHeaderColumn>
               <TableHeaderColumn>Location</TableHeaderColumn>
               <TableHeaderColumn>Starting Salary</TableHeaderColumn>
-              { this.props.logInOption === 'company' ?
-                <TableHeaderColumn>Applicants</TableHeaderColumn>
-                :
+              { this.props.logInOption === 'applicant' ?
                 <TableHeaderColumn>Apply</TableHeaderColumn>
+              : this.props.info ?
+                <TableHeaderColumn>Applicants</TableHeaderColumn>
+                : null
               }
             </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false}>
+          <TableBody displayRowCheckbox={false} showRowHover={true}>
             {this.state.postings.map(entry =>
               <JobPostEntry
                 entry={entry}
                 key={entry.id}
                 handleApply={this.handleApply}
                 logInOption={this.props.logInOption}
+                info={this.props.info}
               />)
             }
           </TableBody>
