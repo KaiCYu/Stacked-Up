@@ -23,6 +23,7 @@ build/
 app/dist/*
 !app/dist/index.html
 !app/dist/styles.css
+!app/dist/stacked_up.jpg
 
 
 # Dependency directorys

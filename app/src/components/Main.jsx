@@ -32,14 +32,15 @@ class Main extends React.Component {
       type: 'GET',
       contentType: 'application/json',
       success: (data) => {
-        data = data.slice(0,6)
-        this.setState({ topApplicants: data });
+      	data = data.slice(0,6)
+      	this.setState({ topApplicants: data });
       },
       error: (error) => {
         console.log('AJAX request to get list of job postings failed due to ', error);
       },
     });
   }
+
 
   handleApply(jobPostingId) {
     const applyingData = {};
@@ -116,5 +117,6 @@ class Main extends React.Component {
     );
   }
 }
+
 
 export default Main;

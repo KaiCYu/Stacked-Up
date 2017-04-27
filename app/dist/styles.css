@@ -1,5 +1,5 @@
 body {
-  background-image: url('stacked_up.jpg');
+  /*background-image: url('stacked_up.jpg');*/
   margin: 0;
 }
 div.container {
@@ -15,7 +15,6 @@ div.container {
 .table-header {
   background-color: #f1f1f1;
 }
-
 table {
     table-layout: fixed;
     word-wrap: break-word;

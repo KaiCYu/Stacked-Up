@@ -108,39 +108,6 @@ class Messages extends React.Component {
     });
   }
 
-  sendMessage(event) {
-    event.preventDefault();
-    const sendData = {
-    prev_msgContent: this.state.viewedMessage.message,
-    prev_msgDate: this.state.viewedMessage.send_date,
-    prev_msgsender: this.state.viewedMessage.sender,
-    prev_msgId: this.state.viewedMessage.id,
-    prev_subject: this.state.viewedMessage.subject,
-    sender_type: this.state.logInOption,
-    msgContent: this.state.composeContent,
-    recipient: this.state.composeRecipient,
-  };
-  var context = this;
-    $.ajax({
-      type: 'POST',
-      url: '/sendMessage',
-      data: sendData,
-      success: (results) => {
-        console.log('sent message to server // message = ', results);
-        context.getMessages();
-      },
-      error: (error) => {
-        console.log('error on sending message to server // error = ', error)
-      }
-    });
-
-  }
-  // componentDidUpdate() {
-  // 	this.setState({
-  // 		messagesReceive: this.props.messagesReceive,
-  // 		messagesSent: this.props.messagesSent,
-  // 	})
-  // }
 
   clearContent() {
     this.setState({
