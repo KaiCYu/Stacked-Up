@@ -76,7 +76,7 @@ const getAllFromDatabaseTables = () => {
   const queries = [
     'SELECT * FROM applicants',
     'SELECT * FROM employer',
-    'SELECT job_postings.*, employer.company_name ' +
+    'SELECT job_postings.*, employer.* ' +
       'FROM job_postings ' +
       'INNER JOIN employer ON job_postings.employer_id = employer.id',
   ];
