@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import FlatButton from 'material-ui/FlatButton';
 import { TableRow, TableRowColumn } from 'material-ui';
 import utils from '../../../lib/utility';
 
@@ -23,7 +25,18 @@ const JobPostsSearchEntry = ({ jobPost }) => (
       {jobPost.post_date.slice(0, 10)}
     </TableRowColumn>
     <TableRowColumn>
-      {jobPost.online ? 'Online' : 'Offline'}
+      {console.log(jobPost)}
+      <Link
+        to={{
+          pathname: '/JobProfile',
+          state: {
+            info: jobPost,
+            id: jobPost.id,
+          },
+        }}
+      >
+        <FlatButton label="More details" primary />
+      </Link>
     </TableRowColumn>
   </TableRow>
 );

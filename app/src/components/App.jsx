@@ -78,11 +78,16 @@ class App extends React.Component {
 
   componentWillMount() {
     $.ajax({
-      url: '/verifyLogin',
+      url: '/getCurrentUser',
       type: 'GET',
       success: (data) => {
-        if (data === true) {
-          this.setState({ isLoggedIn: true });
+        if (data) {
+          console.log(data);
+          if (data.type === 'applicant') {
+            this.setState({ isLoggedIn: true, logInOption: 'applicant', username: data.username });
+          } else {
+            this.setState({ isLoggedIn: true, logInOption: 'company', username: data.username });
+          }
         } else {
           this.setState({ isLoggedIn: false });
         }
@@ -317,7 +322,7 @@ class App extends React.Component {
       <div className="site">
         <Router>
           <div className="conditionals-container">
-            { this.state.isLoggedIn ? null : <Redirect from="/" to="/main" />}
+            <Redirect from="/" to="/main" />
             <PrivateRoute
               component={Navbar}
               searchAll={this.searchAll}
@@ -326,7 +331,7 @@ class App extends React.Component {
               onInputChange={this.onInputChange}
             />
             <div className="currentPage">
-              <Route
+              <PrivateRoute
                 path="/main"
                 component={Main}
                 logInOption={this.state.logInOption}

@@ -56,7 +56,7 @@ class CodePad extends React.Component {
           <div>
             <div>
               <div>Output</div>
-              <Divider inset={true} />
+              <Divider />
               <div id="output">{this.state.output}</div>
             </div>
           </div>

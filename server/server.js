@@ -55,6 +55,11 @@ passport.deserializeUser((user, done) => {
     queryStr = `SELECT * FROM employer WHERE id = "${user.id}";`;
   }
   db.query(queryStr, (err, userdata) => {
+    if (user.type === 'applicant') {
+      userdata[0].type = 'applicant';
+    } else {
+      userdata[0].type = 'company';
+    }
     done(err, userdata[0]);
   });
 });
@@ -103,17 +108,7 @@ passport.use(new LocalStrategy(
     }
   }));
 
-app.get('/verifyLogin', (req, res) => {
-  console.log(req.user);
-  if (req.user) {
-    res.json(true);
-  } else {
-    res.json(false);
-  }
-});
-
 app.get('/getCurrentUser', (req, res) => {
-  // console.log('REQ.USER', req.user?req.user.username:'');
   if (req.user) {
     const currentUser = req.user;
     delete currentUser.password;
@@ -162,7 +157,6 @@ app.get('/getJobPostings', (req, res) => {
       console.log('failed to get job posting data', error);
       res.sendStatus(500);
     } else {
-      console.log('this is user right now: ', req.user);
       if (req.user) {
         const queryAnotherStr = `SELECT * FROM applicants_job_postings WHERE applicant_id = '${req.user.id}';`;
         db.query(queryAnotherStr, (error, results) => {
@@ -170,11 +164,9 @@ app.get('/getJobPostings', (req, res) => {
             console.log('failed to get applicant data from join table ', error);
             res.sendStatus(500);
           } else {
-            console.log("I'm here!");
             for (let j = 0; j < data.length; j += 1) {
               for (let i = 0; i < results.length; i += 1) {
                 if (results[i].job_posting_id === data[j].id) {
-                  console.log('am I here?');
                   data[j].apply = true;
                 }
               }
@@ -227,7 +219,7 @@ app.get('/logout', (req, res) => {
   console.log('--> logout user check', req.user);
   const username = req.user.username;
   delete loggedInUsers[username];
-  req.logOut();
+  req.logout();
   req.session.destroy(function (err) {
     res.redirect('/'); //Inside a callback… bulletproof!
   });
@@ -548,6 +540,7 @@ app.get('/getAppliedCompanies', (req, res) => {
     }
   });
 });
+
 
 app.post('/codeTest', (req, res) => {
   console.log(req.body.snippet);

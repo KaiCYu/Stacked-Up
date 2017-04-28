@@ -53,5 +53,5 @@ const JobPostEntry = props => (
 export default JobPostEntry;
 
 const style = {
-  align: { 'text-align': 'center' },
+  align: { textAlign: 'center' },
 };

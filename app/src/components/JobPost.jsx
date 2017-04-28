@@ -49,7 +49,7 @@ class JobPost extends React.Component {
               <TableHeaderColumn className="table-column">Location</TableHeaderColumn>
               <TableHeaderColumn className="table-column">Starting Salary</TableHeaderColumn>
               { this.props.logInOption === 'applicant' ?
-                <TableHeaderColumn>Apply</TableHeaderColumn>
+                <TableHeaderColumn>Detail</TableHeaderColumn>
               : this.props.info ?
                 <TableHeaderColumn>Applicants</TableHeaderColumn>
                 : null

@@ -35,7 +35,6 @@ class JobProfile extends React.Component {
       data: applyingData,
       success: (data) => {
         console.log('application successfully submitted!');
-        // TODO: change the button to applied after MVP
         this.handleOpen();
 
       },
