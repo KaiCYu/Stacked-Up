@@ -118,7 +118,7 @@ class SignupClient extends React.Component {
 
   render() {
     return (
-      <div className="SignupClient-container">
+      <div className="signup-client-container">
         <h1>Signup as a Client</h1>
         <form id="signupApplicant" onSubmit={this.handleSubmit}>
           <TextField
@@ -227,7 +227,7 @@ class SignupClient extends React.Component {
                   id={'resume'}
                   name={'resume'}
                   style={this.styles.uploadInput}
-                  onChange={this.previewFile} 
+                  onChange={this.previewFile}
                 />
               </FlatButton>
               <div id="resume-preview" height="300px"></div>
@@ -245,7 +245,7 @@ class SignupClient extends React.Component {
                   id={'coverLetter'}
                   name={'coverLetter'}
                   style={this.styles.uploadInput}
-                  onChange={this.previewFile} 
+                  onChange={this.previewFile}
                 />
               </FlatButton>
               <div id="coverLetter-preview" height="300px"></div>
@@ -263,7 +263,7 @@ class SignupClient extends React.Component {
                   id={'profilePhoto'}
                   name={'profilePhoto'}
                   style={this.styles.uploadInput}
-                  onChange={this.previewFile} 
+                  onChange={this.previewFile}
                 />
               </FlatButton>
               <div id="profilePhoto-preview" height="300px"></div>
@@ -271,7 +271,7 @@ class SignupClient extends React.Component {
           </Grid>
 
           {/*<Dropzone />*/}
-          
+
           <br />
           <FlatButton
             label="Sign Up"

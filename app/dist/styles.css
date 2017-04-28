@@ -251,3 +251,7 @@ div.show-image input.delete {
 .search-container h1#job-postings-main-header {
   margin-right: 200px;
 }
+
+.signup-client-container {
+  margin-left: 2%;
+}
