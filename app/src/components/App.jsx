@@ -136,8 +136,6 @@ class App extends React.Component {
     const userInCallWith = this.state.userBeingCalled || this.state.incomingVideoCaller;
     this.setState({ updatedCode });
     if (user && userInCallWith) {
-      this.state.updatedCode = updatedCode;
-      console.log('===>>>>>', this.state.updatedCode);
       this.state.ws.send(JSON.stringify({
         updatedCode,
         user,
@@ -235,7 +233,7 @@ class App extends React.Component {
               incomingVideoRoom: message.room,
             });
           } else if (message.type === 'updatedCode') {
-            this.setState({ updatedCode: msg.updatedCode });
+            this.setState({ updatedCode: message.updatedCode });
           }
         };
         this.setState({
