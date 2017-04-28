@@ -157,36 +157,37 @@ class ApplicantProfile extends React.Component {
 
   render() {
     return (
-      <div className="search-container">
-      {/*{console.log('props in applicant profile: ', this.props)}*/}
-        <h1>Applicant Profile</h1>
+      <div id="profile-container" className="search-container">
         <div>
-          <ProfilePicture src={this.props.info.profile_pic_url}/>
-          <h3>Username: {this.props.info.username}</h3>
-          <h4>Name: {`${this.props.info.firstName} ${this.props.info.lastName}`}</h4>
-          <h5>Email: {this.props.info.email}</h5>
-          <h5>Phone Number: {this.props.info.phone_number}</h5>
-          <h5>Location: {`${this.props.info.city}, ${this.props.info.state} ${this.props.info.country}`}</h5>
+          <div>
+            <ProfilePicture src={this.props.info.profile_pic_url} />
+            <div id="applicant-profile-descriptions">
+              <h4>Username: {this.props.info.username}</h4>
+              <h4>Name: {`${this.props.info.firstName} ${this.props.info.lastName}`}</h4>
+              <h4>Email: {this.props.info.email}</h4>
+              <h4>Phone Number: {this.props.info.phone_number}</h4>
+              <h4>Location: {`${this.props.info.city}, ${this.props.info.state}, ${this.props.info.country}`}</h4>
+            </div>
+          </div>
 
-          <br/>
-          
-          {/*<div>Work History:
-            {props.info.workHistory.map((workEntry, index) => {
-              return <WorkHistoryEntry key={index} workEntry={workEntry} />;
-            })}
-          </div>*/}
-          <section id="resume-list">
-            Your Resumes: {this.state.resumes.map((fileEntry, index) => {
-              return <FileEntry key={index} fileEntry={fileEntry} deleteFile={this.deleteFile} />;
-            })}
-          </section>
           <br />
 
-          <section id="coverletter-list">
-            Your Cover Letters: {this.state.coverLetters.map((fileEntry, index) => {
+          <div id="resume-container">
+            <h3>Your Résumés</h3>
+            {this.state.resumes.map((fileEntry, index) => {
               return <FileEntry key={index} fileEntry={fileEntry} deleteFile={this.deleteFile} />;
             })}
-          </section>
+          </div>
+
+          <br />
+
+          <div id="cover-letter-container">
+            <h3>Your Cover Letters</h3>
+            {this.state.coverLetters.map((fileEntry, index) => {
+              return <FileEntry key={index} fileEntry={fileEntry} deleteFile={this.deleteFile} />;
+            })}
+          </div>
+
           <br />
 
           <FormInput title={'Upload a Resume'} id={"resumesUpload"} type={"file"} name={"resumesUpload"} onChange={this.addFile} /> <br />
@@ -197,13 +198,7 @@ class ApplicantProfile extends React.Component {
 
           <button onClick={this.handleUpload}>Upload Files</button>
 
-          {/*<div>Work History:
-            {props.info.workHistory.map((workEntry, index) => {
-              return <WorkHistoryEntry key={index} workEntry={workEntry} />;
-            })}
-          </div>*/}
-
-          <h1>List of Applied Companies</h1>
+          <h1>Companies You&#39;ve Applied To</h1>
           <Table>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
               <TableRow>

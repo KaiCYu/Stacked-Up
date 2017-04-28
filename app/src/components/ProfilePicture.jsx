@@ -10,8 +10,8 @@ export default class ProfilePicture extends Component {
     const size = modes[mode] || 'contain';
 
     const defaults = {
-      height: height || 100,
-      width: width || 100,
+      height: height || 200,
+      width: width || 200,
       backgroundColor: 'gray',
     };
 
@@ -20,6 +20,7 @@ export default class ProfilePicture extends Component {
       backgroundSize: size,
       backgroundPosition: 'center center',
       backgroundRepeat: 'no-repeat',
+      float: 'left',
     };
 
     return <div {...props} style={{ ...defaults, ...style, ...important }} />;

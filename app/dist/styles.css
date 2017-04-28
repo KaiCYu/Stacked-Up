@@ -86,14 +86,6 @@ div.show-image input.delete {
   left:55%;
 }
 
-section#resume-list {
-  /*display: block;*/
-}
-
-section#coverletter-list {
-  /*display: block;*/
-}
-
 #search-button {
   color: black;
   text-decoration: none;
@@ -208,4 +200,24 @@ section#coverletter-list {
 
 .main-page-headers {
   text-align: center;
+}
+
+#profile-container {
+  margin: 2.5%;
+}
+
+#applicant-profile-descriptions {
+  margin-left: 20%;
+}
+
+#resume-container {
+  display: inline-block;
+}
+
+#cover-letter-container {
+  display: inline-block;
+}
+
+.search-container h1#job-postings-main-header {
+  margin-right: 200px;
 }
