@@ -1,6 +1,6 @@
-# Project Name
+# Stacked Up
 
-> Stacked Up
+> A job search portal with built-in video chat and coding pad.
 
 ## Team
 
@@ -21,15 +21,25 @@
 
 ## Usage
 
-> Some usage instructions
+> Sign up as an employer or applicant, log in
+
+> Post a job as an employer
+
+> Apply to a job as an applicant
+
+> Employers can see a list of applicants, and can view their resumes, cover letter, and directly contact the applicant via a video chat if they are online. If they are not online, an employer can still send a direct message to the applicant!
+
+> Employers can initiate a video chat with an applicant.
+
+> Once a video chat is established, the employer and applicant can go to the CoderPad in the menu.
+
 
 ## Requirements
 
-- Node 6.4.x
-- Redis 2.6.x
-- Postgresql 9.1.x
-- etc
-- etc
+- Node 6.7.x
+- MySql 2.13.x
+- React 15.4.x
+- Codemirror 5.25.x
 
 ## Development
 
@@ -38,14 +48,17 @@
 From within the root directory:
 
 ```sh
-npm install -g bower
 npm install
-bower install
 ```
 
-### Roadmap
+### Tasks
 
-View the project roadmap [here](LINK_TO_DOC)
+```sh
+npm run db:setup
+npm run server:watch
+npm run webpack:watch
+elasticsearch
+```
 
 
 ## Contributing
