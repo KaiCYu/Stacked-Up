@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import $ from 'jquery';
 import 'jquery-ui-bundle';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import Navbar from './Navbar';
 import Main from './Main';
 import Search from './Search';
@@ -55,6 +57,7 @@ class App extends React.Component {
       ws: null,
       userBeingCalled: '',
       updatedCode: '// code',
+      openDialog: false,
     };
     this.loginUrl = 'https://localhost:8000/login';
     this.sendLoginInfo = this.sendLoginInfo.bind(this);
@@ -73,7 +76,7 @@ class App extends React.Component {
     this.handleClose = this.handleClose.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     $.ajax({
       url: '/getCurrentUser',
       type: 'GET',
@@ -131,6 +134,7 @@ class App extends React.Component {
   sendUpdatedCode(updatedCode) {
     const user = this.state.username;
     const userInCallWith = this.state.userBeingCalled || this.state.incomingVideoCaller;
+    this.setState({ updatedCode });
     if (user && userInCallWith) {
       this.state.updatedCode = updatedCode;
       console.log('===>>>>>', this.state.updatedCode);
@@ -240,7 +244,12 @@ class App extends React.Component {
         });
       },
       error: (error) => {
-        console.log('error on sending login info, error =', error);
+        console.log('log in failed!', error);
+        this.setState({
+          username: '',
+          password: '',
+        });
+        this.handleOpen();
       },
     });
   }
@@ -278,11 +287,11 @@ class App extends React.Component {
       url: '/logout',
       type: 'GET',
       success: (result) => {
-        this.setState({ isLoggedIn: false });
+        this.setState({ isLoggedIn: false, logInOption: '' });
       },
       error: (error) => {
         console.log('log out error occured', error);
-      }
+      },
     });
   }
 
@@ -314,7 +323,6 @@ class App extends React.Component {
       },
     });
   }
-<<<<<<< HEAD
 
   handleOpen = () => {
     this.setState({ openDialog: true });
@@ -323,18 +331,14 @@ class App extends React.Component {
   handleClose = () => {
     this.setState({ openDialog: false });
   };
-=======
->>>>>>> (style) signup applicants/employers with material UI
 
   render() {
     return (
       <div className="site">
         <Router>
           <div className="conditionals-container">
-<<<<<<< HEAD
             <Redirect from="/" to="/main" />
-=======
->>>>>>> (style) signup applicants/employers with material UI
+            { this.state.isLoggedIn ? null : <Redirect from="/" to="/main" />}
             <PrivateRoute
               component={Navbar}
               searchAll={this.searchAll}
@@ -346,6 +350,7 @@ class App extends React.Component {
               <PrivateRoute
                 path="/main"
                 component={Main}
+                logInOption={this.state.logInOption}
               />
               <Route
                 path="/search"
@@ -427,10 +432,13 @@ class App extends React.Component {
                 ws={this.state.ws}
                 updatedCode={this.state.updatedCode}
               />
+              <PrivateRoute
+                path="/JobProfile"
+                component={JobProfile}
+              />
             </div>
           </div>
         </Router>
-<<<<<<< HEAD
            <div>
             <Dialog
               actions={<FlatButton
@@ -445,8 +453,6 @@ class App extends React.Component {
               Invalid username, password or member type
             </Dialog>
         </div>
-=======
->>>>>>> (style) signup applicants/employers with material UI
       </div>
     );
   }
