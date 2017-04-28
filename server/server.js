@@ -583,20 +583,33 @@ app.get('/search/:query/:fuzziness/:size', (req, res) => {
   };
 
   elasticsearch.search(dbName, body)
-  .then((searchResults) => {
-    const newResults = searchResults.hits.hits.map((hit) => {
-      const data = hit._source;
+  .then((results) => {
+    const userId = req.session.passport ? req.session.passport.user.id : null;
+    const searchResults = results.hits.hits;
+    Promise.map(searchResults, (result) => {
+      const data = result._source;
       if (data.username in loggedInUsers) {
         data.online = true;
       } else {
         data.online = false;
       }
+      if (data.position) {
+        const queryApplicantsAndJobPostings = 'SELECT * FROM applicants_job_postings ' +
+        `WHERE applicant_id = ${userId} and job_posting_id = ${data.id}`;
+        return db.queryAsync(queryApplicantsAndJobPostings)
+        .then((appliedToJobPost) => {
+          data.appliedToJob = appliedToJobPost[0] !== undefined;
+          return data;
+        });
+      }
       return data;
+    }).then((finalResults) => {
+      console.log('results:', finalResults);
+      res.status(200).json(finalResults);
     });
-    res.status(200).json(newResults);
   })
   .catch(() => {
-    res.sendStatus(404);
+    res.sendStatus(504);
   });
 });
 
