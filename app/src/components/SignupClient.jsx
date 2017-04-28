@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import $ from 'jquery';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
-import FormInput from './FormInput';
+// import FormInput from './FormInput';
 import TextField from 'material-ui/TextField';
 import { black, blue500 } from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
@@ -27,25 +27,7 @@ class SignupClient extends React.Component {
       coverLetter: '',
       profilePhoto: '',
     };
-    this.styles = {
-      floatingLabelStyle: {
-        color: black,
-      },
-      uploadButton: {
-        verticalAlign: 'middle',
-        color: blue500,
-      },
-      uploadInput: {
-        cursor: 'pointer',
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        width: '100%',
-        opacity: 0,
-      },
-    },
+
     this.initialState = this.state;
 
     this.previewFile = this.previewFile.bind(this);
@@ -77,23 +59,30 @@ class SignupClient extends React.Component {
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      // console.log('READER: ', reader);
       this.setState({ [name]: reader.result });
     };
 
+    const addDemoImage = () => {
+      const demoImage = new Image();
+      demoImage.height = 100;
+      demoImage.title = file.name;
+      demoImage.src = 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338942/zq3fsa3e0uuanyi3u4gj.png';
+      preview.appendChild(demoImage);
+    };
+
     reader.addEventListener("loadend", () => {
-      // console.log('read the picture******************');
-      const image = new Image();
-      image.height = 100;
-      image.title = file.name;
-      image.src = reader.result;
-      preview.appendChild(image);
+      if (file.type === 'application/msword' || file.type === 'application/pdf') {
+        addDemoImage();
+      } else {
+        const image = new Image();
+        image.height = 100;
+        image.title = file.name;
+        image.src = reader.result;
+        preview.appendChild(image);
+      }
     }, false);
 
-    if (file && file.type === 'text/plain') {
-      reader.readAsText(file);
-    }
-    if (file && file.type !== 'text/plain') {
+    if (file) {
       reader.readAsDataURL(file);
     }
   }
@@ -118,8 +107,11 @@ class SignupClient extends React.Component {
 
   render() {
     return (
-      <div className="signup-client-container">
-        <h1>Signup as a Client</h1>
+
+      <div className="SignupClient-container">
+        <div className="signup-header">
+          <h1 >Signup as a Client</h1>
+        </div>
         <form id="signupApplicant" onSubmit={this.handleSubmit}>
           <TextField
             hintText="AwesomeEngineer"
@@ -128,7 +120,7 @@ class SignupClient extends React.Component {
             type={'text'}
             value={this.state.username}
             name={'username'}
-            floatingLabelStyle={this.styles.floatingLabelStyle}
+            floatingLabelStyle={styles.floatingLabelStyle}
             onChange={this.onInputChange}
           />
           <TextField
@@ -137,7 +129,7 @@ class SignupClient extends React.Component {
             type={'password'}
             value={this.state.password}
             name={'password'}
-            floatingLabelStyle={this.styles.floatingLabelStyle}
+            floatingLabelStyle={styles.floatingLabelStyle}
             onChange={this.onInputChange}
           /><br />
           <TextField
@@ -147,7 +139,7 @@ class SignupClient extends React.Component {
             type={'text'}
             value={this.state.firstName}
             name={'firstName'}
-            floatingLabelStyle={this.styles.floatingLabelStyle}
+            floatingLabelStyle={styles.floatingLabelStyle}
             onChange={this.onInputChange}
           />
           <TextField
@@ -157,7 +149,7 @@ class SignupClient extends React.Component {
             type={'text'}
             value={this.state.lastName}
             name={'lastName'}
-            floatingLabelStyle={this.styles.floatingLabelStyle}
+            floatingLabelStyle={styles.floatingLabelStyle}
             onChange={this.onInputChange}
           />
           <br />
@@ -168,7 +160,7 @@ class SignupClient extends React.Component {
             type={'text'}
             value={this.state.email}
             name={'email'}
-            floatingLabelStyle={this.styles.floatingLabelStyle}
+            floatingLabelStyle={styles.floatingLabelStyle}
             onChange={this.onInputChange}
           />
           <TextField
@@ -178,7 +170,7 @@ class SignupClient extends React.Component {
             type={'text'}
             value={this.state.phoneNumber}
             name={'phoneNumber'}
-            floatingLabelStyle={this.styles.floatingLabelStyle}
+            floatingLabelStyle={styles.floatingLabelStyle}
             onChange={this.onInputChange}
           />
           <br />
@@ -189,7 +181,7 @@ class SignupClient extends React.Component {
             type={'text'}
             value={this.state.city}
             name={'city'}
-            floatingLabelStyle={this.styles.floatingLabelStyle}
+            floatingLabelStyle={styles.floatingLabelStyle}
             onChange={this.onInputChange}
           />
           <TextField
@@ -199,7 +191,7 @@ class SignupClient extends React.Component {
             type={'text'}
             value={this.state.state}
             name={'state'}
-            floatingLabelStyle={this.styles.floatingLabelStyle}
+            floatingLabelStyle={styles.floatingLabelStyle}
             onChange={this.onInputChange}
           />
           <TextField
@@ -209,7 +201,7 @@ class SignupClient extends React.Component {
             type={'text'}
             value={this.state.country}
             name={'country'}
-            floatingLabelStyle={this.styles.floatingLabelStyle}
+            floatingLabelStyle={styles.floatingLabelStyle}
             onChange={this.onInputChange}
           />
           <br />
@@ -219,15 +211,15 @@ class SignupClient extends React.Component {
               <FlatButton
                 label="Upload a resume"
                 labelPosition="before"
-                style={this.styles.uploadButton}
+                style={styles.uploadButton}
                 containerElement="label"
               >
                 <input
                   type="file"
                   id={'resume'}
                   name={'resume'}
-                  style={this.styles.uploadInput}
-                  onChange={this.previewFile}
+                  style={styles.uploadInput}
+                  onChange={this.previewFile} 
                 />
               </FlatButton>
               <div id="resume-preview" height="300px"></div>
@@ -237,15 +229,15 @@ class SignupClient extends React.Component {
               <FlatButton
                 label="Upload a cover letter"
                 labelPosition="before"
-                style={this.styles.uploadButton}
+                style={styles.uploadButton}
                 containerElement="label"
               >
                 <input
                   type="file"
                   id={'coverLetter'}
                   name={'coverLetter'}
-                  style={this.styles.uploadInput}
-                  onChange={this.previewFile}
+                  style={styles.uploadInput}
+                  onChange={this.previewFile} 
                 />
               </FlatButton>
               <div id="coverLetter-preview" height="300px"></div>
@@ -255,51 +247,68 @@ class SignupClient extends React.Component {
               <FlatButton
                 label="Upload a profile picture"
                 labelPosition="before"
-                style={this.styles.uploadButton}
+                style={styles.uploadButton}
                 containerElement="label"
               >
                 <input
                   type="file"
                   id={'profilePhoto'}
                   name={'profilePhoto'}
-                  style={this.styles.uploadInput}
-                  onChange={this.previewFile}
+                  style={styles.uploadInput}
+                  onChange={this.previewFile} 
                 />
               </FlatButton>
               <div id="profilePhoto-preview" height="300px"></div>
             </Column>
           </Grid>
-
-          {/*<Dropzone />*/}
-
           <br />
           <FlatButton
             label="Sign Up"
             labelPosition="before"
-            style={this.styles.uploadButton}
+            style={styles.uploadButton}
             containerElement="label"
           >
             <input
               type="submit"
-              style={this.styles.uploadInput}
+              style={styles.uploadInput}
             />
           </FlatButton>
           <FlatButton
             label="Clear"
             labelPosition="before"
-            style={this.styles.uploadButton}
+            style={styles.uploadButton}
             containerElement="label"
           >
             <input
               onClick={this.onResetForm}
-              style={this.styles.uploadInput}
+              style={styles.uploadInput}
             />
           </FlatButton>
 
         </form>
       </div>
-    )};
+    );
+  }
 }
 
 export default SignupClient;
 
+const styles = {
+  floatingLabelStyle: {
+    color: black,
+  },
+  uploadButton: {
+    verticalAlign: 'middle',
+    color: blue500,
+  },
+  uploadInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  },
+};

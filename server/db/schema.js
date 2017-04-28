@@ -100,6 +100,14 @@ module.exports = {
   'applicant_id INT,' +
   'FOREIGN KEY (applicant_id) REFERENCES applicants(id)' +
   ')',
+  applicant_filesDrop: 'DROP TABLE IF EXISTS applicant_files;',
+  applicant_files: 'CREATE TABLE IF NOT EXISTS applicant_files (' +
+  'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,' +
+  'url VARCHAR(255),' +
+  'type VARCHAR(20),' +
+  'applicant_id INT,' +
+  'FOREIGN KEY (applicant_id) REFERENCES applicants(id)' +
+  ')',
   setNewApplicantFile: `INSERT INTO applicant_files SET ?`,
   newApplicantFile: {
     id: null,

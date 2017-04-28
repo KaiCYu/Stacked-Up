@@ -46,15 +46,15 @@ button {
 }
 
 textarea-receive {
-    overflow-y: scroll;
-    height: 180px;
-    resize: none; /* Remove this if you want the user to resize the textarea */
+  overflow-y: scroll;
+  height: 180px;
+  resize: none; /* Remove this if you want the user to resize the textarea */
 }
 
 textarea-sent {
-    overflow-y: scroll;
-    height: 90px;
-    resize: none; /* Remove this if you want the user to resize the textarea */
+  overflow-y: scroll;
+  height: 90px;
+  resize: none; /* Remove this if you want the user to resize the textarea */
 }
 
 div.show-image {
@@ -74,11 +74,6 @@ div.show-image:hover input {
 div.show-image input {
   position:absolute;
   display:none;
-}
-
-div.show-image input.update {
-  top:0;
-  left:0;
 }
 
 div.show-image input.delete {
@@ -110,66 +105,6 @@ div.show-image input.delete {
 #login-page {
   margin-left: 2%;
   text-align: center;
-}
-
-.login-container {
-  margin: auto;
-  width: 50%;
-  padding: 10px;
-}
-
-.radiobutton {
-  margin: auto;
-  width: 50%;
-  float: center;
-}
-
-.radiobuttons {
-  margin: 20px;
-}
-
-.inputbox {
-  margin: auto;
-  width: 50%;
-  float: center;
-}
-
-#login-title {
-  margin: auto;
-  width: 50%;
-  float: center;
-  font-family: 'Cochin';
-  font-size: 30px;
-}
-
-.login-container {
-  margin: auto;
-  width: 50%;
-  padding: 10px;
-}
-
-.radiobutton {
-  margin: auto;
-  width: 50%;
-  float: center;
-}
-
-.radiobuttons {
-  margin: 20px;
-}
-
-.inputbox {
-  margin: auto;
-  width: 50%;
-  float: center;
-}
-
-#login-title {
-  margin: auto;
-  width: 50%;
-  float: center;
-  font-family: 'Cochin';
-  font-size: 30px;
 }
 
 .login-container {
@@ -250,6 +185,11 @@ div.show-image input.delete {
 
 .search-container h1#job-postings-main-header {
   margin-right: 200px;
+}
+
+.signup-header {
+  text-align: center;
+  font-family: 'Cochin';
 }
 
 .signup-client-container {

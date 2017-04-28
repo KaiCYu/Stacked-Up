@@ -38,7 +38,6 @@ class JobPost extends React.Component {
       <div id="job-postings">
         <div id="job-postings-header-container">
           <h1 id="job-postings-main-header">Job Postings</h1>
-          <h5>Find Your Next Job</h5>
         </div>
         <Table>
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>

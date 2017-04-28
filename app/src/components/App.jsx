@@ -11,6 +11,7 @@ import Login from './Login';
 import MyProfile from './MyProfile';
 import Profile from './Profile';
 import EmployerProfile from './EmployerProfile';
+import JobProfile from './JobProfile';
 import JobPost from './JobPost';
 import SignupClient from './SignupClient';
 import SignupEmployer from './SignupEmployer';
@@ -22,7 +23,7 @@ import PrivateRoute from './privateRoute';
 import ApplicantsList from './ApplicantsList';
 import CodePad from './CodePad';
 import Messages from './Messages';
-import JobProfile from './JobProfile';
+import TextField from 'material-ui/TextField';
 
 class App extends React.Component {
   constructor(props) {
@@ -70,10 +71,9 @@ class App extends React.Component {
     this.setMessagesToAppState = this.setMessagesToAppState.bind(this);
     this.searchAll = this.searchAll.bind(this);
     this.sendUpdatedCode = this.sendUpdatedCode.bind(this);
+    this.redirectToCodePad = this.redirectToCodePad.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    // this.submitEmployer = this.submitEmployer.bind(this);
-    // this.previewFile = this.previewFile.bind(this);
   }
 
   componentWillMount() {
@@ -309,6 +309,19 @@ class App extends React.Component {
     });
   }
 
+  redirectToCodePad() {
+    $.ajax({
+      url: '/redirectToCodePad',
+      type: 'GET',
+      success: (result) => {
+        window.location = result.redirect;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
   handleOpen = () => {
     this.setState({ openDialog: true });
   };
@@ -423,19 +436,19 @@ class App extends React.Component {
             </div>
           </div>
         </Router>
-        <div>
-          <Dialog
-            actions={<FlatButton
-              label="OK"
-              primary
-              onTouchTap={this.handleClose}
-            />}
-            modal={false}
-            open={this.state.openDialog}
-            onRequestClose={this.handleClose}
-          >
-            Invalid username, password or member type
-          </Dialog>
+           <div>
+            <Dialog
+              actions={<FlatButton
+                label="OK"
+                primary
+                onTouchTap={this.handleClose}
+              />}
+              modal={false}
+              open={this.state.openDialog}
+              onRequestClose={this.handleClose}
+            >
+              Invalid username, password or member type
+            </Dialog>
         </div>
       </div>
     );

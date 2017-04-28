@@ -6,6 +6,7 @@ import ProfilePicture from './ProfilePicture';
 import AppliedCompanyEntry from './AppliedCompanyEntry';
 import FormInput from './FormInput';
 import FileEntry from './FileEntry';
+// import Dialog from 'material-ui/Dialog';
 
 // import WorkHistoryEntry from './WorkHistoryEntry';
 
@@ -57,25 +58,11 @@ class ApplicantProfile extends React.Component {
     });
   }
 
-  updateFiles() {
-    $.ajax({
-      type: 'GET',
-      url: '/updateFiles',
-      success: (results) => {
-        this.setState({ resumes: results.resumes, coverLetters: results.coverLetters });
-        console.log('files have been updated!');
-      },
-      error: (error) => {
-        console.log('error updating files from DB ', error);
-      },
-    });
-  }
-
   addFile(event) {
     const name = event.target.name;
-    // console.log('NAME', name);
+    console.log('name', name)
     const preview = document.querySelector(`#preview-${name}`);
-    // console.log('PREVIEW: ', preview);
+    console.log('preview', preview)
     const file = document.getElementById(`${name}`).files[0];
 
     const reader = new FileReader();
@@ -86,19 +73,31 @@ class ApplicantProfile extends React.Component {
       this.setState({ [name]: fileArray });
     };
 
+    const addDemoImage = () => {
+      console.log('adding demo img....');
+      let demoImage = new Image();
+      demoImage.height = 100;
+      demoImage.title = file.name;
+      demoImage.src = 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338942/zq3fsa3e0uuanyi3u4gj.png';
+      console.log(demoImage);
+      preview.appendChild(demoImage);
+    };
+
     reader.addEventListener("loadend", () => {
-      // console.log('read the picture******************');
-      const image = new Image();
-      image.height = 100;
-      image.title = file.name;
-      image.src = reader.result;
-      preview.appendChild(image);
+      console.log(file.type);
+      if (file.type === 'application/msword' || file.type === 'application/pdf') {
+        addDemoImage();
+      } else {
+        console.log('adding real img')
+        let image = new Image();
+        image.height = 100;
+        image.title = file.name;
+        image.src = reader.result;
+        preview.appendChild(image);
+      }
     }, false);
 
-    if (file && file.type === 'text/plain') {
-      reader.readAsText(file);
-    }
-    if (file && file.type !== 'text/plain') {
+    if (file) {
       reader.readAsDataURL(file);
     }
   }
@@ -198,7 +197,7 @@ class ApplicantProfile extends React.Component {
 
           <button onClick={this.handleUpload}>Upload Files</button>
 
-          <h1>Companies You&#39;ve Applied To</h1>
+          <h1>List of Applied Companies</h1>
           <Table>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
               <TableRow>

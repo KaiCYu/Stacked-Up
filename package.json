@@ -6,7 +6,7 @@
   "author": "Gabriel Certeza, Billy Won, Dale Toney, Kai Yu",
   "license": "Hack-Reactor",
   "engines": {
-    "node": ">=6.4.0"
+    "node": ">=6.7.0"
   },
   "scripts": {
     "start": "node server/server.js",

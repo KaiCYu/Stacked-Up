@@ -15,7 +15,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493339302/dale_ki3o5c.jpg',
   }),
     demo2: Object.assign(
     JSON.parse(JSON.stringify(schema.newApplicant)), 
@@ -29,7 +29,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493339302/gabe_ynpexk.jpg',
   }),
     demo3: Object.assign(
     JSON.parse(JSON.stringify(schema.newApplicant)), 
@@ -43,7 +43,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493310538/arpom4b0wqekpfqrnjn1.jpg',
   }),
     demo4: Object.assign(
     JSON.parse(JSON.stringify(schema.newApplicant)), 
@@ -57,7 +57,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493148143/a1jqk6hgsjpigta9zp2k.jpg',
   }),
     demo5: Object.assign(
     JSON.parse(JSON.stringify(schema.newApplicant)), 
@@ -71,7 +71,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493310538/arpom4b0wqekpfqrnjn1.jpg',
   }),
     demo7: Object.assign(
     JSON.parse(JSON.stringify(schema.newApplicant)), 
@@ -85,7 +85,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493339302/dale_ki3o5c.jpg',
   }),
     demo8: Object.assign(
     JSON.parse(JSON.stringify(schema.newApplicant)), 
@@ -99,7 +99,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493339302/gabe_ynpexk.jpg',
   }),
     demo8: Object.assign(
     JSON.parse(JSON.stringify(schema.newApplicant)), 
@@ -113,7 +113,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493148143/a1jqk6hgsjpigta9zp2k.jpg',
   }),
     demo10: Object.assign(
     JSON.parse(JSON.stringify(schema.newApplicant)), 
@@ -127,7 +127,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493148143/a1jqk6hgsjpigta9zp2k.jpg',
   }),
     demo10: Object.assign(
     JSON.parse(JSON.stringify(schema.newApplicant)), 
@@ -141,7 +141,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493310538/arpom4b0wqekpfqrnjn1.jpg',
   }),
     demo12: Object.assign(
     JSON.parse(JSON.stringify(schema.newApplicant)), 
@@ -155,7 +155,7 @@ var Applicants = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    profile_pic_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    profile_pic_url: 'http://res.cloudinary.com/dse6qhxk5/image/upload/v1493339302/gabe_ynpexk.jpg',
   }),
 }
 
@@ -172,7 +172,7 @@ var Employer = {
     city: 'San Francisco',
     state: 'CA',
     country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338548/hacz9nec5ih7qezbt4kk.jpg',
     job_postings_id: null 
     }),
     demo2: Object.assign(
@@ -186,7 +186,7 @@ var Employer = {
     city: 'Cupertino',
     state: 'CA',
     country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338548/hacz9nec5ih7qezbt4kk.jpg',
     job_postings_id: null 
     }),
     demo3: Object.assign(
@@ -200,7 +200,7 @@ var Employer = {
     city: 'San Fernando',
     state: 'CA',
     country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338548/hacz9nec5ih7qezbt4kk.jpg',
     job_postings_id: null 
     }),
     demo4: Object.assign(
@@ -214,7 +214,7 @@ var Employer = {
     city: 'LA',
     state: 'CA',
     country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338548/hacz9nec5ih7qezbt4kk.jpg',
     job_postings_id: null 
     }),
     demo5: Object.assign(
@@ -227,7 +227,7 @@ var Employer = {
     city: 'New York City',
     state: 'NY',
     country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338548/hacz9nec5ih7qezbt4kk.jpg',
     job_postings_id: null 
     }),
     demo6: Object.assign(
@@ -241,7 +241,7 @@ var Employer = {
     city: 'Sacramento',
     state: 'CA',
     country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338548/hacz9nec5ih7qezbt4kk.jpg',
     job_postings_id: null 
     }),
     demo7: Object.assign(
@@ -255,7 +255,7 @@ var Employer = {
     city: 'San Diego',
     state: 'CA',
     country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338548/hacz9nec5ih7qezbt4kk.jpg',
     job_postings_id: null 
     }),
     demo8: Object.assign(
@@ -269,7 +269,7 @@ var Employer = {
     city: 'Las Vegas',
     state: 'NV',
     country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338548/hacz9nec5ih7qezbt4kk.jpg',
     job_postings_id: null 
     }),
     demo9: Object.assign(
@@ -283,7 +283,7 @@ var Employer = {
     city: 'Boulder',
     state: 'CO',
     country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338548/hacz9nec5ih7qezbt4kk.jpg',
     job_postings_id: null 
     }),
     demo10: Object.assign(
@@ -297,7 +297,7 @@ var Employer = {
     city: 'Miami',
     state: 'FL',
     country: 'USA',
-    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492581508/imcaugvc0sdkkxmvuzma.png',
+    logo_url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493338548/hacz9nec5ih7qezbt4kk.jpg',
     job_postings_id: null 
     }),
 
@@ -445,7 +445,7 @@ var JobPost = {
 exports.Resume = Object.assign(
   JSON.parse(JSON.stringify(schema.newApplicantFile)),
   { id: null,
-    url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492897363/ilq6ifmqammkpzlwuxjs.jpg',
+    url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493339062/mdkwkyfdfgctubkvfiq2.jpg',
     type: 'resume',
     applicant_id: 3,
   });
@@ -454,7 +454,7 @@ exports.Resume = Object.assign(
 exports.CoverLetter = Object.assign(
   JSON.parse(JSON.stringify(schema.newApplicantFile)),
   { id: null,
-    url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492897363/ilq6ifmqammkpzlwuxjs.jpg',
+    url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493339062/mdkwkyfdfgctubkvfiq2.jpg',
     type: 'coverletter',
     applicant_id: 3,
   });
@@ -462,7 +462,7 @@ exports.CoverLetter = Object.assign(
 exports.JobPost1 = Object.assign(
   JSON.parse(JSON.stringify(schema.newApplicantFile)),
   { id: null,
-    url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1492897363/ilq6ifmqammkpzlwuxjs.jpg',
+    url: 'https://res.cloudinary.com/dse6qhxk5/image/upload/v1493339062/mdkwkyfdfgctubkvfiq2.jpg',
     type: 'coverletter',
     applicant_id: 3,
   });
