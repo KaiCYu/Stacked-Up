@@ -75,7 +75,6 @@ module.exports.dbName = databaseName;
 module.exports.connection = pool;
 const elasticsearch = require('../elasticsearch/index.js');
 
-
 module.exports.initDB = function() {
   if (process.env.DATABASE_URL) {
       Promise.using(getConn(), function(conn) {
