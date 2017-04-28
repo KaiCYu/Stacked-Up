@@ -261,6 +261,7 @@ class SignupClient extends React.Component {
               <div id="profilePhoto-preview" height="300px"></div>
             </Column>
           </Grid>
+          
           <br />
           <FlatButton
             label="Sign Up"
