@@ -1,5 +1,7 @@
 body {
-  background-image: url('stacked_up.jpg');
+  /*background-image: url('stacked_up.jpg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;*/
   margin: 0;
 }
 div.container {

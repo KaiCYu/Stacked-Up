@@ -378,8 +378,7 @@ app.post('/signupEmployer', (req, res) => {
         logo_url: logoURL,
       };
       await db.queryAsyncQuestion(insertEmployer, values);
-
-      console.log('employer has signed up!');
+      // console.log('employer has signed up!');
       res.redirect('/');
     } catch (error) {
       res.status(500).send('Internal Server Error', error);
